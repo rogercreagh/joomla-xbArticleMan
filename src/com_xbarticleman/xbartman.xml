@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension method="upgrade" type="component" version="3.0">
+	<name>xbarticleman</name>
+	<author>Roger C-O</author>
+	<creationDate>8th March 2023</creationDate>
+	<authorEmail>roger@crosborne.co.uk</authorEmail>
+	<authorUrl>www.crosborne.uk</authorUrl>
+	<copyright>(C) Roger Creagh-Osborne, 2023</copyright>
+	<license>GNU/GPL</license>
+	<version>1.0.9.0</version>
+	<description>XBARTMAN_XML_DESCRIPTION</description>
+
+	<scriptfile>script.xbarticleman.php</scriptfile>	
+	
+	<administration>
+		<files folder="admin">
+			<filename>index.html</filename>
+			<filename>controller.php</filename>
+			<filename>xbarticleman.php</filename>
+			<filename>access.xml</filename>
+			<filename>config.xml</filename>
+			<folder>controllers</folder>
+			<folder>helpers</folder>
+			<folder>models</folder>
+			<folder>views</folder>
+		</files>
+		
+		<languages folder="admin/language">
+			<language tag="en-GB">en-GB/en-GB.com_xbarticleman.ini</language>
+			<language tag="en-GB">en-GB/en-GB.com_xbarticleman.sys.ini</language>
+		</languages>
+
+		<menu img="class:categories">XBARTMAN_MENU</menu>
+		<submenu>
+			<menu link="option=com_xbarticleman"
+				view="Articles" img="class:generic"
+				alt="Xbarticleman/Articles">
+				com_xbarticleman_menu_articles
+			</menu>
+			<menu link="option=com_xbarticleman&amp;view=artlinks"
+				view="Artlinks" img="class:generic"
+				alt="Xbarticleman/Artlinks">
+				com_xbarticleman_menu_artlinks
+			</menu>
+			<menu link="option=com_xbarticleman&amp;view=artimgs"
+				view="Artimgs" img="class:generic"
+				alt="Xbarticleman/Artimgs">
+				com_xbarticleman_menu_artimgs
+			</menu>
+		</submenu>
+
+	</administration>
+	
+	<updateservers>
+		<server type="extension" priority="1" name=" Updates">
+			http://www.crosborne.co.uk/jupdates/update_xbarticleman.xml
+		</server>
+	</updateservers>
+
+</extension>
