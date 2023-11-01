@@ -1,7 +1,7 @@
 <?php
 /*******
- * @package xbartman
- * file administrator/components/com_xbartman/views/artlinks/tmpl/default.php
+ * @package xbarticleman
+ * file administrator/components/com_xbarticleman/views/artlinks/tmpl/default.php
  * @version 1.0.0.0 27th January 2019
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
@@ -11,7 +11,7 @@ defined('_JEXEC') or die;
 use Joomla\Registry\Registry;
 //use Joomla\Utilities\ArrayHelper;
 
-JLoader::register('XbarticlemanHelper', JPATH_ADMINISTRATOR . '/components/com_xbartman/helpers/xbartman.php');
+JLoader::register('XbarticlemanHelper', JPATH_ADMINISTRATOR . '/components/com_xbarticleman/helpers/xbarticleman.php');
 JLoader::register('ContentHelperRoute', JPATH_SITE . '/components/com_content/helpers/route.php');
 
 JHtml::_('bootstrap.tooltip');
@@ -49,12 +49,12 @@ else
 
 if ($saveOrder)
 {
-	$saveOrderingUrl = 'index.php?option=com_xbartman&task=articles.saveOrderAjax&tmpl=component';
+	$saveOrderingUrl = 'index.php?option=com_xbarticleman&task=articles.saveOrderAjax&tmpl=component';
 	JHtml::_('sortablelist.sortable', 'articleList', 'adminForm', strtolower($listDirn), $saveOrderingUrl);
 }
 
 ?>
-<form action="<?php echo JRoute::_('index.php?option=com_xbartman&view=artlinks'); ?>" method="post" name="adminForm" id="adminForm">
+<form action="<?php echo JRoute::_('index.php?option=com_xbarticleman&view=artlinks'); ?>" method="post" name="adminForm" id="adminForm">
 
 <?php if (!empty( $this->sidebar)) : ?>
 	<div id="j-sidebar-container" class="span2">
@@ -155,15 +155,15 @@ if ($saveOrder)
 				<?php foreach ($this->items as $i => $item) :
 					$item->max_ordering = 0;
 					$ordering   = ($listOrder == 'a.ordering');
-					$canCreate  = $user->authorise('core.create',     'com_xbartman.category.' . $item->catid);
-					$canEdit    = $user->authorise('core.edit',       'com_xbartman.article.' . $item->id);
+					$canCreate  = $user->authorise('core.create',     'com_xbarticleman.category.' . $item->catid);
+					$canEdit    = $user->authorise('core.edit',       'com_xbarticleman.article.' . $item->id);
 					$canCheckin = $user->authorise('core.manage',     'com_checkin') || $item->checked_out == $userId || $item->checked_out == 0;
-					$canEditOwn = $user->authorise('core.edit.own',   'com_xbartman.article.' . $item->id) && $item->created_by == $userId;
-					$canChange  = $user->authorise('core.edit.state', 'com_xbartman.article.' . $item->id) && $canCheckin;
-					$canEditCat    = $user->authorise('core.edit',       'com_xbartman.category.' . $item->catid);
-					$canEditOwnCat = $user->authorise('core.edit.own',   'com_xbartman.category.' . $item->catid) && $item->category_uid == $userId;
-					$canEditParCat    = $user->authorise('core.edit',       'com_xbartman.category.' . $item->parent_category_id);
-					$canEditOwnParCat = $user->authorise('core.edit.own',   'com_xbartman.category.' . $item->parent_category_id) && $item->parent_category_uid == $userId;
+					$canEditOwn = $user->authorise('core.edit.own',   'com_xbarticleman.article.' . $item->id) && $item->created_by == $userId;
+					$canChange  = $user->authorise('core.edit.state', 'com_xbarticleman.article.' . $item->id) && $canCheckin;
+					$canEditCat    = $user->authorise('core.edit',       'com_xbarticleman.category.' . $item->catid);
+					$canEditOwnCat = $user->authorise('core.edit.own',   'com_xbarticleman.category.' . $item->catid) && $item->category_uid == $userId;
+					$canEditParCat    = $user->authorise('core.edit',       'com_xbarticleman.category.' . $item->parent_category_id);
+					$canEditOwnParCat = $user->authorise('core.edit.own',   'com_xbarticleman.category.' . $item->parent_category_id) && $item->parent_category_uid == $userId;
 					$helper = new XbarticlemanHelper;
 					$links = $helper->getDocAnchors($item->arttext);
 					//$tags = $helper->getItemTags('com_content.article',$item->id);
@@ -213,7 +213,7 @@ if ($saveOrder)
 								<?php endif; ?>
 								<?php if ($canEdit || $canEditOwn) : ?>
 									<a class="hasTooltip" href="
-									<?php echo JRoute::_('index.php?option=com_xbartman&task=article.edit&id=' . $item->id).'&retview=artlinks';?>
+									<?php echo JRoute::_('index.php?option=com_xbarticleman&task=article.edit&id=' . $item->id).'&retview=artlinks';?>
 									" title="<?php echo JText::_('JACTION_EDIT').' '.JText::_('tags & links'); ?>">
 										<?php echo $this->escape($item->title); ?></a>
 								<?php else : ?>
@@ -321,9 +321,9 @@ if ($saveOrder)
 				</tbody>
 			</table>
 			<?php // Load the batch processing form. ?>
-			<?php if ($user->authorise('core.create', 'com_xbartman')
-				&& $user->authorise('core.edit', 'com_xbartman')
-				&& $user->authorise('core.edit.state', 'com_xbartman')) : ?>
+			<?php if ($user->authorise('core.create', 'com_xbarticleman')
+				&& $user->authorise('core.edit', 'com_xbarticleman')
+				&& $user->authorise('core.edit.state', 'com_xbarticleman')) : ?>
 				<?php echo JHtml::_(
 					'bootstrap.renderModal',
 					'collapseModal',

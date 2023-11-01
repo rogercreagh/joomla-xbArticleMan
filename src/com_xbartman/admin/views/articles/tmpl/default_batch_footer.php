@@ -1,7 +1,7 @@
 <?php
 /*******
  * @package xbArticleManager
- * file administrator/components/com_xbartman/views/articles/tmpl/default_batch_footer.php
+ * file administrator/components/com_xbarticleman/views/articles/tmpl/default_batch_footer.php
  * @version 1.0.0.0 22nd January 2019
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019

@@ -1,7 +1,7 @@
 <?php
 /*******
  * @package xbArticleManager
- * file administrator/components/com_xbartman/views/article/tmpl/edit.php
+ * file administrator/components/com_xbarticleman/views/article/tmpl/edit.php
  * @version 1.0.0.0 22nd January 2019
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
@@ -49,7 +49,7 @@ JFactory::getDocument()->addScriptDeclaration('
 	Content : Add New Article</a>
 </i></p>
 <hr />
-<form action="<?php echo JRoute::_('index.php?option=com_xbartman&layout=edit&id='. (int) $this->item->id); ?>"
+<form action="<?php echo JRoute::_('index.php?option=com_xbarticleman&layout=edit&id='. (int) $this->item->id); ?>"
 	method="post" name="adminForm" id="item-form" class="form-validate" >
 	<?php echo JLayoutHelper::render('joomla.edit.title_alias', $this); ?>
 	<hr />

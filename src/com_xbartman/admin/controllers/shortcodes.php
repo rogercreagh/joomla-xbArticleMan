@@ -1,8 +1,8 @@
 <?php
 /*******
  * @package xbArticleManager
- * file administrator/components/com_xbarticleman/controllers/articles.php
- * @version 1.0.0.0 22nd January 2019
+ * file administrator/components/com_xbarticleman/controllers/shortcodes.php
+ * @version 2.0.0.0 1st November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
@@ -11,12 +11,13 @@ defined('_JEXEC') or die;
 
 use Joomla\Utilities\ArrayHelper;
 
-class XbarticlemanControllerArticles extends JControllerAdmin
+class XbarticlemanControllerShortcodes extends JControllerAdmin
 {
 	public function __construct($config = array())
 	{
 		parent::__construct($config);
 	}
+	
     /**
      * disallow new article here and redirect to com-content new article form
      */

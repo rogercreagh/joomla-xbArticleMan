@@ -1,7 +1,7 @@
 <?php
 /*******
  * @package xbArticleManager
- * file administrator/components/com_xbartman/controllers/article.php
+ * file administrator/components/com_xbarticleman/controllers/article.php
  * @version 1.0.0.0 27th January 2019
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
@@ -38,13 +38,13 @@ class XbarticlemanControllerArticle extends JControllerForm
         }
         
         // Check edit on the record asset (explicit or inherited)
-        if ($user->authorise('core.edit', 'com_xbartman.article.' . $recordId))
+        if ($user->authorise('core.edit', 'com_xbarticleman.article.' . $recordId))
         {
             return true;
         }
         
         // Check edit own on the record asset (explicit or inherited)
-        if ($user->authorise('core.edit.own', 'com_xbartman.article.' . $recordId))
+        if ($user->authorise('core.edit.own', 'com_xbarticleman.article.' . $recordId))
         {
             // Existing record already has an owner, get it
             $record = $this->getModel()->getItem($recordId);
@@ -69,7 +69,7 @@ class XbarticlemanControllerArticle extends JControllerForm
         $model = $this->getModel('Article', '', array());
         
         // Preset the default redirect
-        $this->setRedirect(JRoute::_('index.php?option=com_xbartman&view=articles' . $this->getRedirectToListAppend(), false));
+        $this->setRedirect(JRoute::_('index.php?option=com_xbarticleman&view=articles' . $this->getRedirectToListAppend(), false));
         
         return parent::batch($model);
     }

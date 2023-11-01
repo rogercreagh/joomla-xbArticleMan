@@ -3,7 +3,7 @@
 
 	<fieldset name="permissions" label="JCONFIG_PERMISSIONS_LABEL" description="JCONFIG_PERMISSIONS_DESC" >
 		<field name="rules" type="rules" label="JCONFIG_PERMISSIONS_LABEL" 
-			component="com_xbartman" filter="rules" validate="rules" section="component" />
+			component="com_xbarticleman" filter="rules" validate="rules" section="component" />
 	</fieldset>
 	
 </config>

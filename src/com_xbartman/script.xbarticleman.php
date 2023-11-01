@@ -1,7 +1,7 @@
 <?php
 /*******
  * @package xbArticleManager
- * file script.xbartman.php
+ * file script.xbarticleman.php
  * @version 1.0.9.0 8th March 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2023
@@ -10,7 +10,7 @@
 // No direct access to this file
 defined('_JEXEC') or die;
 
-class com_xbartmanInstallerScript 
+class com_xbarticlemanInstallerScript 
 {
     function preflight($type, $parent)
     {
@@ -18,22 +18,22 @@ class com_xbartmanInstallerScript
     
     function install($parent)
     {
-        echo '<h3>xbArtMan component installed</h3>';
+        echo '<h3>xbArticleMan component installed</h3>';
         echo '<p>Version'.$parent->get('manifest')->version.' '.$parent->get('manifest')->creationDate.'</p>';
-        echo '<p>For help and information see <a href="http://crosborne.co.uk/artmandoc" target="_blank">
-            www.crosborne.co.uk/artmandoc</a></p>';
+        echo '<p>For help and information see <a href="http://crosborne.co.uk/articlemandoc" target="_blank">
+            www.crosborne.co.uk/articlemandoc</a></p>';
     }
     
     function uninstall($parent)
     {
-        echo '<p>The xbArtMan component has been uninstalled</p>';
+        echo '<p>The xbArticleMan component has been uninstalled</p>';
     }
     
     function update($parent)
     {
-        echo '<p>The xbArtMan component has been updated to version ' . $parent->get('manifest')->version . '</p>';
-        echo '<p>For details see <a href="http://crosborne.co.uk/artman#changelog" target="_blank">
-            www.crosborne.co.uk/artman#changelog</a></p>';
+        echo '<p>The xbArticleMan component has been updated to version ' . $parent->get('manifest')->version . '</p>';
+        echo '<p>For details see <a href="http://crosborne.co.uk/articleman#changelog" target="_blank">
+            www.crosborne.co.uk/articleman#changelog</a></p>';
     }
     
     function postflight($type, $parent)

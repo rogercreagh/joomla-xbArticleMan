@@ -1,7 +1,7 @@
 <?php
 /*******
- * @package xbArtMan
- * file administrator/components/com_xbartman/views/artimgs/view.html.php
+ * @package xbArticleMan
+ * file administrator/components/com_xbarticleman/views/artimgs/view.html.php
  * @version 1.0.0.0 27th January 2019
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
@@ -64,7 +64,7 @@
 
 		JToolbarHelper::title(JText::_('XBARTMAN_ARTIMGS_TITLE'), 'stack article');
 
-		if ($canDo->get('core.create') || count($user->getAuthorisedCategories('com_xbartman', 'core.create')) > 0)
+		if ($canDo->get('core.create') || count($user->getAuthorisedCategories('com_xbarticleman', 'core.create')) > 0)
 		{
 			JToolbarHelper::addNew('articles.newArticle');
 		}
@@ -82,9 +82,9 @@
 		}
 
 		// Add a batch button
-		if ($user->authorise('core.create', 'com_xbartman')
-			&& $user->authorise('cxbartman', 'com_xbartman')
-			&& $user->authorise('core.edit.state', 'com_xbartman'))
+		if ($user->authorise('core.create', 'com_xbarticleman')
+			&& $user->authorise('cxbarticleman', 'com_xbarticleman')
+			&& $user->authorise('core.edit.state', 'com_xbarticleman'))
 		{
 			$title = JText::_('JTOOLBAR_BATCH');
 
@@ -104,9 +104,9 @@
 			JToolbarHelper::trash('articles.trash');
 		}
 
-		if ($user->authorise('core.admin', 'com_xbartman') || $user->authorise('core.options', 'com_xbartman'))
+		if ($user->authorise('core.admin', 'com_xbarticleman') || $user->authorise('core.options', 'com_xbarticleman'))
 		{
-			JToolbarHelper::preferences('com_xbartman');
+			JToolbarHelper::preferences('com_xbarticleman');
 		}
 
 		JToolbarHelper::help('JHELP_CONTENT_ARTICLE_MANAGER');

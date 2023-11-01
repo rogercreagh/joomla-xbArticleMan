@@ -1,7 +1,7 @@
 <?php
 /*******
  * @package xbArticleMan
- * file administrator/components/com_xbartman/controller.php
+ * file administrator/components/com_xbarticleman/controller.php
  * @version 1.0.9.0 8th March 2023
  * @since 0.1.0.0 22nd January 2019
  * @author Roger C-O
@@ -10,14 +10,14 @@
  ******/
 defined('_JEXEC') or die();
 
-if (!JFactory::getUser()->authorise('core.manage', 'com_xbartman')) 
+if (!JFactory::getUser()->authorise('core.manage', 'com_xbarticleman')) 
 {
     throw new JAccessExceptionNotallowed(JText::_('JERROR_ALERTNOAUTHOR'), 403);
 }
 
-JLoader::register('XbarticlemanHelper', __DIR__ . '/helpers/xbartman.php');
+JLoader::register('XbarticlemanHelper', __DIR__ . '/helpers/xbarticleman.php');
 
-$controller = JControllerLegacy::getInstance('xbartman');
+$controller = JControllerLegacy::getInstance('xbarticleman');
 
 $controller->execute(JFactory::getApplication()->input->get('task'));
 

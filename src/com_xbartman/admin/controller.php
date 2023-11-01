@@ -1,7 +1,7 @@
 <?php
 /*******
  * @package xbArticleManager
- * file administrator/components/com_xbartman/controller.php
+ * file administrator/components/com_xbarticleman/controller.php
  * @version 1.0.9.0 8th March 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
@@ -18,17 +18,17 @@ class XbarticlemanController extends JControllerLegacy {
 	}
 	
 	public function display ($cachable = false, $urlparms = false){
-		require_once JPATH_COMPONENT.'/helpers/xbartman.php';
+		require_once JPATH_COMPONENT.'/helpers/xbarticleman.php';
 		
 		$view 	= $this->input->get('view', 'articles');
 		$layout	= $this->input->get('layout', 'default');
 		$id 	= $this->input->getInt('id');
-		if ($view == 'article' && $layout == 'edit' && !$this->checkEditId('com_xbartman.edit.article', $id))
+		if ($view == 'article' && $layout == 'edit' && !$this->checkEditId('com_xbarticleman.edit.article', $id))
 		{
 			// Somehow the person just went to the form - we don't allow that.
 			$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $id));
 			$this->setMessage($this->getError(), 'error');
-			$this->setRedirect(JRoute::_('index.php?option=com_xbartman&view=xbartman', false));
+			$this->setRedirect(JRoute::_('index.php?option=com_xbarticleman&view=xbarticleman', false));
 
 			return false;
 		}

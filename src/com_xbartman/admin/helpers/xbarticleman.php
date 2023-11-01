@@ -1,7 +1,7 @@
 <?php
 /*******
  * @package xbArticleManager
- * file administrator/components/com_xbartman/helpers/xbartman.php
+ * file administrator/components/com_xbarticleman/helpers/xbarticleman.php
  * @version 1.0.0.0 22nd January 2019
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
@@ -11,19 +11,19 @@ defined('_JEXEC') or die;
 
 class XbarticlemanHelper // extends JHelper
 {
-	public static $extension = 'com_xbartman';
+	public static $extension = 'com_xbarticleman';
 
 	public static function getActions($categoryid = 0) {
 	    $user 	=JFactory::getUser();
 	    $result = new JObject;
 	    if (empty($categoryid)) {
-	        $assetName = 'com_xbartman';
+	        $assetName = 'com_xbarticleman';
 	        $level = 'component';
 	    } else {
-	        $assetName = 'com_xbartman.category.'.(int) $categoryid;
+	        $assetName = 'com_xbarticleman.category.'.(int) $categoryid;
 	        $level = 'category';
 	    }
-	    $actions = JAccess::getActions('com_xbartman', $level);
+	    $actions = JAccess::getActions('com_xbarticleman', $level);
 	    foreach ($actions as $action) {
 	        $result->set($action->name, $user->authorise($action->name, $assetName));
 	    }
@@ -34,17 +34,17 @@ class XbarticlemanHelper // extends JHelper
 	{
 		JHtmlSidebar::addEntry(
 			JText::_('Articles->tags'),
-			'index.php?option=com_xbartman&view=articles',
+			'index.php?option=com_xbarticleman&view=articles',
 			$vName == 'articles'
 		);
 		JHtmlSidebar::addEntry(
 		    JText::_('Articles->links'),
-		    'index.php?option=com_xbartman&view=artlinks',
+		    'index.php?option=com_xbarticleman&view=artlinks',
 		    $vName == 'artlinks'
 		    );
 		JHtmlSidebar::addEntry(
 		    JText::_('Articles->images'),
-		    'index.php?option=com_xbartman&view=artimgs',
+		    'index.php?option=com_xbarticleman&view=artimgs',
 		    $vName == 'artimgs'
 		    );
 		JHtmlSidebar::addEntry('<hr /><b>Other Views</b>');
@@ -336,10 +336,10 @@ class XbarticlemanHelper // extends JHelper
 	 */
 // 	public static function getContexts()
 // 	{
-// 		JFactory::getLanguage()->load('com_xbartman', JPATH_ADMINISTRATOR);
+// 		JFactory::getLanguage()->load('com_xbarticleman', JPATH_ADMINISTRATOR);
 
 // 		$contexts = array(
-// 		    'com_xbartman.article'    => JText::_('XBARTMAN'),
+// 		    'com_xbarticleman.article'    => JText::_('XBARTMAN'),
 // 		    'com_content.categories' => JText::_('JCATEGORY')
 // 		);
 

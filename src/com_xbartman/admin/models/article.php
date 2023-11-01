@@ -1,7 +1,7 @@
 <?php
 /*******
  * @package xbArticleManager
- * file administrator/components/com_xbartman/models/article.php
+ * file administrator/components/com_xbarticleman/models/article.php
  * @version 1.0.0.0 22nd January 2019
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
@@ -12,7 +12,7 @@ defined('_JEXEC') or die;
 use Joomla\Registry\Registry;
 use Joomla\Utilities\ArrayHelper;
 
-JLoader::register('XbarticlemanHelper', JPATH_ADMINISTRATOR . '/components/com_xbartman/helpers/xbartman.php');
+JLoader::register('XbarticlemanHelper', JPATH_ADMINISTRATOR . '/components/com_xbarticleman/helpers/xbarticleman.php');
 
 class XbarticlemanModelArticle extends JModelAdmin
 {
@@ -22,7 +22,7 @@ class XbarticlemanModelArticle extends JModelAdmin
 	 * @var    string
 	 * @since  3.2
 	 */
-	public $typeAlias = 'com_xbartman.article';
+	public $typeAlias = 'com_xbarticleman.article';
 
 	/**
 	 * Function that can be overriden to do any data cleanup after batch copying data
@@ -53,7 +53,7 @@ class XbarticlemanModelArticle extends JModelAdmin
 
 		$oldItem = $this->getTable();
 		$oldItem->load($oldId);
-		$fields = FieldsHelper::getFields('com_xbartman.article', $oldItem, true);
+		$fields = FieldsHelper::getFields('com_xbarticleman.article', $oldItem, true);
 
 		$fieldsData = array();
 
@@ -67,7 +67,7 @@ class XbarticlemanModelArticle extends JModelAdmin
 			}
 		}
 
-		JEventDispatcher::getInstance()->trigger('onContentAfterSave', array('com_xbartman.article', &$this->table, true, $fieldsData));
+		JEventDispatcher::getInstance()->trigger('onContentAfterSave', array('com_xbarticleman.article', &$this->table, true, $fieldsData));
 	}
 
 	/**
@@ -199,7 +199,7 @@ class XbarticlemanModelArticle extends JModelAdmin
 				return false;
 			}
 
-			return JFactory::getUser()->authorise('core.delete', 'com_xbartman.article.' . (int) $record->id);
+			return JFactory::getUser()->authorise('core.delete', 'com_xbarticleman.article.' . (int) $record->id);
 		}
 
 		return false;
@@ -221,13 +221,13 @@ class XbarticlemanModelArticle extends JModelAdmin
 		// Check for existing article.
 		if (!empty($record->id))
 		{
-			return $user->authorise('core.edit.state', 'com_xbartman.article.' . (int) $record->id);
+			return $user->authorise('core.edit.state', 'com_xbarticleman.article.' . (int) $record->id);
 		}
 
 		// New article, so check against the category.
 		if (!empty($record->catid))
 		{
-			return $user->authorise('core.edit.state', 'com_xbartman.category.' . (int) $record->catid);
+			return $user->authorise('core.edit.state', 'com_xbarticleman.category.' . (int) $record->catid);
 		}
 
 		// Default to component settings if neither article nor category known.
@@ -332,7 +332,7 @@ class XbarticlemanModelArticle extends JModelAdmin
 	public function getForm($data = array(), $loadData = true)
 	{
 		// Get the form.
-		$form = $this->loadForm('com_xbartman.article', 'article', array('control' => 'jform', 'load_data' => $loadData));
+		$form = $this->loadForm('com_xbarticleman.article', 'article', array('control' => 'jform', 'load_data' => $loadData));
 
 		if (empty($form))
 		{
@@ -368,8 +368,8 @@ class XbarticlemanModelArticle extends JModelAdmin
 
 		// Check for existing article.
 		// Modify the form based on Edit State access controls.
-		if ($id != 0 && (!$user->authorise('core.edit.state', 'com_xbartman.article.' . (int) $id))
-			|| ($id == 0 && !$user->authorise('core.edit.state', 'com_xbartman')))
+		if ($id != 0 && (!$user->authorise('core.edit.state', 'com_xbarticleman.article.' . (int) $id))
+			|| ($id == 0 && !$user->authorise('core.edit.state', 'com_xbarticleman')))
 		{
 			// Disable fields for display.
 			$form->setFieldAttribute('featured', 'disabled', 'true');
@@ -401,7 +401,7 @@ class XbarticlemanModelArticle extends JModelAdmin
 	{
 		// Check the session for previously entered form data.
 		$app  = JFactory::getApplication();
-		$data = $app->getUserState('com_xbartman.edit.article.data', array());
+		$data = $app->getUserState('com_xbarticleman.edit.article.data', array());
 
 		if (empty($data))
 		{
@@ -410,7 +410,7 @@ class XbarticlemanModelArticle extends JModelAdmin
 			// Pre-select some filters (Status, Category, Language, Access) in edit form if those have been selected in Article Manager: Articles
 			if ($this->getState('article.id') == 0)
 			{
-				$filters = (array) $app->getUserState('com_xbartman.articles.filter');
+				$filters = (array) $app->getUserState('com_xbarticleman.articles.filter');
 				$data->set(
 					'state',
 					$app->input->getInt(
@@ -645,7 +645,7 @@ class XbarticlemanModelArticle extends JModelAdmin
 	protected function cleanCache($group = null, $client_id = 0)
 	{
 	    parent::cleanCache('com_content');
-	    parent::cleanCache('com_xbartman');
+	    parent::cleanCache('com_xbarticleman');
 	    parent::cleanCache('mod_articles_archive');
 		parent::cleanCache('mod_articles_categories');
 		parent::cleanCache('mod_articles_category');
@@ -663,7 +663,7 @@ class XbarticlemanModelArticle extends JModelAdmin
 	 */
 	private function canCreateCategory()
 	{
-		return JFactory::getUser()->authorise('core.create', 'com_xbartman');
+		return JFactory::getUser()->authorise('core.create', 'com_xbarticleman');
 	}
 
 	/**
