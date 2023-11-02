@@ -2,19 +2,30 @@
 /*******
  * @package xbArticleManager
  * file administrator/components/com_xbarticleman/helpers/xbarticleman.php
- * @version 1.0.0.0 22nd January 2019
+ * @version 2.0.0.0 2nd November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
  ******/
 defined('_JEXEC') or die;
 
-class XbarticlemanHelper // extends JHelper
+use Joomla\CMS\Factory;
+use Joomla\CMS\Access\Access;
+use Joomla\CMS\Application\ApplicationHelper;
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\Filter\OutputFilter;
+use Joomla\CMS\Helper\ContentHelper;
+use Joomla\CMS\Installer\Installer;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Table\Table;
+use Joomla\CMS\Uri\Uri;
+
+class XbarticlemanHelper //extends ContentHelper
 {
 	public static $extension = 'com_xbarticleman';
 
 	public static function getActions($categoryid = 0) {
-	    $user 	=JFactory::getUser();
+	    $user 	=Factory::getUser();
 	    $result = new JObject;
 	    if (empty($categoryid)) {
 	        $assetName = 'com_xbarticleman';
@@ -23,7 +34,7 @@ class XbarticlemanHelper // extends JHelper
 	        $assetName = 'com_xbarticleman.category.'.(int) $categoryid;
 	        $level = 'category';
 	    }
-	    $actions = JAccess::getActions('com_xbarticleman', $level);
+	    $actions = Access::getActions('com_xbarticleman', $level);
 	    foreach ($actions as $action) {
 	        $result->set($action->name, $user->authorise($action->name, $assetName));
 	    }
@@ -33,28 +44,33 @@ class XbarticlemanHelper // extends JHelper
 	public static function addSubmenu($vName)
 	{
 		JHtmlSidebar::addEntry(
-			JText::_('Articles->tags'),
+			Text::_('XBARTMAN_ICONMENU_ARTTAGS'),
 			'index.php?option=com_xbarticleman&view=articles',
 			$vName == 'articles'
 		);
 		JHtmlSidebar::addEntry(
-		    JText::_('Articles->links'),
+		    Text::_('XBARTMAN_ICONMENU_ARTLINKS'),
 		    'index.php?option=com_xbarticleman&view=artlinks',
 		    $vName == 'artlinks'
 		    );
 		JHtmlSidebar::addEntry(
-		    JText::_('Articles->images'),
+		    Text::_('XBARTMAN_ICONMENU_ARTIMGS'),
 		    'index.php?option=com_xbarticleman&view=artimgs',
 		    $vName == 'artimgs'
 		    );
+		JHtmlSidebar::addEntry(
+		    Text::_('XBARTMAN_ICONMENU_SHORTCODES'),
+		    'index.php?option=com_xbarticleman&view=shortcodes',
+		    $vName == 'shortcodes'
+		    );
 		JHtmlSidebar::addEntry('<hr /><b>Other Views</b>');
 		JHtmlSidebar::addEntry(
-		    JText::_('Content : Articles'),
+		    Text::_('XBARTMAN_ICONMENU_CONTENT_ARTS'),
 		    'index.php?option=com_content&view=articles',
 		    $vName == 'contentarticles'
 		    );
 		JHtmlSidebar::addEntry(
-		    JText::_('Tags : Tags'),
+		    Text::_('XBARTMAN_ICONMENU_TAGS_TAGS'),
 		    'index.php?option=com_tags&view=tags',
 		    $vName == 'tagstags'
 		    );
@@ -62,7 +78,7 @@ class XbarticlemanHelper // extends JHelper
 
     /**
      * getDocAnchors
-     * @param unknown $html - html doc text to parse and find anchors 
+     * @param string $html - html doc text to parse and find anchors 
      * @return array[] - array or arrays of DomNodes for <a ..> tags in doc
      */	
     public static function getDocAnchors($html) {	    
@@ -119,7 +135,7 @@ class XbarticlemanHelper // extends JHelper
 	    $ret=false;
 	    $arrLink = parse_url($link);
 	    if (isset($arrLink["host"])) {
-	        if (stristr($arrLink["host"],parse_url(JUri::root(),PHP_URL_HOST))) {
+	        if (stristr($arrLink["host"],parse_url(Uri::root(),PHP_URL_HOST))) {
 	            //the joomla server name is in the host (whatever http/https and subdomain)
 	            return true;
 	        }
@@ -144,9 +160,9 @@ class XbarticlemanHelper // extends JHelper
     	$parsed = parse_url($link);
     	$display =  $link;
     	if (XbarticlemanHelper::isLocalLink($link)) {
-    	    $thisServer = parse_url(JUri::root(),PHP_URL_HOST);
+    	    $thisServer = parse_url(Uri::root(),PHP_URL_HOST);
     	    if (!(array_key_exists('host',$parsed))) {
-    	        $thisPath = parse_url(JUri::root(),PHP_URL_PATH);
+    	        $thisPath = parse_url(Uri::root(),PHP_URL_PATH);
     	        $path = $parsed["path"];
     	        if (stristr($path,$thisPath)==false) {
     	            $path = $thisPath.ltrim($path,'/');
@@ -216,6 +232,10 @@ class XbarticlemanHelper // extends JHelper
 	    return $aimgs;
 	}
 	
+	public static function getDocShortcodes($html) {
+	    $scodes = array();
+	    return $scodes; 
+	}
 	
 	/**
 	 * Applies the content tag filters to arbitrary text as per settings for current user group
@@ -303,7 +323,7 @@ class XbarticlemanHelper // extends JHelper
 	 */
 // 	public static function validateSection($section)
 // 	{
-// 		if (JFactory::getApplication()->isClient('site'))
+// 		if (Factory::getApplication()->isClient('site'))
 // 		{
 // 			// On the front end we need to map some sections
 // 			switch ($section)
@@ -336,11 +356,11 @@ class XbarticlemanHelper // extends JHelper
 	 */
 // 	public static function getContexts()
 // 	{
-// 		JFactory::getLanguage()->load('com_xbarticleman', JPATH_ADMINISTRATOR);
+// 		Factory::getLanguage()->load('com_xbarticleman', JPATH_ADMINISTRATOR);
 
 // 		$contexts = array(
-// 		    'com_xbarticleman.article'    => JText::_('XBARTMAN'),
-// 		    'com_content.categories' => JText::_('JCATEGORY')
+// 		    'com_xbarticleman.article'    => Text::_('XBARTMAN'),
+// 		    'com_content.categories' => Text::_('JCATEGORY')
 // 		);
 
 // 		return $contexts;

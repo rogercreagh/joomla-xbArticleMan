@@ -2,13 +2,14 @@
 /*******
  * @package xbArticleManager
  * file administrator/components/com_xbarticleman/models/shortcodes.php
- * @version 2.0.0.0 1st November 2023
+ * @version 2.0.0.0 2nd November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
  ******/
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
 use Joomla\Utilities\ArrayHelper;
 
 class XbarticlemanModelShortcodes extends JModelList
@@ -50,13 +51,13 @@ class XbarticlemanModelShortcodes extends JModelList
     
     protected function populateState($ordering = 'a.id', $direction = 'desc')
     {
-        $app = JFactory::getApplication();
+        $app = Factory::getApplication();
         
         // Adjust the context to support modal layouts.
-        if ($layout = $app->input->get('layout'))
-        {
-            $this->context .= '.' . $layout;
-        }
+//         if ($layout = $app->input->get('layout'))
+//         {
+//             $this->context .= '.' . $layout;
+//         }
         
         $search = $this->getUserStateFromRequest($this->context . '.filter.search', 'filter_search');
         $this->setState('filter.search', $search);
@@ -108,7 +109,7 @@ class XbarticlemanModelShortcodes extends JModelList
         // Create a new query object.
         $db    = $this->getDbo();
         $query = $db->getQuery(true);
-        $user  = JFactory::getUser();
+        $user  = Factory::getUser();
         
         // Select the required fields from the table.
         $query->select(
@@ -120,6 +121,9 @@ class XbarticlemanModelShortcodes extends JModelList
                 )
             );
         $query->from('#__content AS a');
+        
+        //test for presence of shortcode 
+        $query->where('CONCAT(a.introtext," ",a.fulltext)'.' REGEXP '.$db->q('{(\\w+).*}'));
         
         // Join over the language
         $query->select('l.title AS language_title, l.image AS language_image')
