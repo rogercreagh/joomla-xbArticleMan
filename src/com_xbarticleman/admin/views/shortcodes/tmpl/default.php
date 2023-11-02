@@ -99,7 +99,7 @@ if ($saveOrder)
 							<?php echo HTMLHelper::_('searchtools.sort', 'Category', 'category_title', $listDirn, $listOrder); ?>							
 						</th>
 						<th>
-							In-article &lt;img&gt;s
+							Shortcodes
 						</th>
 						<th width="10%" class="nowrap hidden-phone">
 							<?php echo HTMLHelper::_('searchtools.sort', 'XBARTMAN_HEADING_DATE_' . strtoupper($orderingColumn), 'a.' . $orderingColumn, $listDirn, $listOrder); ?>
@@ -128,8 +128,8 @@ if ($saveOrder)
 					$canEditOwnCat = $user->authorise('core.edit.own',   'com_xbarticleman.category.' . $item->catid) && $item->category_uid == $userId;
 					$canEditParCat    = $user->authorise('core.edit',       'com_xbarticleman.category.' . $item->parent_category_id);
 					$canEditOwnParCat = $user->authorise('core.edit.own',   'com_xbarticleman.category.' . $item->parent_category_id) && $item->parent_category_uid == $userId;
-					$helper = new XbarticlemanHelper;
-					$scodes = $helper->getDocShortcodes($item->arttext);
+					//$helper = new XbarticlemanHelper;
+					$scodes = XbarticlemanHelper::getDocShortcodes($item->arttext);
 					//$tags = $helper->getItemTags('com_content.article',$item->id);
 					?>
 					<tr class="row<?php echo $i % 2; ?>" sortable-group-id="<?php echo $item->catid; ?>">
@@ -215,21 +215,18 @@ if ($saveOrder)
 								</div>
 							</div>
 						</td>
-						<td class="small">
-							<b><?php echo count($scodes).'</b> shortcodes found<br />';
-							     foreach ($scodes as $a) {
-							         $tip = '';
-							        if ($a->getAttribute('width')) {
-							            $tip .= 'width:'.$a->getAttribute('width').'px ';
-							            if ($a->getAttribute('height')) $tip .= 'x';
-							        }
-							        if ($a->getAttribute('height')) {
-							            echo $a->getAttribute('height').'px high';
-							        }
-							        echo '<span class="hasTooltip" title="'.$tip.'">'; 
-							        echo $a->getAttribute('src').'</span><br />';
-							     }
-							    ?>
+						<td>
+							<details>
+								<summary><b><?php echo count($scodes); ?></b> shortcodes found</summary>
+							   	<ul>
+								<?php foreach ($scodes as $sc) : ?>
+							       <li><b><?php echo $sc[1]; ?></b>
+							       <?php if (key_exists(2, $sc)) echo '<br /><i>params:</i> '. $sc[2];
+							       if (key_exists(3, $sc)) echo '<br /><i>content:</i> '.$sc[3]; ?>
+							       </li>
+								<?php endforeach; ?>
+							   	</ul>
+							</details>
 						</td>
 						<td class="nowrap small hidden-phone">
 							<?php

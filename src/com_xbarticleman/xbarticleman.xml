@@ -33,7 +33,7 @@
 		<menu img="class:xbarticlemanager">XBARTMAN_MENU</menu>
 		<submenu>
 			<menu link="option=com_xbarticleman" >
-				xbartman_iconmenu_articles
+				xbartman_iconmenu_arttags
 			</menu>
 			<menu link="option=com_xbarticleman&amp;view=artlinks" >
 				xbartman_iconmenu_artlinks
@@ -43,6 +43,9 @@
 			</menu>
 			<menu link="option=com_xbarticleman&amp;view=shortcodes" >
 				xbartman_iconmenu_shortcodes
+			</menu>
+			<menu link="option=com_config&amp;view=component&amp;component=com_xbarticleman" >
+				xbartman_iconmenu_options				
 			</menu>
 		</submenu>
 

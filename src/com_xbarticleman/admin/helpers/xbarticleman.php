@@ -41,8 +41,7 @@ class XbarticlemanHelper //extends ContentHelper
 	    return $result;
 	}
 	
-	public static function addSubmenu($vName)
-	{
+	public static function addSubmenu($vName) {
 		JHtmlSidebar::addEntry(
 			Text::_('XBARTMAN_ICONMENU_ARTTAGS'),
 			'index.php?option=com_xbarticleman&view=articles',
@@ -63,7 +62,7 @@ class XbarticlemanHelper //extends ContentHelper
 		    'index.php?option=com_xbarticleman&view=shortcodes',
 		    $vName == 'shortcodes'
 		    );
-		JHtmlSidebar::addEntry('<hr /><b>Other Views</b>');
+		JHtmlSidebar::addEntry('XBARTMAN_SUBMENU_OTHERVIEWS');
 		JHtmlSidebar::addEntry(
 		    Text::_('XBARTMAN_ICONMENU_CONTENT_ARTS'),
 		    'index.php?option=com_content&view=articles',
@@ -73,6 +72,12 @@ class XbarticlemanHelper //extends ContentHelper
 		    Text::_('XBARTMAN_ICONMENU_TAGS_TAGS'),
 		    'index.php?option=com_tags&view=tags',
 		    $vName == 'tagstags'
+		    );
+		JHtmlSidebar::addEntry('<hr />');
+		JHtmlSidebar::addEntry(
+		    Text::_('XBARTMAN_ICONMENU_OPTIONS'),
+		    'index.php?option=com_config&view=component&component=com_xbarticleman',
+		    $vName == 'options'
 		    );
 	}
 
@@ -232,8 +237,21 @@ class XbarticlemanHelper //extends ContentHelper
 	    return $aimgs;
 	}
 	
-	public static function getDocShortcodes($html) {
+	public static function getDocShortcodes($articleText) {
+	    //strip out any highlighting tags
+	    //strip out xbshowref if present leaving enclosed content
+	    $articleText=preg_replace('!<span class="xbshowref".*?>(.*?)</span>!', '${1}', $articleText);
+	    
 	    $scodes = array();
+	    /**
+	     * check for self closed shortcodes and get params
+	     * {([[:alpha:]].+?)((\s.*?)*)}([^{]*) with global flag
+	     * {([[:alpha:]]+)(\s?.*?)} for just the first
+	     * {([[:alpha:]]+)(\s?.*?)}(?:(.*?){\/(?1))? makes the tail optional
+	     * 
+	     */
+	    $res = preg_match_all('/{([[:alpha:]].+?)((\s.*?)*)}([^{]*)/',$articleText, $scodes, PREG_SET_ORDER);
+	    Factory::getApplication()->enqueueMessage('<pre>'.print_r($scodes,true).'</pre>');
 	    return $scodes; 
 	}
 	
