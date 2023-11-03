@@ -2,7 +2,7 @@
 /*******
  * @package xbArticleMan
  * file administrator/components/com_xbarticleman/views/shortcodes/view.html.php
- * @version 2.0.0.0 2nd November 2023
+ * @version 2.0.0.1 3rd November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
@@ -21,6 +21,7 @@
     protected $state;
     protected $categories;
     protected $tags;
+//    protected $sccnts;
      
 	public $filterForm;
 
@@ -48,7 +49,17 @@
 			throw new Exception(implode("\n", $errors), 500);
 		}
 
-
+        $this->sccnts = array();
+		foreach ($this->items as $item) {
+		    $thiscnts = array_count_values(array_column($item->shortcodes,1));
+		    foreach($thiscnts as $key => $value) {
+		        if (isset($this->sccnts[$key])) {
+		            $this->sccnts[$key] += $value;
+		        } else {
+		            $this->sccnts[$key] = $value;
+		        }
+		    }
+		}
 		// We don't need toolbar in the modal window.
 // 		if ($this->getLayout() !== 'modal')
 // 		{

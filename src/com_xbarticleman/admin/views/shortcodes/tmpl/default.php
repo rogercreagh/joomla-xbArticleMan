@@ -2,7 +2,7 @@
 /*******
  * @package xbarticleman
  * file administrator/components/com_xbarticleman/views/shortcodes/tmpl/default.php
- * @version 2.0.0.0 2nd November 2023
+ * @version 2.0.0.1 3rd November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
@@ -118,18 +118,18 @@ if ($saveOrder)
 				<tbody>
 				<?php foreach ($this->items as $i => $item) :
 					$item->max_ordering = 0;
-					$ordering   = ($listOrder == 'a.ordering');
-					$canCreate  = $user->authorise('core.create',     'com_xbarticleman.category.' . $item->catid);
+//					$ordering   = ($listOrder == 'a.ordering');
+//					$canCreate  = $user->authorise('core.create',     'com_xbarticleman.category.' . $item->catid);
 					$canEdit    = $user->authorise('core.edit',       'com_xbarticleman.article.' . $item->id);
 					$canCheckin = $user->authorise('core.manage',     'com_checkin') || $item->checked_out == $userId || $item->checked_out == 0;
 					$canEditOwn = $user->authorise('core.edit.own',   'com_xbarticleman.article.' . $item->id) && $item->created_by == $userId;
 					$canChange  = $user->authorise('core.edit.state', 'com_xbarticleman.article.' . $item->id) && $canCheckin;
 					$canEditCat    = $user->authorise('core.edit',       'com_xbarticleman.category.' . $item->catid);
 					$canEditOwnCat = $user->authorise('core.edit.own',   'com_xbarticleman.category.' . $item->catid) && $item->category_uid == $userId;
-					$canEditParCat    = $user->authorise('core.edit',       'com_xbarticleman.category.' . $item->parent_category_id);
-					$canEditOwnParCat = $user->authorise('core.edit.own',   'com_xbarticleman.category.' . $item->parent_category_id) && $item->parent_category_uid == $userId;
+//					$canEditParCat    = $user->authorise('core.edit',       'com_xbarticleman.category.' . $item->parent_category_id);
+//					$canEditOwnParCat = $user->authorise('core.edit.own',   'com_xbarticleman.category.' . $item->parent_category_id) && $item->parent_category_uid == $userId;
 					//$helper = new XbarticlemanHelper;
-					$scodes = XbarticlemanHelper::getDocShortcodes($item->arttext);
+					$scodes = $item->shortcodes; //XbarticlemanHelper::getDocShortcodes($item->arttext);
 					//$tags = $helper->getItemTags('com_content.article',$item->id);
 					?>
 					<tr class="row<?php echo $i % 2; ?>" sortable-group-id="<?php echo $item->catid; ?>">
@@ -199,8 +199,8 @@ if ($saveOrder)
 											     for ($i=0; $i<$item->category_level-1; $i++) {
     											     echo $bits[$i].' &#187; ';
 											     }
+    										echo '<br /><span style="padding-left:15px;">';
 										endif;
-										echo '<br /><span style="padding-left:15px;">';
 										if ($canEditCat || $canEditOwnCat) :
 											echo '<a class="hasTooltip" href="' . $CurrentCatUrl . '" title="' . $EditCatTxt . '">';
 										endif;
@@ -221,7 +221,7 @@ if ($saveOrder)
 							   	<ul>
 								<?php foreach ($scodes as $sc) : ?>
 							       <li><b><?php echo $sc[1]; ?></b>
-							       <?php if (key_exists(2, $sc)) echo '<br /><i>params:</i> '. $sc[2];
+							       <?php if (key_exists(2, $sc)) echo '&nbsp;&nbsp;<i>params:</i> '. $sc[2];
 							       if (key_exists(3, $sc)) echo '<br /><i>content:</i> '.$sc[3]; ?>
 							       </li>
 								<?php endforeach; ?>

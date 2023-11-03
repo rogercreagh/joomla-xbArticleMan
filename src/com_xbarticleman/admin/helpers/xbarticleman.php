@@ -2,7 +2,7 @@
 /*******
  * @package xbArticleManager
  * file administrator/components/com_xbarticleman/helpers/xbarticleman.php
- * @version 2.0.0.0 2nd November 2023
+ * @version 2.0.0.1 3rd November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
@@ -14,13 +14,12 @@ use Joomla\CMS\Access\Access;
 use Joomla\CMS\Application\ApplicationHelper;
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Filter\OutputFilter;
-use Joomla\CMS\Helper\ContentHelper;
 use Joomla\CMS\Installer\Installer;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Table\Table;
 use Joomla\CMS\Uri\Uri;
 
-class XbarticlemanHelper //extends ContentHelper
+class XbarticlemanHelper extends ComponentHelper
 {
 	public static $extension = 'com_xbarticleman';
 
@@ -62,7 +61,7 @@ class XbarticlemanHelper //extends ContentHelper
 		    'index.php?option=com_xbarticleman&view=shortcodes',
 		    $vName == 'shortcodes'
 		    );
-		JHtmlSidebar::addEntry('XBARTMAN_SUBMENU_OTHERVIEWS');
+		JHtmlSidebar::addEntry(Text::_('XBARTMAN_SUBMENU_OTHERVIEWS'));
 		JHtmlSidebar::addEntry(
 		    Text::_('XBARTMAN_ICONMENU_CONTENT_ARTS'),
 		    'index.php?option=com_content&view=articles',
@@ -73,7 +72,6 @@ class XbarticlemanHelper //extends ContentHelper
 		    'index.php?option=com_tags&view=tags',
 		    $vName == 'tagstags'
 		    );
-		JHtmlSidebar::addEntry('<hr />');
 		JHtmlSidebar::addEntry(
 		    Text::_('XBARTMAN_ICONMENU_OPTIONS'),
 		    'index.php?option=com_config&view=component&component=com_xbarticleman',
@@ -251,36 +249,10 @@ class XbarticlemanHelper //extends ContentHelper
 	     * 
 	     */
 	    $res = preg_match_all('/{([[:alpha:]].+?)((\s.*?)*)}([^{]*)/',$articleText, $scodes, PREG_SET_ORDER);
-	    Factory::getApplication()->enqueueMessage('<pre>'.print_r($scodes,true).'</pre>');
+//	    Factory::getApplication()->enqueueMessage('<pre>'.print_r($scodes,true).'</pre>');
 	    return $scodes; 
 	}
 	
-	/**
-	 * Applies the content tag filters to arbitrary text as per settings for current user group
-	 *
-	 * @param   text  $text  The string to filter
-	 *
-	 * @return  string  The filtered string
-	 *
-	 * @deprecated  4.0  Use JComponentHelper::filterText() instead.
-	 */
-// 	public static function filterText($text)
-// 	{
-// 		try
-// 		{
-// 			JLog::add(
-// 				sprintf('%s() is deprecated. Use JComponentHelper::filterText() instead', __METHOD__),
-// 				JLog::WARNING,
-// 				'deprecated'
-// 			);
-// 		}
-// 		catch (RuntimeException $exception)
-// 		{
-// 			// Informational log only
-// 		}
-
-// 		return JComponentHelper::filterText($text);
-// 	}
 
 	/**
 	 * Adds Count Items for Category Manager.
@@ -329,58 +301,4 @@ class XbarticlemanHelper //extends ContentHelper
 // 		return parent::countRelations($items, $config);
 // 	}
 
-	/**
-	 * Returns a valid section for articles. If it is not valid then null
-	 * is returned.
-	 *
-	 * @param   string  $section  The section to get the mapping for
-	 *
-	 * @return  string|null  The new section
-	 *
-	 * @since   3.7.0
-	 */
-// 	public static function validateSection($section)
-// 	{
-// 		if (Factory::getApplication()->isClient('site'))
-// 		{
-// 			// On the front end we need to map some sections
-// 			switch ($section)
-// 			{
-// 				// Editing an article
-// 				case 'form':
-
-// 				// Category list view
-// 				case 'featured':
-// 				case 'category':
-// 					$section = 'article';
-// 			}
-// 		}
-
-// 		if ($section != 'article')
-// 		{
-// 			// We don't know other sections
-// 			return null;
-// 		}
-
-// 		return $section;
-// 	}
-
-	/**
-	 * Returns valid contexts
-	 *
-	 * @return  array
-	 *
-	 * @since   3.7.0
-	 */
-// 	public static function getContexts()
-// 	{
-// 		Factory::getLanguage()->load('com_xbarticleman', JPATH_ADMINISTRATOR);
-
-// 		$contexts = array(
-// 		    'com_xbarticleman.article'    => Text::_('XBARTMAN'),
-// 		    'com_content.categories' => Text::_('JCATEGORY')
-// 		);
-
-// 		return $contexts;
-// 	}
 }

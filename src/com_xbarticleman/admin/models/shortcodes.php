@@ -273,6 +273,17 @@ class XbarticlemanModelShortcodes extends JModelList
 		return $query;
     }
     
+    public function getItems() {
+        $items  = parent::getItems();
+        if ($items) {
+            foreach ($items as $item) {
+                $item->shortcodes = XbarticlemanHelper::getDocShortcodes($item->arttext);
+            }
+        }
+        return $items;
+        
+    }
+    
      public function getAuthors()
     {
         // Create a new query object.
