@@ -12,6 +12,15 @@
 
 	<scriptfile>script.xbarticleman.php</scriptfile>	
 	
+	<media destination="com_xbarticleman" folder="media">
+		<filename>index.html</filename>
+		<folder>css</folder>
+		<!-- 
+		<folder>js</folder>
+		<folder>images</folder>
+		 -->
+	</media>
+	
 	<administration>
 		<files folder="admin">
 			<filename>index.html</filename>
@@ -30,14 +39,6 @@
 			<language tag="en-GB">en-GB/en-GB.com_xbarticleman.sys.ini</language>
 		</languages>
 
-	<media destination="com_xbarticleman" folder="media">
-		<filename>index.html</filename>
-		<folder>css</folder>
-		<!-- 
-		<folder>js</folder>
-		<folder>images</folder>
-		 -->
-	</media>
 
 		<menu img="class:xbarticlemanager">XBARTMAN_MENU</menu>
 		<submenu>
