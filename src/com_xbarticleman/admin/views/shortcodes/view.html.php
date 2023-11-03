@@ -32,10 +32,10 @@
 	public function display($tpl = null)
 	{	    
 	   // JLoader::register('TagsHelperRoute', JPATH_BASE . '/components/com_tags/helpers/route.php');
-	    if ($this->getLayout() !== 'modal')
-		{
+//	    if ($this->getLayout() !== 'modal')
+//		{
 			XbarticlemanHelper::addSubmenu('shortcodes');
-		}
+//		}
 
 		$this->items         = $this->get('Items');
 		$this->pagination    = $this->get('Pagination');
@@ -51,8 +51,8 @@
 
         $this->sccnts = array();
 		foreach ($this->items as $item) {
-		    $thiscnts = array_count_values(array_column($item->shortcodes,1));
-		    foreach($thiscnts as $key => $value) {
+		    $item->thiscnts = array_count_values(array_column($item->shortcodes,1));		    
+		    foreach($item->thiscnts as $key => $value) {
 		        if (isset($this->sccnts[$key])) {
 		            $this->sccnts[$key] += $value;
 		        } else {
@@ -60,13 +60,8 @@
 		        }
 		    }
 		}
-		// We don't need toolbar in the modal window.
-// 		if ($this->getLayout() !== 'modal')
-// 		{
-// 			$this->addToolbar();
-// 			$this->sidebar = JHtmlSidebar::render();
-// 		}
- 			$this->sidebar = JHtmlSidebar::render();
+		$this->addToolbar();
+ 		$this->sidebar = JHtmlSidebar::render();
 
 		return parent::display($tpl);
 	}
@@ -79,7 +74,7 @@
 		// Get the toolbar object instance
 		$bar = Toolbar::getInstance('toolbar');
 
-		ToolbarHelper::title(JText::_('XBARTMAN_SHORTCODES_TITLE'), 'stack article');
+		ToolbarHelper::title(Text::_('XBARTMAN_ADMIN_SHORTCODES_TITLE'), 'wand');
 
 		if ($canDo->get('core.create') || count($user->getAuthorisedCategories('com_xbarticleman', 'core.create')) > 0)
 		{

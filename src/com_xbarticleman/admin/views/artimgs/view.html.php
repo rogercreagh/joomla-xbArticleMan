@@ -62,7 +62,7 @@
 		// Get the toolbar object instance
 		$bar = JToolbar::getInstance('toolbar');
 
-		JToolbarHelper::title(JText::_('XBARTMAN_ARTIMGS_TITLE'), 'stack article');
+		JToolbarHelper::title(JText::_('XBARTMAN_ADMIN_ARTIMGS_TITLE'), 'picture');
 
 		if ($canDo->get('core.create') || count($user->getAuthorisedCategories('com_xbarticleman', 'core.create')) > 0)
 		{

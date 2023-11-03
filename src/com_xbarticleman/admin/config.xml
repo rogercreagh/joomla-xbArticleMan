@@ -1,5 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <config>
+<!-- GENERAL TAB -->				
+	<fieldset name="general"
+		label="XBAOY_GENERAL"
+		description="XBAOY_GENERAL_DESC"
+	>
+		<field name="extlinkhint" type="radio"
+			label="Use External Link Hinting"
+			description="This will load xbextlinks.css on both site and admin for xbAOY component. 
+			It provides for icons to indicate external link in same tab, external link in new tab
+			and internal link in new tab. Disable if template already provides this site wide"
+			class="btn-group btn-group-yesno"
+ 			default="1"
+			>
+			<option value="0" >Disable</option>
+			<option value="1">Site &amp; Admin</option>
+			<option value="2">Site Only</option>
+			<option value="3">Admin Only</option>
+		</field>	
+	
+   		<field name="beernote" type="note"
+			label="XBAOY_CONFIG_BUY_A_BEER_LABEL"
+			description="XBAOY_CONFIG_BUY_A_BEER_DESC"
+			class="info"
+		/>	
+        
+	</fieldset>
+<!-- BEER TAB -->
+	<fieldset name="reg"
+			label="XBAOY_BEER_LABEL"
+			description="XBAOY_BEER_DESC"
+	>
+  		<field name="beernote" type="note"
+			label="XBAOY_BEER_NOTE"
+			description="XBAOY_CONFIG_BEER_LINK"
+			class="info"
+		/>	
+		<field name="roger_beer" type="password"
+			label="XBAOY_BEER_FIELD" description="XBAOY_BEER_FIELD_DESC"
+			default=""
+		/>	
+		<field name="beernote2" type="note"
+			label="XBAOY_PAY_AT_THE_BAR"
+			description="XBAOY_BEER_FORM"
+			class="center"
+		/>
+		<field name="penpont" type="hidden"
+			default="$2y$10$DeCwB16giLjgL7HgM1RDSeHROFs7QQef2dBQ9jEKehiTGj05jbonK" 
+			/>		
+		<field name="othercreditsnote" type="note"
+			label="XBAOY_CONFIG_CREDITS_NOTE"
+		/>
+		<field name="devtoolsnote" type="note"
+			label="XBAOY_CONFIG_DEV_TOOLS"
+			description="XBAOY_CONFIG_DEV_TOOLS_DESC"
+		/>
+	</fieldset>		
+
+<!-- PERMISSIONS TAB -->
 
 	<fieldset name="permissions" label="JCONFIG_PERMISSIONS_LABEL" description="JCONFIG_PERMISSIONS_DESC" >
 		<field name="rules" type="rules" label="JCONFIG_PERMISSIONS_LABEL" 

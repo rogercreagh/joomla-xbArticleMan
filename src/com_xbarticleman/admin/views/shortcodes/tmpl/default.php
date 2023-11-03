@@ -2,7 +2,7 @@
 /*******
  * @package xbarticleman
  * file administrator/components/com_xbarticleman/views/shortcodes/tmpl/default.php
- * @version 2.0.0.1 3rd November 2023
+ * @version 2.0.0.2 3rd November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
@@ -18,7 +18,7 @@ use Joomla\Registry\Registry;
 
 //use Joomla\Utilities\ArrayHelper;
 
-JLoader::register('XbarticlemanHelper', JPATH_ADMINISTRATOR . '/components/com_xbarticleman/helpers/xbarticleman.php');
+//JLoader::register('XbarticlemanHelper', JPATH_ADMINISTRATOR . '/components/com_xbarticleman/helpers/xbarticleman.php');
 JLoader::register('ContentHelperRoute', JPATH_SITE . '/components/com_content/helpers/route.php');
 
 HTMLHelper::_('bootstrap.tooltip');
@@ -26,7 +26,7 @@ HTMLHelper::_('behavior.multiselect');
 HTMLHelper::_('formbehavior.chosen', '.multipleTags', null, array('placeholder_text_multiple' => JText::_('JOPTION_SELECT_TAG')));
 HTMLHelper::_('formbehavior.chosen', '.multipleCategories', null, array('placeholder_text_multiple' => JText::_('JOPTION_SELECT_CATEGORY')));
 HTMLHelper::_('formbehavior.chosen', 'select');
-HTMLHelper::_('behavior.modal');
+//HTMLHelper::_('behavior.modal');
 
 $app       = Factory::getApplication();
 $user      = Factory::getUser();
@@ -34,7 +34,7 @@ $userId    = $user->get('id');
 $listOrder = $this->escape($this->state->get('list.ordering'));
 $listDirn  = $this->escape($this->state->get('list.direction'));
 $saveOrder = $listOrder == 'a.ordering';
-$columns   = 7;
+$columns   = 8;
 $cnt = count($this->items);
 
 if (strpos($listOrder, 'publish_up') !== false)
@@ -71,40 +71,75 @@ if ($saveOrder)
 <?php else : ?>
 	<div id="j-main-container">
 <?php endif; ?>
+		<h3><?php echo Text::_('Articles with Shortcodes')?></h3>
+		<h4> Found <?php count($this->sccnts); ?> distinct shortcodes across <?php echo $this->pagination->total; ?> articles from <?php echo XbarticlemanHelper::getItemCnt('#__content'); ?> total articles</h4>
+    	<ul class="inline">
+    		<li><i>Counts for each type:</i></li>
+    		<?php foreach ($this->sccnts as $key=>$cnt) {
+    		    echo '<li><b>'.$key.'</b> : '.$cnt.'</li>';
+    		}?>
+    	</ul>
 		<?php
 		// Search tools bar
 		echo LayoutHelper::render('joomla.searchtools.default', array('view' => $this));
 		?>
+
+        <div class="pull-right pagination xbm0">
+    		<?php  echo $this->pagination->getPagesLinks(); ?>
+    	</div>
+    
+    	<div class="pull-left">
+    		<?php  echo $this->pagination->getResultsCounter(); ?> 
+          <?php if($this->pagination->pagesTotal > 1) echo ' on '.$this->pagination->getPagesCounter(); ?>
+    		<p>
+              
+                <?php echo 'Sorted by '.$listOrder.' '.$listDirn ; ?>
+    		</p>
+    	</div>
+        <div class="clearfix"></div>      
+
 		<?php if (empty($this->items)) : ?>
 			<div class="alert alert-no-items">
 				<?php echo JText::_('JGLOBAL_NO_MATCHING_RESULTS'); ?>
 			</div>
 		<?php else : ?>
 				
-			<table class="table table-striped" id="articleList">
+			<table class="table table-striped table-hover" id="xbArticlemanShortcodesList">
+			<colgroup>
+				<col class="nowrap center hidden-phone" style="width:25px;"><!-- ordering -->
+				<col class="center hidden-phone" style="width:25px;"><!-- checkbox -->
+				<col style="width:55px;"><!-- status -->
+				<col ><!-- title, -->
+				<col style="width:250px;"><!-- summary -->
+				<col ><!-- shortcodes -->
+				<col class="nowrap hidden-phone" style="width:110px;" ><!-- date -->
+				<col class="nowrap hidden-phone" style="width:45px;"><!-- id -->
+			</colgroup>	
 				<thead>
 					<tr>
-						<th width="1%" class="nowrap center hidden-phone">
+						<th>
 							<?php echo HTMLHelper::_('searchtools.sort', '', 'a.ordering', $listDirn, $listOrder, null, 'asc', 'JGRID_HEADING_ORDERING', 'icon-menu-2'); ?>
 						</th>
-						<th width="1%" class="center">
+						<th>
 							<?php echo HTMLHelper::_('grid.checkall'); ?>
 						</th>
-						<th width="1%" class="nowrap center">
+						<th class="nowrap center">
 							<?php echo HTMLHelper::_('searchtools.sort', 'JSTATUS', 'a.state', $listDirn, $listOrder); ?>
 						</th>
-						<th style="min-width:100px" class="nowrap">
+						<th>
 							<?php echo HTMLHelper::_('searchtools.sort', 'JGLOBAL_TITLE', 'a.title', $listDirn, $listOrder); ?>
-							| (alias) |
+							| alias |
 							<?php echo HTMLHelper::_('searchtools.sort', 'Category', 'category_title', $listDirn, $listOrder); ?>							
 						</th>
 						<th>
-							Shortcodes
+							<?php echo Text::_('Summary'); ?>
+						<th>
+							<?php echo Text::_('Shortcodes'); ?>
 						</th>
-						<th width="10%" class="nowrap hidden-phone">
-							<?php echo HTMLHelper::_('searchtools.sort', 'XBARTMAN_HEADING_DATE_' . strtoupper($orderingColumn), 'a.' . $orderingColumn, $listDirn, $listOrder); ?>
+						<th>
+							<?php echo HTMLHelper::_('searchtools.sort', strtoupper($orderingColumn), 'a.' . $orderingColumn, $listDirn, $listOrder); ?>
 						</th>
-						<th width="1%" class="nowrap hidden-phone">
+						<th>
 							<?php echo HTMLHelper::_('searchtools.sort', 'JGRID_HEADING_ID', 'a.id', $listDirn, $listOrder); ?>
 						</th>
 					</tr>
@@ -199,7 +234,7 @@ if ($saveOrder)
 											     for ($i=0; $i<$item->category_level-1; $i++) {
     											     echo $bits[$i].' &#187; ';
 											     }
-    										echo '<br /><span style="padding-left:15px;">';
+    										echo '<span style="padding-left:15px;"><b>';
 										endif;
 										if ($canEditCat || $canEditOwnCat) :
 											echo '<a class="hasTooltip" href="' . $CurrentCatUrl . '" title="' . $EditCatTxt . '">';
@@ -209,20 +244,27 @@ if ($saveOrder)
 											echo '</a>';
 										endif;
 										if ($item->category_level != '1') :
-										  echo '</span>';
+										  echo '</b></span>';
 										endif;
 									?>
 								</div>
 							</div>
 						</td>
 						<td>
+							<?php echo XbarticlemanHelper::truncateToText($item->arttext,150,'exact',true); ?>
+						</td>
+						<td>
 							<details>
-								<summary><b><?php echo count($scodes); ?></b> shortcodes found</summary>
+								<summary><b><?php echo count($scodes); ?></b> shortcodes in article. 
+                            		<?php foreach ($item->thiscnts as $key=>$cnt) {
+                            		    echo '<span style="display:inline-block;margin-right:10px;"><b>'.$key.'</b> : '.$cnt.'</span>';
+                            		}?>
+								</summary>
 							   	<ul>
 								<?php foreach ($scodes as $sc) : ?>
 							       <li><b><?php echo $sc[1]; ?></b>
-							       <?php if (key_exists(2, $sc)) echo '&nbsp;&nbsp;<i>params:</i> '. $sc[2];
-							       if (key_exists(3, $sc)) echo '<br /><i>content:</i> '.$sc[3]; ?>
+							       <?php if ((key_exists(3, $sc)) && ($sc[3] != '')) echo '&nbsp;&nbsp;<i>params:</i> '.$sc[3].'&nbsp;';
+							       if ((key_exists(5, $sc)) && ($sc[4] !='')) echo '&nbsp;<i>content:</i> '.$sc[4]; ?>
 							       </li>
 								<?php endforeach; ?>
 							   	</ul>
@@ -231,7 +273,7 @@ if ($saveOrder)
 						<td class="nowrap small hidden-phone">
 							<?php
 							$date = $item->{$orderingColumn};
-							echo $date > 0 ? HTMLHelper::_('date', $date, JText::_('D d M \'y')) : '-';
+							echo $date > 0 ? HTMLHelper::_('date', $date, JText::_('D d M Y')) : '-';
 							?>
 						</td>
 						<td class="hidden-phone">
@@ -264,3 +306,8 @@ if ($saveOrder)
 		<?php echo HTMLHelper::_('form.token'); ?>
 	</div>
 </form>
+
+<div class="clearfix"></div>
+<?php echo XbarticlemanHelper::credit('xbArticleMan');?>
+
+

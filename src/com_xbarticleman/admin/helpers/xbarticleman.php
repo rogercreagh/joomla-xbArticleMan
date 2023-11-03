@@ -248,10 +248,180 @@ class XbarticlemanHelper extends ComponentHelper
 	     * {([[:alpha:]]+)(\s?.*?)}(?:(.*?){\/(?1))? makes the tail optional
 	     * 
 	     */
-	    $res = preg_match_all('/{([[:alpha:]].+?)((\s.*?)*)}([^{]*)/',$articleText, $scodes, PREG_SET_ORDER);
+//	    $res = preg_match_all('/{([[:alpha:]].+?)((\s.*?)*)}([^{]*)/',$articleText, $scodes, PREG_SET_ORDER);
+//	    $res = preg_match_all('/{([[:alpha:]].+?)(?:\s)(.*?)?}([^{]*)({\/\g1)?/',$articleText, $scodes, PREG_SET_ORDER);
+	    $res = preg_match_all('/{([[:alpha:]].+?)((?:\s)(.*?)?)?}([^{]*)({\/\g1)?/',$articleText, $scodes, PREG_SET_ORDER);
+	    //[0] is whole match, [1] is the shortcode, [2] is the params, [3] is the content which is valid if [4] exists
+	    
 //	    Factory::getApplication()->enqueueMessage('<pre>'.print_r($scodes,true).'</pre>');
 	    return $scodes; 
 	}
+	
+/****************** xbLibrary functions ***********/
+	
+	/**
+	 * @name getItemCnt
+	 * @desc returns the number of items in a table
+	 * @param string $table
+	 * @return integer
+	 */
+	public static function getItemCnt($table) {
+	    $db = Factory::getDbo();
+	    $query = $db->getQuery(true);
+	    $query->select('COUNT(*)')->from($db->quoteName($table));
+	    $db->setQuery($query);
+	    $cnt=-1;
+	    try {
+	        $cnt = $db->loadResult();
+	    } catch (Exception $e) {
+	        $dberr = $e->getMessage();
+	        Factory::getApplication()->enqueueMessage($dberr.'<br />Query: '.$query, 'error');
+	    }
+	    return $cnt;
+	}
+	
+	public static function truncateToText(string $source, int $maxlen=250, string $split = 'word', $ellipsis = true) { //null=exact|false=word|true=sentence
+	    if ($maxlen < 5) return $source; //silly the elipsis '...' is 3 chars
+	    $action = strpos(' firstsent lastsent word abridge exact',$split);
+	    // firstsent = 1 lastsent = 11, word = 20, abridge = 25, exact = 33
+	    $lastword = '';
+	    //todo for php8.1+ we could use enum
+	    if (!$action) return $source; //invalid $split value
+	    $source = trim(html_entity_decode(strip_tags($source)));
+	    if ((strlen($source)<$maxlen) && ($action > 19)) return $source; //not enough chars anyway
+	    if ($ellipsis) $maxlen = $maxlen - 4; // allow space for ellipsis
+	    // for abridge we'll save the last word to add back preceeded by ellipsis after truncating
+	    if ($action == 25) {
+	        $lastspace = strrpos($source, ' ');
+	        $excess = strlen($source) - $maxlen;
+	        if ($lastspace && ($lastspace > $maxlen)) {
+	            $lastword = substr($source, $lastspace);
+	        } else {
+	            // no space to get lastword outside maxlen, so just take last 6 chars as lastword
+	            $lastword = ($excess>6) ? substr($source, strlen($source)-6) : substr($source,strlen($source)-$excess);
+	        }
+	        $maxlen = $maxlen - strlen($lastword);
+	    }
+	    $source = substr($source, 0, $maxlen);
+	    //for exact trim at maxlength
+	    if ($action == 33) {
+	        if ($ellipsis) return $source.'...';
+	        return $source;
+	    }
+	    //for word or abridge simply find the last space and add the ellipsis plus lastword for abridge
+	    $lastwordend = strrpos($source, ' ');
+	    if ($action > 19) {
+	        if ($lastwordend) {
+	            $source = substr($source,$lastwordend);
+	        }
+	        return $source.'...'.$lastword;
+	    }
+	    //ok so we are doing first/last complete sentence
+	    // get a temp version with '? ' and '! ' replaced by '. '
+	    $dotsonly = str_replace(array('! ','? '),'. ',$source.' ');
+	    if ($action == 1) {
+	        // look for first ". " as end of sentence
+	        $dot = strpos($dotsonly,'. ');
+	    } else {
+	        // look for last ". " as end of sentence
+	        $dot = strrpos($dotsonly,'. ');
+	    }
+	    if ($dot !== false) {
+	        if ($ellipsis) {
+	            return substr($source, 0, $dot+1).'...';
+	        }
+	        return substr($source, 0, $dot+1);
+	    }
+	    return $source;
+	}
+	
+	public static function truncateHtml(string $source, int $maxlen=250, bool $wordbreak = true) {
+	    if ($maxlen < 10) return $source; //silly the elipsis '...' is 3 chars empire->emp...  workspace-> work... 'and so on' -> 'and so...'
+	    $maxlen = $maxlen - 3; //to allow for 3 char ellipsis '...' rather thaan utf8
+	    if (($wordbreak) && (strpos($source,' ') === false )) $wordbreak = false; //nowhere to wordbreak
+	    $truncstr = substr($source, 0, $maxlen);
+	    if (!self::isHtml($source)) {
+	        //we can just truncate and find a wordbreak if needed
+	        if (!$wordbreak || ($wordbreak) && (substr($source, $maxlen+1,1)== ' ')) {
+	            //weve got a word at the end
+	            return $truncstr.'...';
+	        }
+	        //ok we've got to look for a wordbreak (space or newline)
+	        $lastspace = strrpos(str_replace("\n"," ",$truncstr),' ');
+	        if ($lastspace) { // not if it is notfound or is first character (pos=0)
+	            return substr($truncstr, 0, $lastspace).'...';
+	        }
+	        // still here - no spaces left in truncstr so return it all
+	        return $truncstr.'...';
+	    }
+	    //ok so it is html
+	    //get rid of any unclosed tag at the end of $truncstr
+	    // Check if we are within a tag, if we are remove it
+	    if (strrpos($truncstr, '<') > strrpos($truncstr, '>')) {
+	        $lasttagstart = strrpos($truncstr, '<');
+	        $truncstr = trim(substr($truncstr, 0, $lasttagstart));
+	    }
+	    $testlen = strlen(trim(html_entity_decode(strip_tags($truncstr))));
+	    while ( $testlen > $maxlen ) {
+	        $toloose = $testlen - $maxlen;
+	        $trunclen = strlen($truncstr);
+	        $endlasttag = strrpos($truncstr,'>');
+	        if (($trunclen - $endlasttag) >= $toloose) {
+	            $truncstr = substr($truncstr, $trunclen - $toloose);
+	        } else {
+	            //we need to remove another tag
+	            $lasttagstart = strrpos($truncstr,'<');
+	            if ($lasttagstart) {
+	                $truncstr = substr($truncstr, 0, $lastagstart);
+	            } else {
+	                $truncstr = substr($truncstr, 0, $maxlen);
+	            }
+	        }
+	        $testlen = strlen(trim(html_entity_decode(strip_tags($truncstr))));
+	    }
+	    if (!$wordbreak) return $truncstr.'...';
+	    $lastspace = strrpos(str_replace("\n",' ',$truncstr),' ');
+	    if ($lastspace) {
+	        $truncstr = substr($truncstr, 0, $lastspace);
+	    }
+	    return $truncstr.'...';
+	}
+	
+	
+	/**
+	 * @name credit()
+	 * @desc tests if reg code is installed and returns blank, or credit for site and PayPal button for admin
+	 * @param string $ext - extension name to display, must match 'com_name' and xml filename and crosborne link page when converted to lower case
+	 * @return string - empty is registered otherwise for display
+	 */
+	public static function credit(string $ext) {
+	    if (self::penPont()) {
+	        return '';
+	    }
+	    $lext = strtolower($ext);
+	    $credit='<div class="xbcredit">';
+	    if (Factory::getApplication()->isClient('administrator')==true) {
+	        $xmldata = Installer::parseXMLInstallFile(JPATH_ADMINISTRATOR.'/components/com_'.$lext.'/'.$lext.'.xml');
+	        $credit .= '<a href="http://crosborne.uk/'.$lext.'" target="_blank">'
+	            .$ext.' Component '.$xmldata['version'].' '.$xmldata['creationDate'].'</a>';
+	            $credit .= '<br />'.Text::_('XBAOY_BEER_TAG');
+	            $credit .= Text::_('XBAOY_BEER_FORM');
+	    } else {
+	        $credit .= $ext.' by <a href="http://crosborne.uk/'.$lext.'" target="_blank">CrOsborne</a>';
+	    }
+	    $credit .= '</div>';
+	    return $credit;
+	}
+	
+	public static function penPont() {
+	    $params = ComponentHelper::getParams('com_xbaoy');
+	    $beer = trim($params->get('roger_beer'));
+	    //Factory::getApplication()->enqueueMessage(password_hash($beer));
+	    $hashbeer = $params->get('penpont');
+	    if (password_verify($beer,$hashbeer)) { return true; }
+	    return false;
+	}
+	
 	
 
 	/**
