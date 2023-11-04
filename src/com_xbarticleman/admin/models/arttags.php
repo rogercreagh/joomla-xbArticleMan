@@ -1,8 +1,8 @@
 <?php
 /*******
  * @package xbArticleManager
- * file administrator/components/com_xbarticleman/models/articles.php
- * @version 1.0.0.0 22nd January 2019
+ * file administrator/components/com_xbarticleman/models/arttags.php
+ * @version 2.0.1.0 4th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
@@ -11,7 +11,7 @@ defined('_JEXEC') or die;
 
 use Joomla\Utilities\ArrayHelper;
 
-class XbarticlemanModelArticles extends JModelList
+class XbarticlemanModelArttags extends JModelList
 {
 	public function __construct($config = array())
 	{

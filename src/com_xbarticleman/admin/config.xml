@@ -11,7 +11,7 @@
 			It provides for icons to indicate external link in same tab, external link in new tab
 			and internal link in new tab. Disable if template already provides this site wide"
 			class="btn-group btn-group-yesno"
- 			default="1"
+ 			default="0"
 			>
 			<option value="0" >Disable</option>
 			<option value="1">Site &amp; Admin</option>
@@ -28,32 +28,31 @@
 	</fieldset>
 <!-- BEER TAB -->
 	<fieldset name="reg"
-			label="XBAOY_BEER_LABEL"
-			description="XBAOY_BEER_DESC"
+			label="XB_BEER_LABEL"
+			description="XB_BEER_DESC"
 	>
   		<field name="beernote" type="note"
-			label="XBAOY_BEER_NOTE"
-			description="XBAOY_CONFIG_BEER_LINK"
+			label="XB_BEER_NOTE"
+			description="XB_BEER_LINK"
 			class="info"
 		/>	
 		<field name="roger_beer" type="password"
-			label="XBAOY_BEER_FIELD" description="XBAOY_BEER_FIELD_DESC"
+			label="XB_BEER_FIELD" description="XB_BEER_FIELD_DESC"
 			default=""
 		/>	
 		<field name="beernote2" type="note"
-			label="XBAOY_PAY_AT_THE_BAR"
-			description="XBAOY_BEER_FORM"
-			class="center"
+			label="XB_PAY_AT_THE_BAR"
+			description="XB_BEER_FORM"			
 		/>
 		<field name="penpont" type="hidden"
 			default="$2y$10$DeCwB16giLjgL7HgM1RDSeHROFs7QQef2dBQ9jEKehiTGj05jbonK" 
 			/>		
 		<field name="othercreditsnote" type="note"
-			label="XBAOY_CONFIG_CREDITS_NOTE"
+			label="XB_CREDITS_NOTE"
 		/>
 		<field name="devtoolsnote" type="note"
-			label="XBAOY_CONFIG_DEV_TOOLS"
-			description="XBAOY_CONFIG_DEV_TOOLS_DESC"
+			label="XB_DEV_TOOLS"
+			description="XB_DEV_TOOLS_DESC"
 		/>
 	</fieldset>		
 

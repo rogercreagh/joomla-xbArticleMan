@@ -1,15 +1,15 @@
 <?php
 /*******
  * @package xbArticleManager
- * file administrator/components/com_xbarticleman/views/articles/view.html.php
- * @version 1.0.0.0 22nd January 2019
+ * file administrator/components/com_xbarticleman/views/arttags/view.html.php
+ * @version 2.0.1.0 4th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
  ******/
  defined('_JEXEC') or die();
 
- class XbarticlemanViewArticles extends JViewLegacy
+ class XbarticlemanViewArttags extends JViewLegacy
 {
     protected $items;
     protected $pagination;
@@ -28,7 +28,7 @@
 	    JLoader::register('TagsHelperRoute', JPATH_BASE . '/components/com_tags/helpers/route.php');
 	    if ($this->getLayout() !== 'modal')
 		{
-			XbarticlemanHelper::addSubmenu('articles');
+			XbarticlemanHelper::addSubmenu('arttags');
 		}
 
 		$this->items         = $this->get('Items');
@@ -61,7 +61,7 @@
 		// Get the toolbar object instance
 		$bar = JToolbar::getInstance('toolbar');
 
-		JToolbarHelper::title(JText::_('XBARTMAN_ARTICLES_TITLE'), 'stack article');
+		JToolbarHelper::title(JText::_('XBARTMAN_ADMIN_ARTTAGS_TITLE'), 'stack article');
 
 		if ($canDo->get('core.create') || count($user->getAuthorisedCategories('com_xbarticleman', 'core.create')) > 0)
 		{

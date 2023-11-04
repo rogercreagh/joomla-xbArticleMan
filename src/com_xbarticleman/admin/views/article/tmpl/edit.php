@@ -96,4 +96,7 @@ JFactory::getDocument()->addScriptDeclaration('
 		<input type="hidden" name="retview" value="<?php echo $input->getCmd('retview'); ?>" />
 
 </form>
+
+<div class="clearfix"></div>
+<?php echo XbarticlemanHelper::credit('xbArticleMan');?>
 	

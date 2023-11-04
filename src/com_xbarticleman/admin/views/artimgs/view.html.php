@@ -66,19 +66,19 @@
 
 		if ($canDo->get('core.create') || count($user->getAuthorisedCategories('com_xbarticleman', 'core.create')) > 0)
 		{
-			JToolbarHelper::addNew('articles.newArticle');
+			JToolbarHelper::addNew('arttags.newArticle');
 		}
 
 		if ($canDo->get('core.edit') || $canDo->get('core.edit.own'))
 		{
 		    JToolbarHelper::editList('article.edit','Edit Tags Links');
-		    JToolbarHelper::editList('articles.fullEdit','Full Edit');
+		    JToolbarHelper::editList('arttags.fullEdit','Full Edit');
 		}
 
 		if ($canDo->get('core.edit.state'))
 		{
-			JToolbarHelper::publish('articles.publish', 'JTOOLBAR_PUBLISH', true);
-			JToolbarHelper::unpublish('articles.unpublish', 'JTOOLBAR_UNPUBLISH', true);
+			JToolbarHelper::publish('arttags.publish', 'JTOOLBAR_PUBLISH', true);
+			JToolbarHelper::unpublish('arttags.unpublish', 'JTOOLBAR_UNPUBLISH', true);
 		}
 
 		// Add a batch button
@@ -97,11 +97,11 @@
 
 		if ($this->state->get('filter.published') == -2 && $canDo->get('core.delete'))
 		{
-			JToolbarHelper::deleteList('JGLOBAL_CONFIRM_DELETE', 'articles.delete', 'JTOOLBAR_EMPTY_TRASH');
+			JToolbarHelper::deleteList('JGLOBAL_CONFIRM_DELETE', 'arttags.delete', 'JTOOLBAR_EMPTY_TRASH');
 		}
 		elseif ($canDo->get('core.edit.state'))
 		{
-			JToolbarHelper::trash('articles.trash');
+			JToolbarHelper::trash('arttags.trash');
 		}
 
 		if ($user->authorise('core.admin', 'com_xbarticleman') || $user->authorise('core.options', 'com_xbarticleman'))

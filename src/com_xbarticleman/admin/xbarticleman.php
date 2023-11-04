@@ -2,7 +2,7 @@
 /*******
  * @package xbArticleMan
  * file administrator/components/com_xbarticleman/controller.php
- * @version 1.0.9.0 8th March 2023
+ * @version 2.0.1.0 4th November 2023
  * @since 0.1.0.0 22nd January 2019
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2013
@@ -10,15 +10,31 @@
  ******/
 defined('_JEXEC') or die();
 
-if (!JFactory::getUser()->authorise('core.manage', 'com_xbarticleman')) 
+use Joomla\CMS\Component\ComponentHelper;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Uri\Uri;
+
+if (!Factory::getUser()->authorise('core.manage', 'com_xbarticleman')) 
 {
-    throw new JAccessExceptionNotallowed(JText::_('JERROR_ALERTNOAUTHOR'), 403);
+//    throw new JAccessExceptionNotallowed(JText::_('JERROR_ALERTNOAUTHOR'), 403);
+    Factory::getApplication()->enqueueMessage(Text::_('JERROR_ALERTNOAUTHOR'),'warning');
+    return false;
+    
 }
 
-JLoader::register('XbarticlemanHelper', __DIR__ . '/helpers/xbarticleman.php');
+$params = ComponentHelper::getParams('com_xbaoy');
+$document = Factory::getDocument();
+$cssPath = Uri::root(true)."/media/com_xbarticleman/css/";
+$document->addStyleSheet($cssPath.'xbarticleman.css');
+if (($params->get('extlinkhint',1) == 1) || ($params->get('extlinkhint') == 3)) {
+    $document->addStyleSheet($cssPath. 'xbextlinks.css', array('version'=>'auto'));
+}
+
+JLoader::register('XbarticlemanHelper', JPATH_COMPONENT. '/helpers/xbarticleman.php');
 
 $controller = JControllerLegacy::getInstance('xbarticleman');
 
-$controller->execute(JFactory::getApplication()->input->get('task'));
+$controller->execute(Factory::getApplication()->input->get('task'));
 
 $controller->redirect();

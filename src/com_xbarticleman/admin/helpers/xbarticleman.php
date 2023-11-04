@@ -2,7 +2,7 @@
 /*******
  * @package xbArticleManager
  * file administrator/components/com_xbarticleman/helpers/xbarticleman.php
- * @version 2.0.0.1 3rd November 2023
+ * @version 2.0.1.0 4th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
@@ -43,8 +43,8 @@ class XbarticlemanHelper extends ComponentHelper
 	public static function addSubmenu($vName) {
 		JHtmlSidebar::addEntry(
 			Text::_('XBARTMAN_ICONMENU_ARTTAGS'),
-			'index.php?option=com_xbarticleman&view=articles',
-			$vName == 'articles'
+			'index.php?option=com_xbarticleman&view=arttags',
+			$vName == 'arttags'
 		);
 		JHtmlSidebar::addEntry(
 		    Text::_('XBARTMAN_ICONMENU_ARTLINKS'),
@@ -404,8 +404,8 @@ class XbarticlemanHelper extends ComponentHelper
 	        $xmldata = Installer::parseXMLInstallFile(JPATH_ADMINISTRATOR.'/components/com_'.$lext.'/'.$lext.'.xml');
 	        $credit .= '<a href="http://crosborne.uk/'.$lext.'" target="_blank">'
 	            .$ext.' Component '.$xmldata['version'].' '.$xmldata['creationDate'].'</a>';
-	            $credit .= '<br />'.Text::_('XBAOY_BEER_TAG');
-	            $credit .= Text::_('XBAOY_BEER_FORM');
+	            $credit .= '<br />'.Text::_('XB_BEER_TAG');
+	            $credit .= Text::_('XB_BEER_FORM');
 	    } else {
 	        $credit .= $ext.' by <a href="http://crosborne.uk/'.$lext.'" target="_blank">CrOsborne</a>';
 	    }

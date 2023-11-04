@@ -1,8 +1,8 @@
 <?php
 /*******
  * @package xbArticleManager
- * file administrator/components/com_xbarticleman/controllers/articles.php
- * @version 1.0.0.0 22nd January 2019
+ * file administrator/components/com_xbarticleman/controllers/arttags.php
+ * @version 2.0.1.0 4th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
@@ -11,7 +11,7 @@ defined('_JEXEC') or die;
 
 use Joomla\Utilities\ArrayHelper;
 
-class XbarticlemanControllerArticles extends JControllerAdmin
+class XbarticlemanControllerArttags extends JControllerAdmin
 {
 	public function __construct($config = array())
 	{
@@ -36,7 +36,7 @@ class XbarticlemanControllerArticles extends JControllerAdmin
 	    $this->setRedirect(JRoute::_('index.php?option=com_content&&task=article.edit&id='.$fid, false));
 	}
 	
-	public function getModel($name = 'Article', $prefix = 'XbarticlemanModel', $config = array('ignore_request' => true))
+	public function getModel($name = 'Arttags', $prefix = 'XbarticlemanModel', $config = array('ignore_request' => true))
 	{
 		return parent::getModel($name, $prefix, $config);
 	}

@@ -343,3 +343,6 @@ if ($saveOrder)
 		<?php echo JHtml::_('form.token'); ?>
 	</div>
 </form>
+
+<div class="clearfix"></div>
+<?php echo XbarticlemanHelper::credit('xbArticleMan');?>

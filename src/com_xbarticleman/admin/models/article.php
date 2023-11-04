@@ -2,7 +2,7 @@
 /*******
  * @package xbArticleManager
  * file administrator/components/com_xbarticleman/models/article.php
- * @version 1.0.0.0 22nd January 2019
+ * @version 2.0.1.0 4th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -410,7 +410,7 @@ class XbarticlemanModelArticle extends JModelAdmin
 			// Pre-select some filters (Status, Category, Language, Access) in edit form if those have been selected in Article Manager: Articles
 			if ($this->getState('article.id') == 0)
 			{
-				$filters = (array) $app->getUserState('com_xbarticleman.articles.filter');
+				$filters = (array) $app->getUserState('com_xbarticleman.arttags.filter');
 				$data->set(
 					'state',
 					$app->input->getInt(

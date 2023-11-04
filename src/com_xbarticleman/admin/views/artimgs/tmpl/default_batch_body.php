@@ -1,7 +1,7 @@
 <?php
 /*******
  * @package xbArticleMan Component
- * file administrator/components/com_xbarticleman/views/articles/tmpl/default_batch_body.php
+ * file administrator/components/com_xbarticleman/views/arttags/tmpl/default_batch_body.php
  * @version 1.0.0.0 16th January 2019
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019

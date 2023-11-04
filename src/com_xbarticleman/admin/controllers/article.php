@@ -2,7 +2,7 @@
 /*******
  * @package xbArticleManager
  * file administrator/components/com_xbarticleman/controllers/article.php
- * @version 1.0.0.0 27th January 2019
+ * @version 2.0.1.0 4th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -69,7 +69,7 @@ class XbarticlemanControllerArticle extends JControllerForm
         $model = $this->getModel('Article', '', array());
         
         // Preset the default redirect
-        $this->setRedirect(JRoute::_('index.php?option=com_xbarticleman&view=articles' . $this->getRedirectToListAppend(), false));
+        $this->setRedirect(JRoute::_('index.php?option=com_xbarticleman&view=arttags' . $this->getRedirectToListAppend(), false));
         
         return parent::batch($model);
     }

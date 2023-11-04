@@ -2,7 +2,7 @@
 /*******
  * @package xbArticleManager
  * file administrator/components/com_xbarticleman/controller.php
- * @version 1.0.9.0 8th March 2023
+ * @version 2.0.1.0 4th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
@@ -10,7 +10,8 @@
  defined('_JEXEC') or die();
 
 class XbarticlemanController extends JControllerLegacy {
-	protected $default_view = 'articles';
+
+    protected $default_view = 'arttags';
 	
 	public function __construct($config = array())
 	{	    
@@ -18,9 +19,9 @@ class XbarticlemanController extends JControllerLegacy {
 	}
 	
 	public function display ($cachable = false, $urlparms = false){
-		require_once JPATH_COMPONENT.'/helpers/xbarticleman.php';
+//		require_once JPATH_COMPONENT.'/helpers/xbarticleman.php';
 		
-		$view 	= $this->input->get('view', 'articles');
+		$view 	= $this->input->get('view', 'arttags');
 		$layout	= $this->input->get('layout', 'default');
 		$id 	= $this->input->getInt('id');
 		if ($view == 'article' && $layout == 'edit' && !$this->checkEditId('com_xbarticleman.edit.article', $id))
