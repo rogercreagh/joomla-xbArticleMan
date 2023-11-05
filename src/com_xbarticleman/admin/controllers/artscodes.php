@@ -1,7 +1,7 @@
 <?php
 /*******
  * @package xbArticleManager
- * file administrator/components/com_xbarticleman/controllers/shortcodes.php
+ * file administrator/components/com_xbarticleman/controllers/artscodes.php
  * @version 2.0.0.0 1st November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
@@ -11,7 +11,7 @@ defined('_JEXEC') or die;
 
 use Joomla\Utilities\ArrayHelper;
 
-class XbarticlemanControllerShortcodes extends JControllerAdmin
+class XbarticlemanControllerArtscodes extends JControllerAdmin
 {
 	public function __construct($config = array())
 	{

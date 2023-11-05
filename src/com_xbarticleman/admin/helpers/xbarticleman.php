@@ -58,8 +58,8 @@ class XbarticlemanHelper extends ComponentHelper
 		    );
 		JHtmlSidebar::addEntry(
 		    Text::_('XBARTMAN_ICONMENU_SHORTCODES'),
-		    'index.php?option=com_xbarticleman&view=shortcodes',
-		    $vName == 'shortcodes'
+		    'index.php?option=com_xbarticleman&view=artscodes',
+		    $vName == 'artscodes'
 		    );
 		JHtmlSidebar::addEntry(Text::_('XBARTMAN_SUBMENU_OTHERVIEWS'));
 		JHtmlSidebar::addEntry(
@@ -242,7 +242,7 @@ class XbarticlemanHelper extends ComponentHelper
 	    
 	    $scodes = array();
 	    /**
-	     * check for self closed shortcodes and get params
+	     * check for self closed artscodes and get params
 	     * {([[:alpha:]].+?)((\s.*?)*)}([^{]*) with global flag
 	     * {([[:alpha:]]+)(\s?.*?)} for just the first
 	     * {([[:alpha:]]+)(\s?.*?)}(?:(.*?){\/(?1))? makes the tail optional

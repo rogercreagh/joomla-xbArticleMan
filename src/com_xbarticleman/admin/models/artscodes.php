@@ -1,7 +1,7 @@
 <?php
 /*******
  * @package xbArticleManager
- * file administrator/components/com_xbarticleman/models/shortcodes.php
+ * file administrator/components/com_xbarticleman/models/artscodes.php
  * @version 2.0.0.0 2nd November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
@@ -12,7 +12,7 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Factory;
 use Joomla\Utilities\ArrayHelper;
 
-class XbarticlemanModelShortcodes extends JModelList
+class XbarticlemanModelArtscodes extends JModelList
 
 //poss regex for mysql
 //SELECT `id`, `introtext` FROM `n6vbq_content` WHERE `introtext` REGEXP '{(\\w+).*}.*{/(\\1)}';
@@ -277,7 +277,7 @@ class XbarticlemanModelShortcodes extends JModelList
         $items  = parent::getItems();
         if ($items) {
             foreach ($items as $item) {
-                $item->shortcodes = XbarticlemanHelper::getDocShortcodes($item->arttext);
+                $item->artscodes = XbarticlemanHelper::getDocShortcodes($item->arttext);
             }
         }
         return $items;

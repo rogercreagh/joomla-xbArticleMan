@@ -309,12 +309,18 @@ class XbarticlemanModelArttags extends JModelList
 
 		if ($hasTag)
 		{
+		} //we'll always join to tagmap as we want only articles with tags
 			$query->join('LEFT', $db->quoteName('#__contentitem_tag_map', 'tagmap')
 				. ' ON ' . $db->quoteName('tagmap.content_item_id') . ' = ' . $db->quoteName('a.id')
 				. ' AND ' . $db->quoteName('tagmap.type_alias') . ' = ' . $db->quote('com_content.article')
 			);
-		}
-
+		//only published tags
+        $query->join('LEFT', $db->qn('#__tags', 't').' ON '.$db->qn('t.id').' = '.$db->qn('tagmap.tag_id'));
+        $query->where($db->qn('t.published').' = 1');
+        
+        //
+        $query->group('a.id');
+        
 		// Add the list ordering clause.
 		$orderCol  = $this->state->get('list.ordering', 'a.id');
 		$orderDirn = $this->state->get('list.direction', 'DESC');

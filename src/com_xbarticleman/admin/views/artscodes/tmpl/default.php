@@ -1,7 +1,7 @@
 <?php
 /*******
  * @package xbarticleman
- * file administrator/components/com_xbarticleman/views/shortcodes/tmpl/default.php
+ * file administrator/components/com_xbarticleman/views/artscodes/tmpl/default.php
  * @version 2.0.0.2 3rd November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
@@ -61,7 +61,7 @@ if ($saveOrder)
 }
 
 ?>
-<form action="<?php echo Route::_('index.php?option=com_xbarticleman&view=shortcodes'); ?>" method="post" name="adminForm" id="adminForm">
+<form action="<?php echo Route::_('index.php?option=com_xbarticleman&view=artscodes'); ?>" method="post" name="adminForm" id="adminForm">
 
 <?php if (!empty( $this->sidebar)) : ?>
 	<div id="j-sidebar-container" class="span2">
@@ -72,7 +72,7 @@ if ($saveOrder)
 	<div id="j-main-container">
 <?php endif; ?>
 		<h3><?php echo Text::_('Articles with Shortcodes')?></h3>
-		<h4> Found <?php count($this->sccnts); ?> distinct shortcodes across <?php echo $this->pagination->total; ?> articles from <?php echo XbarticlemanHelper::getItemCnt('#__content'); ?> total articles</h4>
+		<h4> Found <?php count($this->sccnts); ?> distinct artscodes across <?php echo $this->pagination->total; ?> articles from <?php echo XbarticlemanHelper::getItemCnt('#__content'); ?> total articles</h4>
     	<ul class="inline">
     		<li><i>Counts for each type:</i></li>
     		<?php foreach ($this->sccnts as $key=>$cnt) {
@@ -111,7 +111,7 @@ if ($saveOrder)
 				<col style="width:55px;"><!-- status -->
 				<col ><!-- title, -->
 				<col style="width:250px;"><!-- summary -->
-				<col ><!-- shortcodes -->
+				<col ><!-- artscodes -->
 				<col class="nowrap hidden-phone" style="width:110px;" ><!-- date -->
 				<col class="nowrap hidden-phone" style="width:45px;"><!-- id -->
 			</colgroup>	
@@ -164,7 +164,7 @@ if ($saveOrder)
 //					$canEditParCat    = $user->authorise('core.edit',       'com_xbarticleman.category.' . $item->parent_category_id);
 //					$canEditOwnParCat = $user->authorise('core.edit.own',   'com_xbarticleman.category.' . $item->parent_category_id) && $item->parent_category_uid == $userId;
 					//$helper = new XbarticlemanHelper;
-					$scodes = $item->shortcodes; //XbarticlemanHelper::getDocShortcodes($item->arttext);
+					$scodes = $item->artscodes; //XbarticlemanHelper::getDocShortcodes($item->arttext);
 					//$tags = $helper->getItemTags('com_content.article',$item->id);
 					?>
 					<tr class="row<?php echo $i % 2; ?>" sortable-group-id="<?php echo $item->catid; ?>">
@@ -255,7 +255,7 @@ if ($saveOrder)
 						</td>
 						<td>
 							<details>
-								<summary><b><?php echo count($scodes); ?></b> shortcodes in article. 
+								<summary><b><?php echo count($scodes); ?></b> artscodes in article. 
                             		<?php foreach ($item->thiscnts as $key=>$cnt) {
                             		    echo '<span style="display:inline-block;margin-right:10px;"><b>'.$key.'</b> : '.$cnt.'</span>';
                             		}?>

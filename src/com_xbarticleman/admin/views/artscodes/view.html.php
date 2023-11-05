@@ -1,7 +1,7 @@
 <?php
 /*******
  * @package xbArticleMan
- * file administrator/components/com_xbarticleman/views/shortcodes/view.html.php
+ * file administrator/components/com_xbarticleman/views/artscodes/view.html.php
  * @version 2.0.0.1 3rd November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
@@ -14,7 +14,7 @@
  use Joomla\CMS\Toolbar\ToolbarHelper;
  use Joomla\CMS\Language\Text;
  
- class XbarticlemanViewShortcodes extends JViewLegacy
+ class XbarticlemanViewArtscodes extends JViewLegacy
 {
     protected $items;
     protected $pagination;
@@ -34,7 +34,7 @@
 	   // JLoader::register('TagsHelperRoute', JPATH_BASE . '/components/com_tags/helpers/route.php');
 //	    if ($this->getLayout() !== 'modal')
 //		{
-			XbarticlemanHelper::addSubmenu('shortcodes');
+			XbarticlemanHelper::addSubmenu('artscodes');
 //		}
 
 		$this->items         = $this->get('Items');
@@ -51,7 +51,7 @@
 
         $this->sccnts = array();
 		foreach ($this->items as $item) {
-		    $item->thiscnts = array_count_values(array_column($item->shortcodes,1));		    
+		    $item->thiscnts = array_count_values(array_column($item->artscodes,1));		    
 		    foreach($item->thiscnts as $key => $value) {
 		        if (isset($this->sccnts[$key])) {
 		            $this->sccnts[$key] += $value;
