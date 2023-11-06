@@ -9,13 +9,19 @@
  ******/
  defined('_JEXEC') or die();
 
+ use Joomla\CMS\Factory;
+ use Joomla\CMS\Layout\FileLayout;
+ use Joomla\CMS\Toolbar\Toolbar;
+ use Joomla\CMS\Toolbar\ToolbarHelper;
+ use Joomla\CMS\Language\Text;
+ 
  class XbarticlemanViewArttags extends JViewLegacy
 {
     protected $items;
     protected $pagination;
     protected $state;
     protected $categories;
-    protected $tags;
+    protected $alltags;
      
 	public $filterForm;
 
@@ -26,29 +32,26 @@
 	public function display($tpl = null)
 	{	    
 	    JLoader::register('TagsHelperRoute', JPATH_BASE . '/components/com_tags/helpers/route.php');
-	    if ($this->getLayout() !== 'modal')
-		{
-			XbarticlemanHelper::addSubmenu('arttags');
-		}
+
+	    XbarticlemanHelper::addSubmenu('arttags');
 
 		$this->items         = $this->get('Items');
 		$this->pagination    = $this->get('Pagination');
 		$this->state         = $this->get('State');
 		$this->filterForm    = $this->get('FilterForm');
 		$this->activeFilters = $this->get('ActiveFilters');
-
+		$tags = $this->get('Tags');
+		$this->alltags = array_count_values(array_column($tags,'title'));
+		$this->taggedarticles=count(array_count_values(array_column($tags, 'artid')));
+		
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))
 		{
 			throw new Exception(implode("\n", $errors), 500);
 		}
 
-		// We don't need toolbar in the modal window.
-		if ($this->getLayout() !== 'modal')
-		{
-			$this->addToolbar();
-			$this->sidebar = JHtmlSidebar::render();
-		}
+		$this->addToolbar();
+		$this->sidebar = JHtmlSidebar::render();
 
 		return parent::display($tpl);
 	}
@@ -56,28 +59,28 @@
 	protected function addToolbar()
 	{
 		$canDo = XbarticlemanHelper::getActions();
-		$user  = JFactory::getUser();
+		$user  = Factory::getUser();
 
 		// Get the toolbar object instance
-		$bar = JToolbar::getInstance('toolbar');
+		$bar = Toolbar::getInstance('toolbar');
 
-		JToolbarHelper::title(JText::_('XBARTMAN_ADMIN_ARTTAGS_TITLE'), 'stack article');
+		ToolbarHelper::title(JText::_('XBARTMAN_ADMIN_ARTTAGS_TITLE'), 'stack article');
 
 		if ($canDo->get('core.create') || count($user->getAuthorisedCategories('com_xbarticleman', 'core.create')) > 0)
 		{
-			JToolbarHelper::addNew('articles.newArticle');
+			ToolbarHelper::addNew('articles.newArticle');
 		}
 
 		if ($canDo->get('core.edit') || $canDo->get('core.edit.own'))
 		{
-		    JToolbarHelper::editList('article.edit','Edit - tags & links');
-		    JToolbarHelper::editList('articles.fullEdit','Full Edit');
+		    ToolbarHelper::editList('article.edit','Edit - tags & links');
+		    ToolbarHelper::editList('articles.fullEdit','Full Edit');
 		}
 
 		if ($canDo->get('core.edit.state'))
 		{
-			JToolbarHelper::publish('articles.publish', 'JTOOLBAR_PUBLISH', true);
-			JToolbarHelper::unpublish('articles.unpublish', 'JTOOLBAR_UNPUBLISH', true);
+			ToolbarHelper::publish('articles.publish', 'JTOOLBAR_PUBLISH', true);
+			ToolbarHelper::unpublish('articles.unpublish', 'JTOOLBAR_UNPUBLISH', true);
 		}
 
 		// Add a batch button
@@ -88,7 +91,7 @@
 			$title = JText::_('JTOOLBAR_BATCH');
 
 			// Instantiate a new JLayoutFile instance and render the batch button
-			$layout = new JLayoutFile('joomla.toolbar.batch');
+			$layout = new FileLayout('joomla.toolbar.batch');
 
 			$dhtml = $layout->render(array('title' => $title));
 			$bar->appendButton('Custom', $dhtml, 'batch');
@@ -96,19 +99,19 @@
 
 		if ($this->state->get('filter.published') == -2 && $canDo->get('core.delete'))
 		{
-			JToolbarHelper::deleteList('JGLOBAL_CONFIRM_DELETE', 'articles.delete', 'JTOOLBAR_EMPTY_TRASH');
+			ToolbarHelper::deleteList('JGLOBAL_CONFIRM_DELETE', 'articles.delete', 'JTOOLBAR_EMPTY_TRASH');
 		}
 		elseif ($canDo->get('core.edit.state'))
 		{
-			JToolbarHelper::trash('articles.trash');
+			ToolbarHelper::trash('articles.trash');
 		}
 
 		if ($user->authorise('core.admin', 'com_xbarticleman') || $user->authorise('core.options', 'com_xbarticleman'))
 		{
-			JToolbarHelper::preferences('com_xbarticleman');
+			ToolbarHelper::preferences('com_xbarticleman');
 		}
 
-		JToolbarHelper::help('JHELP_CONTENT_ARTICLE_MANAGER');
+		ToolbarHelper::help('JHELP_CONTENT_ARTICLE_MANAGER');
 	}
 
 	protected function getSortFields()

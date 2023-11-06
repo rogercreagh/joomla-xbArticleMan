@@ -2,12 +2,12 @@
 <extension method="upgrade" type="component" version="3.0">
 	<name>xbarticleman</name>
 	<author>Roger C-O</author>
-	<creationDate>4th November 2023</creationDate>
+	<creationDate>5th November 2023</creationDate>
 	<authorEmail>roger@crosborne.co.uk</authorEmail>
 	<authorUrl>www.crosborne.uk</authorUrl>
 	<copyright>(C) Roger Creagh-Osborne, 2023</copyright>
 	<license>GNU/GPL</license>
-	<version>2.0.2.1</version>
+	<version>2.0.3.0</version>
 	<description>XBARTMAN_XML_DESCRIPTION</description>
 
 	<scriptfile>script.xbarticleman.php</scriptfile>	
@@ -42,7 +42,7 @@
 
 		<menu img="class:xbarticlemanager">XBARTMAN_MENU</menu>
 		<submenu>
-			<menu link="option=com_xbarticleman" >
+			<menu link="option=com_xbarticleman;view=arttags" >
 				xbartman_iconmenu_arttags
 			</menu>
 			<menu link="option=com_xbarticleman&amp;view=artlinks" >

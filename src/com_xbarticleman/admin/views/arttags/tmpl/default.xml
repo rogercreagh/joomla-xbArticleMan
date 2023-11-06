@@ -10,6 +10,7 @@
 		<fieldset name="request"
 			addfieldpath="/administrator/components/com_categories/models/fields"
 		>
+				
 			<field
 				name="filter_category_id"
 				type="modal_category"
@@ -56,6 +57,7 @@
 				description="COM_MENUS_ADMIN_TAGS_DESC"
 				multiple="true"
 				filter="int_array"
+				showon="artlist!:2"
 			/>
 
 			<field

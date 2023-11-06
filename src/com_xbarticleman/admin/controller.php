@@ -29,7 +29,7 @@ class XbarticlemanController extends JControllerLegacy {
 			// Somehow the person just went to the form - we don't allow that.
 			$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $id));
 			$this->setMessage($this->getError(), 'error');
-			$this->setRedirect(JRoute::_('index.php?option=com_xbarticleman&view=xbarticleman', false));
+			$this->setRedirect(JRoute::_('index.php?option=com_xbarticleman&view=arttags', false));
 
 			return false;
 		}

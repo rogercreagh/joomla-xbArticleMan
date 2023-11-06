@@ -8,6 +8,7 @@
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
  ******/
 defined('_JEXEC') or die;
+
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
@@ -72,7 +73,7 @@ if ($saveOrder)
 	<div id="j-main-container">
 <?php endif; ?>
 		<h3><?php echo Text::_('Articles with Shortcodes')?></h3>
-		<h4> Found <?php count($this->sccnts); ?> distinct artscodes across <?php echo $this->pagination->total; ?> articles from <?php echo XbarticlemanHelper::getItemCnt('#__content'); ?> total articles</h4>
+		<h4> Found <?php count($this->sccnts); ?> distinct shortcodes across <?php echo $this->pagination->total; ?> articles from <?php echo XbarticlemanHelper::getItemCnt('#__content'); ?> total articles</h4>
     	<ul class="inline">
     		<li><i>Counts for each type:</i></li>
     		<?php foreach ($this->sccnts as $key=>$cnt) {

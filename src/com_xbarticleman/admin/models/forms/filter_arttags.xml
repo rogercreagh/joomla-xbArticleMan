@@ -9,6 +9,15 @@
 			hint="JSEARCH_FILTER"
 		/>
 
+			<field name="artlist" type="list"
+				label="List type"
+				description="What items to include in list before filtering"
+				default="1"
+			>
+				<option value="0">All Articles</option>
+				<option value="1">Articles with tags</option>
+				<option value="2">Articles without tags</option>				
+			</field>
 		<field
 			name="published"
 			type="status"

@@ -10,6 +10,7 @@
  defined('_JEXEC') or die();
 
  use Joomla\CMS\Factory;
+ use Joomla\CMS\Layout\FileLayout;
  use Joomla\CMS\Toolbar\Toolbar;
  use Joomla\CMS\Toolbar\ToolbarHelper;
  use Joomla\CMS\Language\Text;
@@ -29,13 +30,9 @@
 
 	protected $sidebar;
 
-	public function display($tpl = null)
-	{	    
-	   // JLoader::register('TagsHelperRoute', JPATH_BASE . '/components/com_tags/helpers/route.php');
-//	    if ($this->getLayout() !== 'modal')
-//		{
-			XbarticlemanHelper::addSubmenu('artscodes');
-//		}
+	public function display($tpl = null) {	    
+
+	    XbarticlemanHelper::addSubmenu('artscodes');
 
 		$this->items         = $this->get('Items');
 		$this->pagination    = $this->get('Pagination');
@@ -101,7 +98,7 @@
 			$title = JText::_('JTOOLBAR_BATCH');
 
 			// Instantiate a new JLayoutFile instance and render the batch button
-			$layout = new JLayoutFile('joomla.toolbar.batch');
+			$layout = new FileLayout('joomla.toolbar.batch');
 
 			$dhtml = $layout->render(array('title' => $title));
 			$bar->appendButton('Custom', $dhtml, 'batch');

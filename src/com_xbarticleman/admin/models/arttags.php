@@ -10,6 +10,7 @@
 defined('_JEXEC') or die;
 
 use Joomla\Utilities\ArrayHelper;
+use Joomla\CMS\Factory;
 
 class XbarticlemanModelArttags extends JModelList
 {
@@ -58,7 +59,7 @@ class XbarticlemanModelArttags extends JModelList
 	 */
 	protected function populateState($ordering = 'a.id', $direction = 'desc')
 	{
-		$app = JFactory::getApplication();
+		$app = Factory::getApplication();
 
 		// Adjust the context to support modal layouts.
 		if ($layout = $app->input->get('layout'))
@@ -140,7 +141,7 @@ class XbarticlemanModelArttags extends JModelList
 		// Create a new query object.
 		$db    = $this->getDbo();
 		$query = $db->getQuery(true);
-		$user  = JFactory::getUser();
+		$user  = Factory::getUser();
 
 		// Select the required fields from the table.
 		$query->select(
@@ -334,32 +335,21 @@ class XbarticlemanModelArttags extends JModelList
 		return $query;
 	}
 
-	/**
-	 * Build a list of authors
-	 *
-	 * @return  stdClass
-	 *
-	 * @since   1.6
-	 *
-	 * @deprecated  4.0  To be removed with Hathor
-	 */
-	public function getAuthors()
-	{
-		// Create a new query object.
-		$db    = $this->getDbo();
-		$query = $db->getQuery(true);
-
-		// Construct the query
-		$query->select('u.id AS value, u.name AS text')
-			->from('#__users AS u')
-			->join('INNER', '#__content AS c ON c.created_by = u.id')
-			->group('u.id, u.name')
-			->order('u.name');
-
-		// Setup the query
-		$db->setQuery($query);
-
-		// Return the result
-		return $db->loadObjectList();
+	public function getTags() {
+	    $db    = $this->getDbo();
+	    $query = $db->getQuery(true);
+	    
+	    $query->select('t.title AS title, tm.content_item_id AS artid')
+	    ->from($db->qn('#__contentitem_tag_map').' AS tm')
+	    ->join('LEFT', $db->qn('#__tags').' AS t ON t.id = tm.tag_id')
+	    ->where($db->qn('type_alias').' = '.$db->q('com_content.article'));
+	    
+	    // Setup the query
+	    $db->setQuery($query);
+	    
+	    // Return the result
+	    $res = $db->loadObjectList();
+	    
+	    return $res;
 	}
 }
