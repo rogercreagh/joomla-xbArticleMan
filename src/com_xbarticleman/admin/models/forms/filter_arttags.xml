@@ -9,15 +9,16 @@
 			hint="JSEARCH_FILTER"
 		/>
 
-			<field name="artlist" type="list"
-				label="List type"
-				description="What items to include in list before filtering"
-				default="1"
-			>
-				<option value="0">All Articles</option>
-				<option value="1">Articles with tags</option>
-				<option value="2">Articles without tags</option>				
-			</field>
+		<field name="artlist" type="list"
+			label="List type"
+			description="What items to include in list before filtering"
+			default="1"
+			onchange="this.form.submit();"
+		>
+			<option value="0">All Articles</option>
+			<option value="1">Articles with tags</option>
+			<option value="2">Articles without tags</option>				
+		</field>
 		<field
 			name="published"
 			type="status"
@@ -55,20 +56,28 @@
 		</field>
 		
 		<field
-			name="tag"
-			type="tag"
+			name="tagfilt" type="tag"
 			label="JOPTION_FILTER_TAG"
 			description="JOPTION_FILTER_TAG_DESC"
 			multiple="true"
 			class="multipleTags"
 			mode="nested"
 			onchange="this.form.submit();"
+			showon="artlist!:2"
 		/>
+		<field name="taglogic"
+			type="radio"
+			default="0"
+			label="Multi-tag logic"
+			description="How to combine multiple tags"
+  			class="btn-group btn-small radiotop"
+			showon="artlist!:2"
+		>
+			<option value="1" onchange="this.form.submit();">All</option>
+			<option value="0" onchange="this.form.submit();">Any</option>
+			<option value="2" onchange="this.form.submit();">Exclude</option>
+		</field>	
 		
-		<field name="children" type="radio" default="0" label="Child tags" description="">
-			  <option value="0">Exclude child tags</option>
-			  <option value="1">Include child tags</option>
-		</field>
 		
 
 		<input type="hidden" name="form_submited" value="1"/>

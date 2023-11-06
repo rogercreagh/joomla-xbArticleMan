@@ -63,7 +63,7 @@ if ($saveOrder)
 $assoc = JLanguageAssociations::isEnabled();
 ?>
 
-<form action="<?php echo JRoute::_('index.php?option=com_xbarticleman&view=articles'); ?>" method="post" name="adminForm" id="adminForm">
+<form action="<?php echo JRoute::_('index.php?option=com_xbarticleman&view=arttags'); ?>" method="post" name="adminForm" id="adminForm">
 <?php if (!empty( $this->sidebar)) : ?>
 	<div id="j-sidebar-container" class="span2">
 		<?php echo $this->sidebar; ?>
@@ -76,13 +76,29 @@ $assoc = JLanguageAssociations::isEnabled();
 		<h4> Found <?php echo count($this->alltags); ?> distinct tags across <?php echo $this->taggedarticles; ?> tagged articles from <?php echo XbarticlemanHelper::getItemCnt('#__content'); ?> total articles</h4>
     	<ul class="inline">
     		<li><i>Counts for each type:</i></li>
-    		<?php foreach ($this->alltags as $key=>$cnt) {
-    		    echo '<li><b>'.$key.'</b> : '.$cnt.'</li>';
-    		}?>
+    		<?php foreach ($this->alltags as $key=>$cnt) : ?>
+    		    <li><span class="label label-tag"><?php echo $key.' ('.$cnt.')'; ?></span></li>
+    		<?php endforeach; ?>
     	</ul>
-		<?php
+    	<p><?php echo Text::_('Unfiltered list shows').' ';
+    	if (array_key_exists('artlist', $this->activeFilters)) {
+    	    switch ($this->activeFilters['artlist']) {
+    	    case 2:
+    	        echo $this->pagination->total.' '.Text::_('articles without tags');
+    	       break;
+    	    case 1:
+    	       echo $this->pagination->total.' '.Text::_('tagged articles');
+    	       break;
+    	    default:
+    	       echo Text::_('all articles');
+    	       break;
+    	   }  	    
+    	} else {
+    	    echo $this->pagination->total.' '.Text::_('tagged articles');
+    	}
+
 		// Search tools bar
-		echo JLayoutHelper::render('joomla.searchtools.default', array('view' => $this));
+		echo LayoutHelper::render('joomla.searchtools.default', array('view' => $this));
 		?>
 		<?php if (empty($this->items)) : ?>
 			<div class="alert alert-no-items">
@@ -165,13 +181,13 @@ $assoc = JLanguageAssociations::isEnabled();
 						</td>
 						<td class="center">
 							<div class="btn-group">
-								<?php echo HTMLHelper::_('jgrid.published', $item->state, $i, 'articles.', $canChange, 'cb', $item->publish_up, $item->publish_down); ?>
+								<?php echo HTMLHelper::_('jgrid.published', $item->state, $i, 'arttags.', $canChange, 'cb', $item->publish_up, $item->publish_down); ?>
 								<?php //echo HTMLHelper::_('contentadministrator.featured', $item->featured, $i, $canChange); ?>
 								<?php // Create dropdown items and render the dropdown list.
 								if ($canChange)
 								{
-									HTMLHelper::_('actionsdropdown.' . ((int) $item->state === 2 ? 'un' : '') . 'archive', 'cb' . $i, 'articles');
-									HTMLHelper::_('actionsdropdown.' . ((int) $item->state === -2 ? 'un' : '') . 'trash', 'cb' . $i, 'articles');
+									HTMLHelper::_('actionsdropdown.' . ((int) $item->state === 2 ? 'un' : '') . 'archive', 'cb' . $i, 'arttags');
+									HTMLHelper::_('actionsdropdown.' . ((int) $item->state === -2 ? 'un' : '') . 'trash', 'cb' . $i, 'arttags');
 									echo HTMLHelper::_('actionsdropdown.render', $this->escape($item->title));
 								}
 								?>
@@ -183,7 +199,8 @@ $assoc = JLanguageAssociations::isEnabled();
 									<?php echo HTMLHelper::_('jgrid.checkedout', $i, $item->editor, $item->checked_out_time, 'articles.', $canCheckin); ?>
 								<?php endif; ?>
 								<?php if ($canEdit || $canEditOwn) : ?>
-									<a class="hasTooltip" href="<?php echo JRoute::_('index.php?option=com_xbarticleman&task=article.edit&id=' . $item->id); ?>" title="<?php echo Text::_('JACTION_EDIT').' '.Text::_('tags & links'); ?>">
+									<a class="hasTooltip" href="<?php echo JRoute::_('index.php?option=com_xbarticleman&task=article.edit&id=' . $item->id).'&retview=arttags'; ?>" 
+										title="<?php echo Text::_('JACTION_EDIT').' '.Text::_('tags & links'); ?>">
 										<?php echo $this->escape($item->title); ?></a>
 								<?php else : ?>
 									<span title="<?php echo Text::sprintf('JFIELD_ALIAS_LABEL', $this->escape($item->alias)); ?>"><?php echo $this->escape($item->title); ?></span>
@@ -221,28 +238,28 @@ $assoc = JLanguageAssociations::isEnabled();
 							</div>
 						</td>
 						<td>
-	<div class="tags small">
-	<?php  
-        $founders = []; 
-        foreach ($itemtags as  $tag) :
-            $founder = explode('/',$tag->path)[0];
-            if (!array_key_exists($founder, $founders)) {
-                $founders[$founder] = array('founder'=>$founder,'children'=>[]);
-            }
-            $founders[$founder]['children'][$tag->title] = $tag;
-        endforeach; 
-        ksort($founders);
-        foreach ($founders as $f) { ?>
-			<span>
-				<span class="tagline"><i><?php echo $f["founder"]; ?>:&nbsp; </i></span>
-        		<?php 
-        		ksort($f["children"]);
-                foreach ($f["children"] as $tg) :
-                 //index.php?option=com_tags&task=tag.edit&id=
-                    echo '|<a href="index.php?option=com_content&view=articles&filter[tag]='.$tg->id.'">'.$tg->title.'</a>| ';   		
-                endforeach; ?>
-	    	</span><br />       
-    	<?php } ?>
+                        	<div class="tags small">
+                        	<?php  
+                                $founders = []; 
+                                foreach ($itemtags as  $tag) :
+                                    $founder = explode('/',$tag->path)[0];
+                                    if (!array_key_exists($founder, $founders)) {
+                                        $founders[$founder] = array('founder'=>$founder,'children'=>[]);
+                                    }
+                                    $founders[$founder]['children'][$tag->title] = $tag;
+                                endforeach; 
+                                ksort($founders);
+                                foreach ($founders as $f) { ?>
+                        			<span>
+                        				<span class="tagline"><i><?php echo $f["founder"]; ?>:&nbsp; </i></span>
+                                		<?php 
+                                		ksort($f["children"]);
+                                        foreach ($f["children"] as $tg) :
+                                         //index.php?option=com_tags&task=tag.edit&id=
+                                            echo '<a href="index.php?option=com_content&view=articles&filter[tag]='.$tg->id.'" class="label label-tag">'.$tg->title.'</a> ';   		
+                                        endforeach; ?>
+                        	    	</span><br />       
+                            	<?php } ?>
 	</div>
 						</td>
 						<td class="nowrap small hidden-phone">
