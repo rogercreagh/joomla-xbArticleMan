@@ -2,22 +2,25 @@
 /*******
  * @package xbArticleManager
  * file administrator/components/com_xbarticleman/controllers/article.php
- * @version 2.0.1.0 4th November 2023
+ * @version 2.0.3.3 7th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
  ******/
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\Factory;
 use Joomla\Utilities\ArrayHelper;
+use Joomla\CMS\MVC\Controller\FormController;
 
-class XbarticlemanControllerArticle extends JControllerForm
+class XbarticlemanControllerArticle extends FormController
 {    
     public function __construct($config = array())
     {
         parent::__construct($config);
         
-        //article edit view can be called from articles, artlinks, or artimgs. Default return is articles view
+        //article edit view can be called from articles, artlinks, or artimgs. 
         //override default by calling with retview set to the desired view name
         $ret = $this->input->get('retview');
         if ($ret)
@@ -30,7 +33,7 @@ class XbarticlemanControllerArticle extends JControllerForm
     protected function allowEdit($data = array(), $key = 'id')
     {
         $recordId = (int) isset($data[$key]) ? $data[$key] : 0;
-        $user = JFactory::getUser();
+        $user = Factory::getUser();
         // Zero record (id:0), return FALSE as we don't allow new articles here
         if (!$recordId)
         {
@@ -69,7 +72,7 @@ class XbarticlemanControllerArticle extends JControllerForm
         $model = $this->getModel('Article', '', array());
         
         // Preset the default redirect
-        $this->setRedirect(JRoute::_('index.php?option=com_xbarticleman&view=arttags' . $this->getRedirectToListAppend(), false));
+        $this->setRedirect((string)Uri::getInstance());
         
         return parent::batch($model);
     }

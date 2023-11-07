@@ -1,8 +1,8 @@
 <?php
 /*******
  * @package xbArticleManager
- * file administrator/components/com_xbarticleman/views/articles/tmpl/default.php
- * @version 2.0.3.0 5th November 2023
+ * file administrator/components/com_xbarticleman/views/arttags/tmpl/default.php
+ * @version 2.0.3.3 7th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
@@ -28,6 +28,7 @@ HTMLHelper::_('behavior.multiselect');
 HTMLHelper::_('formbehavior.chosen', '.multipleTags', null, array('placeholder_text_multiple' => Text::_('JOPTION_SELECT_TAG')));
 HTMLHelper::_('formbehavior.chosen', '.multipleCategories', null, array('placeholder_text_multiple' => Text::_('JOPTION_SELECT_CATEGORY')));
 HTMLHelper::_('formbehavior.chosen', 'select');
+HTMLHelper::_('behavior.modal');
 
 $app       = Factory::getApplication();
 $user      = Factory::getUser();
@@ -56,14 +57,13 @@ else
 
 if ($saveOrder)
 {
-	$saveOrderingUrl = 'index.php?option=com_xbarticleman&task=articles.saveOrderAjax&tmpl=component';
+	$saveOrderingUrl = 'index.php?option=com_xbarticleman&task=arttags.saveOrderAjax&tmpl=component';
 	HTMLHelper::_('sortablelist.sortable', 'articleList', 'adminForm', strtolower($listDirn), $saveOrderingUrl);
 }
 
-$assoc = JLanguageAssociations::isEnabled();
 ?>
 
-<form action="<?php echo JRoute::_('index.php?option=com_xbarticleman&view=arttags'); ?>" method="post" name="adminForm" id="adminForm">
+<form action="<?php echo Route::_('index.php?option=com_xbarticleman&view=arttags'); ?>" method="post" name="adminForm" id="adminForm">
 <?php if (!empty( $this->sidebar)) : ?>
 	<div id="j-sidebar-container" class="span2">
 		<?php echo $this->sidebar; ?>
@@ -73,7 +73,7 @@ $assoc = JLanguageAssociations::isEnabled();
 	<div id="j-main-container">
 <?php endif; ?>
 		<h3><?php echo Text::_('Articles with Tags')?></h3>
-		<h4> Found <?php echo count($this->alltags); ?> distinct tags across <?php echo $this->taggedarticles; ?> tagged articles from <?php echo XbarticlemanHelper::getItemCnt('#__content'); ?> total articles</h4>
+		<h4> Found <?php echo count($this->alltags); ?> distinct tags across <?php echo $this->taggedarticles; ?> tagged articles from <?php echo $this->statearticles.' '.$this->statefilt; ?> articles</h4>
     	<ul class="inline">
     		<li><i>Counts for each type:</i></li>
     		<?php foreach ($this->alltags as $key=>$cnt) : ?>
@@ -199,7 +199,7 @@ $assoc = JLanguageAssociations::isEnabled();
 									<?php echo HTMLHelper::_('jgrid.checkedout', $i, $item->editor, $item->checked_out_time, 'articles.', $canCheckin); ?>
 								<?php endif; ?>
 								<?php if ($canEdit || $canEditOwn) : ?>
-									<a class="hasTooltip" href="<?php echo JRoute::_('index.php?option=com_xbarticleman&task=article.edit&id=' . $item->id).'&retview=arttags'; ?>" 
+									<a class="hasTooltip" href="<?php echo Route::_('index.php?option=com_xbarticleman&task=article.edit&id=' . $item->id).'&retview=arttags'; ?>" 
 										title="<?php echo Text::_('JACTION_EDIT').' '.Text::_('tags & links'); ?>">
 										<?php echo $this->escape($item->title); ?></a>
 								<?php else : ?>
@@ -208,12 +208,12 @@ $assoc = JLanguageAssociations::isEnabled();
 								<br />
 								<span class="small">
 										<?php echo '(Alias: <a class="modal hasTooltip" title="'.Text::_('XBARTMAN_MODAL_PREVIEW').'" href="'.JUri::root().'index.php?option=com_content&view=article&id='.(int)$item->id.'&tmpl=component">';
-										echo $this->escape($item->alias).'</a>)'; ?>
+										echo $this->escape($item->alias).' <span class="icon-eye"></span></a>)'; ?>
 								</span>
 								<div class="small">
 									<?php
-									$ParentCatUrl = JRoute::_('index.php?option=com_categories&task=category.edit&id=' . $item->parent_category_id . '&extension=com_content');
-									$CurrentCatUrl = JRoute::_('index.php?option=com_categories&task=category.edit&id=' . $item->catid . '&extension=com_content');
+									$ParentCatUrl = Route::_('index.php?option=com_categories&task=category.edit&id=' . $item->parent_category_id . '&extension=com_content');
+									$CurrentCatUrl = Route::_('index.php?option=com_categories&task=category.edit&id=' . $item->catid . '&extension=com_content');
 									$EditCatTxt = Text::_('JACTION_EDIT') . ' ' . Text::_('JCATEGORY');
 
 										if ($item->category_level != '1') :
@@ -222,9 +222,9 @@ $assoc = JLanguageAssociations::isEnabled();
     											     echo $bits[$i].' &#187; ';
 											     }
 										endif;
-										echo '<br /><span style="padding-left:15px;">';
+										echo '<span style="padding-left:15px;">';
 										if ($canEditCat || $canEditOwnCat) :
-											echo '<a class="hasTooltip" href="' . $CurrentCatUrl . '" title="' . $EditCatTxt . '">';
+											echo '<a class="hasTooltip label label-success" href="' . $CurrentCatUrl . '" title="' . $EditCatTxt . '">';
 										endif;
 										echo $this->escape($item->category_title);
 										if ($canEditCat || $canEditOwnCat) :
@@ -256,7 +256,7 @@ $assoc = JLanguageAssociations::isEnabled();
                                 		ksort($f["children"]);
                                         foreach ($f["children"] as $tg) :
                                          //index.php?option=com_tags&task=tag.edit&id=
-                                            echo '<a href="index.php?option=com_content&view=articles&filter[tag]='.$tg->id.'" class="label label-tag">'.$tg->title.'</a> ';   		
+                                            echo '<a href="index.php?option=com_content&view=articles&filter[tag]='.$tg->id.'" class="label label-info">'.$tg->title.'</a> ';   		
                                         endforeach; ?>
                         	    	</span><br />       
                             	<?php } ?>

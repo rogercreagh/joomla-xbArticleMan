@@ -2,7 +2,7 @@
 /*******
  * @package xbarticleman
  * file administrator/components/com_xbarticleman/views/artscodes/tmpl/default.php
- * @version 2.0.0.2 3rd November 2023
+ * @version 2.0.3.3 7th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
@@ -138,7 +138,7 @@ if ($saveOrder)
 							<?php echo Text::_('Shortcodes'); ?>
 						</th>
 						<th>
-							<?php echo HTMLHelper::_('searchtools.sort', strtoupper($orderingColumn), 'a.' . $orderingColumn, $listDirn, $listOrder); ?>
+							<?php echo HTMLHelper::_('searchtools.sort', 'XBARTMAN_HEADING_DATE_'.strtoupper($orderingColumn), 'a.' . $orderingColumn, $listDirn, $listOrder); ?>
 						</th>
 						<th>
 							<?php echo HTMLHelper::_('searchtools.sort', 'JGRID_HEADING_ID', 'a.id', $listDirn, $listOrder); ?>
@@ -222,7 +222,7 @@ if ($saveOrder)
 								<br />
 								<span class="small">
 										<?php echo '(Alias: <a class="modal hasTooltip" title="'.JText::_('XBARTMAN_MODAL_PREVIEW').'" href="'.JUri::root().'index.php?option=com_content&view=article&id='.(int)$item->id.'&tmpl=component">';
-										echo $this->escape($item->alias).'</a>)'; ?>
+										echo $this->escape($item->alias).' <span class="icon-eye"></spn></a>)'; ?>
 								</span>
 								<div class="small">
 									<?php
@@ -238,7 +238,7 @@ if ($saveOrder)
     										echo '<span style="padding-left:15px;"><b>';
 										endif;
 										if ($canEditCat || $canEditOwnCat) :
-											echo '<a class="hasTooltip" href="' . $CurrentCatUrl . '" title="' . $EditCatTxt . '">';
+											echo '<a class="hasTooltip label label-success" href="' . $CurrentCatUrl . '" title="' . $EditCatTxt . '">';
 										endif;
 										echo $this->escape($item->category_title);
 										if ($canEditCat || $canEditOwnCat) :
@@ -252,7 +252,7 @@ if ($saveOrder)
 							</div>
 						</td>
 						<td>
-							<?php echo XbarticlemanHelper::truncateToText($item->arttext,150,'exact',true); ?>
+							<?php echo XbarticlemanHelper::truncateToText($item->arttext,100,'exact',true); ?>
 						</td>
 						<td>
 							<details>

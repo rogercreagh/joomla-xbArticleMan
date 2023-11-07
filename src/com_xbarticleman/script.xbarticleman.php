@@ -2,7 +2,7 @@
 /*******
  * @package xbArticleManager
  * file script.xbarticleman.php
- * @version 2.0.0.2 3rd November 2023
+ * @version 2.0.3.3 7th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2023
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
@@ -46,10 +46,6 @@ class com_xbarticlemanInstallerScript
     }
     
     function install($parent) {
-        echo '<h3>'.$this->extname.' component installed</h3>';
-        echo '<p>Version'.$parent->get('manifest')->version.' '.$parent->get('manifest')->creationDate.'</p>';
-        echo '<p>For help and information see <a href="http://crosborne.co.uk/articlemandoc" target="_blank">
-            www.crosborne.co.uk/articlemandoc</a></p>';
     }
     
     function uninstall($parent) {

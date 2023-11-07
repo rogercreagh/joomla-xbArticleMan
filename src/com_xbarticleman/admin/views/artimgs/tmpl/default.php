@@ -2,7 +2,7 @@
 /*******
  * @package xbarticleman
  * file administrator/components/com_xbarticleman/views/artimgs/tmpl/default.php
- * @version 1.0.0.0 27th January 2019
+ * @version 2.0.3.3 7th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
@@ -179,7 +179,7 @@ if ($saveOrder)
 								<br />
 								<span class="small">
 										<?php echo '(Alias: <a class="modal hasTooltip" title="'.JText::_('XBARTMAN_MODAL_PREVIEW').'" href="'.JUri::root().'index.php?option=com_content&view=article&id='.(int)$item->id.'&tmpl=component">';
-										echo $this->escape($item->alias).'</a>)'; ?>
+										echo $this->escape($item->alias).' <span class="icon-eye"></span></a>)'; ?>
 								</span>
 								<div class="small">
 									<?php
@@ -193,9 +193,9 @@ if ($saveOrder)
     											     echo $bits[$i].' &#187; ';
 											     }
 										endif;
-										echo '<br /><span style="padding-left:15px;">';
+										echo '<span style="padding-left:15px;">';
 										if ($canEditCat || $canEditOwnCat) :
-											echo '<a class="hasTooltip" href="' . $CurrentCatUrl . '" title="' . $EditCatTxt . '">';
+											echo '<a class="hasTooltip label label-success" href="' . $CurrentCatUrl . '" title="' . $EditCatTxt . '">';
 										endif;
 										echo $this->escape($item->category_title);
 										if ($canEditCat || $canEditOwnCat) :

@@ -2,7 +2,7 @@
 /*******
  * @package xbArticleManager
  * file administrator/components/com_xbarticleman/views/arttags/view.html.php
- * @version 2.0.1.0 4th November 2023
+ * @version 2.0.3.3 7th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
@@ -41,8 +41,6 @@
 		$this->filterForm    = $this->get('FilterForm');
 		$this->activeFilters = $this->get('ActiveFilters');
 		$tags = $this->get('Tags');
-		$this->alltags = array_count_values(array_column($tags,'title'));
-		$this->taggedarticles=count(array_count_values(array_column($tags, 'artid')));
 		
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))
@@ -50,6 +48,20 @@
 			throw new Exception(implode("\n", $errors), 500);
 		}
 
+		$this->alltags = array_count_values(array_column($tags,'title'));
+		$this->taggedarticles=count(array_count_values(array_column($tags, 'artid')));
+		
+		$where = 'state IN (1,0)';
+		$this->statefilt = 'published and unpublished';
+		if (array_key_exists('published', $this->activeFilters)) {
+		    $published = $this->activeFilters['published'];
+		    if (is_numeric($published)) {
+		        $where = 'state = ' . (int) $published;
+		        $this->statefilt = array('trashed','','unpublished','published','archived')[$published+2];
+		    }
+		}
+		$this->statearticles = XbarticlemanHelper::getItemCnt('#__content', $where);
+		
 		$this->addToolbar();
 		$this->sidebar = JHtmlSidebar::render();
 
@@ -64,7 +76,7 @@
 		// Get the toolbar object instance
 		$bar = Toolbar::getInstance('toolbar');
 
-		ToolbarHelper::title(JText::_('XBARTMAN_ADMIN_ARTTAGS_TITLE'), 'stack article');
+		ToolbarHelper::title(Text::_('XBARTMAN_ADMIN_ARTTAGS_TITLE'), 'stack article');
 
 		if ($canDo->get('core.create') || count($user->getAuthorisedCategories('com_xbarticleman', 'core.create')) > 0)
 		{
@@ -79,8 +91,8 @@
 
 		if ($canDo->get('core.edit.state'))
 		{
-			ToolbarHelper::publish('articles.publish', 'JTOOLBAR_PUBLISH', true);
-			ToolbarHelper::unpublish('articles.unpublish', 'JTOOLBAR_UNPUBLISH', true);
+			ToolbarHelper::publish('arttags.publish', 'JTOOLBAR_PUBLISH', true);
+			ToolbarHelper::unpublish('arttags.unpublish', 'JTOOLBAR_UNPUBLISH', true);
 		}
 
 		// Add a batch button
@@ -88,7 +100,7 @@
 			&& $user->authorise('core.edit', 'com_xbarticleman')
 			&& $user->authorise('core.edit.state', 'com_xbarticleman'))
 		{
-			$title = JText::_('JTOOLBAR_BATCH');
+			$title = Text::_('JTOOLBAR_BATCH');
 
 			// Instantiate a new JLayoutFile instance and render the batch button
 			$layout = new FileLayout('joomla.toolbar.batch');
@@ -99,11 +111,11 @@
 
 		if ($this->state->get('filter.published') == -2 && $canDo->get('core.delete'))
 		{
-			ToolbarHelper::deleteList('JGLOBAL_CONFIRM_DELETE', 'articles.delete', 'JTOOLBAR_EMPTY_TRASH');
+			ToolbarHelper::deleteList('JGLOBAL_CONFIRM_DELETE', 'arttags.delete', 'JTOOLBAR_EMPTY_TRASH');
 		}
 		elseif ($canDo->get('core.edit.state'))
 		{
-			ToolbarHelper::trash('articles.trash');
+			ToolbarHelper::trash('arttags.trash');
 		}
 
 		if ($user->authorise('core.admin', 'com_xbarticleman') || $user->authorise('core.options', 'com_xbarticleman'))

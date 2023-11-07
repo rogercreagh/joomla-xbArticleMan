@@ -266,10 +266,13 @@ class XbarticlemanHelper extends ComponentHelper
 	 * @param string $table
 	 * @return integer
 	 */
-	public static function getItemCnt($table) {
+	public static function getItemCnt($table, $filter = '') {
 	    $db = Factory::getDbo();
 	    $query = $db->getQuery(true);
 	    $query->select('COUNT(*)')->from($db->quoteName($table));
+	    if ($filter !='') {
+	        $query->where($filter);
+	    }
 	    $db->setQuery($query);
 	    $cnt=-1;
 	    try {

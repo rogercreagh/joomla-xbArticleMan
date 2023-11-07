@@ -2,19 +2,22 @@
 /*******
  * @package xbArticleManager
  * file administrator/components/com_xbarticleman/models/article.php
- * @version 2.0.1.0 4th November 2023
+ * @version 2.0.3.3 7th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
  ******/
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Helper\TagsHelper;
 use Joomla\Registry\Registry;
 use Joomla\Utilities\ArrayHelper;
+use Joomla\CMS\MVC\Model\AdminModel;
 
-JLoader::register('XbarticlemanHelper', JPATH_ADMINISTRATOR . '/components/com_xbarticleman/helpers/xbarticleman.php');
+//JLoader::register('XbarticlemanHelper', JPATH_ADMINISTRATOR . '/components/com_xbarticleman/helpers/xbarticleman.php');
 
-class XbarticlemanModelArticle extends JModelAdmin
+class XbarticlemanModelArticle extends AdminModel
 {
 	/**
 	 * The type alias for this type 
@@ -24,6 +27,40 @@ class XbarticlemanModelArticle extends JModelAdmin
 	 */
 	public $typeAlias = 'com_xbarticleman.article';
 
+	protected $xbarticle_batch_commands = array(
+	    'untag' => 'batchUntag',
+	);
+	
+	protected function batchUntag($value, $pks, $contexts) {
+	    $taghelper = new TagsHelper();
+	    $message = 'tag:'.$value.' removed from articles :';
+//	    $basePath = JPATH_ADMINISTRATOR.'/components/com_content';
+//	    require_once $basePath.'/models/article.php';
+//	    $articlemodel = new ContentModelArticle(array('table_path' => $basePath . '/tables'));
+	    foreach ($pks as $pk) {
+	        if ($this->user->authorise('core.edit', $contexts[$pk])) {
+	            $existing = $taghelper->getItemTags('com_content.article', $pk, false);
+	            $oldtags = array_column($existing,'tag_id');
+	            $newtags = array();
+	            for ($i = 0; $i<count($oldtags); $i++) {
+	                if ($oldtags[$i] != $value) {
+	                    $newtags[] = $oldtags[$i];
+	                }
+	            }
+	            $params = array( 'id' => $pk, 'tags' => $newtags );
+	            
+	            if($this->save($params)){
+    	            $message .= ' '.$pk;
+	            }
+	        } else {
+	            $this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
+	            return false;
+	        }
+	        Factory::getApplication()->enqueueMessage($message);
+	    }
+        return true;
+	}
+	    
 	/**
 	 * Function that can be overriden to do any data cleanup after batch copying data
 	 *
@@ -70,6 +107,13 @@ class XbarticlemanModelArticle extends JModelAdmin
 		JEventDispatcher::getInstance()->trigger('onContentAfterSave', array('com_xbarticleman.article', &$this->table, true, $fieldsData));
 	}
 
+	public function batch($commands, $pks, $contexts)
+	{
+	    $this->batch_commands = array_merge($this->batch_commands, $this->xbarticle_batch_commands);
+	    return parent::batch($commands, $pks, $contexts);
+	}
+		
+	
 	/**
 	 * Batch move categories to a new category.
 	 *

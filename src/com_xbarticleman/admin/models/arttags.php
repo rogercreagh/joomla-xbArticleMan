@@ -2,7 +2,7 @@
 /*******
  * @package xbArticleManager
  * file administrator/components/com_xbarticleman/models/arttags.php
- * @version 2.0.3.1 6th November 2023
+ * @version 2.0.3.2 6th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
@@ -27,17 +27,12 @@ class XbarticlemanModelArttags extends JModelList
 				'checked_out_time', 'a.checked_out_time',
 				'catid', 'a.catid', 'category_title',
 				'state', 'a.state',
-				'access', 'a.access', 'access_level',
 				'created', 'a.created',
 				'modified', 'a.modified',
-				'created_by', 'a.created_by',
-				'created_by_alias', 'a.created_by_alias',
 				'ordering', 'a.ordering',
-				'featured', 'a.featured',
 				'publish_up', 'a.publish_up',
 				'publish_down', 'a.publish_down',
 				'published', 'a.published',
-				'author_id',
 				'category_id',
 				'level',
 				'tagfilt', 'taglogic', 'artlist'
@@ -58,7 +53,7 @@ class XbarticlemanModelArttags extends JModelList
 	 *
 	 * @since   1.6
 	 */
-	protected function populateState($ordering = 'a.id', $direction = 'desc')
+	protected function populateState($ordering = 'a.id', $direction = 'asc')
 	{
 		$app = Factory::getApplication();
 
@@ -98,7 +93,7 @@ class XbarticlemanModelArttags extends JModelList
 			$this->setState('filter.category_id', $categoryId);
 
 			$tagfilt = $app->input->post->get('tagfilt');
-			$this->setState('filter.tagfilt', $taglogic);
+			$this->setState('filter.tagfilt', $tagfilt);
 			$taglogic = $app->input->post->get('taglogic');
 			$this->setState('filter.taglogic', $taglogic);
 			$artlist = $app->input->post->get('artlist');
@@ -108,32 +103,6 @@ class XbarticlemanModelArttags extends JModelList
 		// List state information.
 		parent::populateState($ordering, $direction);
 
-	}
-
-	/**
-	 * Method to get a store id based on model configuration state.
-	 *
-	 * This is necessary because the model is used by the component and
-	 * different modules that might need different sets of data or different
-	 * ordering requirements.
-	 *
-	 * @param   string  $id  A prefix for the store id.
-	 *
-	 * @return  string  A store id.
-	 *
-	 * @since   1.6
-	 */
-	protected function getStoreId($id = '')
-	{
-		// Compile the store id.
-		$id .= ':' . $this->getState('filter.search');
-		$id .= ':' . serialize($this->getState('filter.access'));
-		$id .= ':' . $this->getState('filter.published');
-		$id .= ':' . serialize($this->getState('filter.category_id'));
-		$id .= ':' . serialize($this->getState('filter.author_id'));
-		$id .= ':' . serialize($this->getState('filter.tag'));
-
-		return parent::getStoreId($id);
 	}
 
 	/**
@@ -179,31 +148,6 @@ class XbarticlemanModelArttags extends JModelList
 								parent.created_user_id AS parent_category_uid, parent.level AS parent_category_level')
 			->join('LEFT', '#__categories AS parent ON parent.id = c.parent_id');
 
-		// Join over the users for the author.
-		$query->select('ua.name AS author_name')
-			->join('LEFT', '#__users AS ua ON ua.id = a.created_by');
-
-		// Filter by access level.
-		$access = $this->getState('filter.access');
-
-		if (is_numeric($access))
-		{
-			$query->where('a.access = ' . (int) $access);
-		}
-		elseif (is_array($access))
-		{
-			$access = ArrayHelper::toInteger($access);
-			$access = implode(',', $access);
-			$query->where('a.access IN (' . $access . ')');
-		}
-
-		// Filter by access level on categories.
-		if (!$user->authorise('core.admin'))
-		{
-			$groups = implode(',', $user->getAuthorisedViewLevels());
-			$query->where('a.access IN (' . $groups . ')');
-			$query->where('c.access IN (' . $groups . ')');
-		}
 
 		// Filter by published state
 		$published = $this->getState('filter.published');
@@ -275,11 +219,6 @@ class XbarticlemanModelArttags extends JModelList
 			{
 				$query->where('a.id = ' . (int) substr($search, 3));
 			}
-			elseif (stripos($search, 'author:') === 0)
-			{
-				$search = $db->quote('%' . $db->escape(substr($search, 7), true) . '%');
-				$query->where('(ua.name LIKE ' . $search . ' OR ua.username LIKE ' . $search . ')');
-			}
 			elseif (stripos($search, 'content:') === 0)
 			{
 				$search = $db->quote('%' . $db->escape(substr($search, 8), true) . '%');
@@ -312,7 +251,7 @@ class XbarticlemanModelArttags extends JModelList
 		//filter by tag(s)
 		
 		if ($artlist < 2) {
-		    $tagfilt  = $this->getState('filter.tag');
+		    $tagfilt  = $this->getState('filter.tagfilt');
 		    $tagfilt = ArrayHelper::toInteger($tagfilt);
 		    $taglogic = $this->getState('filter.taglogic');
 		    $subquery = '(SELECT tmap.tag_id AS tlist FROM #__contentitem_tag_map AS tmap
@@ -329,8 +268,8 @@ class XbarticlemanModelArttags extends JModelList
                         $query->where($tagfilt[$i].' NOT IN '.$subquery);
                     }
                     break;
-                case 3: //any match will do
-                    if (count($tagfilt == 1)) {
+                case 0: //any match will do
+                    if (count($tagfilt) == 1) {
                         $query->where($tagfilt[0].' IN '.$subquery);
                     } else {
                         $tagIds = implode(',', $tagfilt);
@@ -393,4 +332,5 @@ class XbarticlemanModelArttags extends JModelList
 	    
 	    return $res;
 	}
+
 }
