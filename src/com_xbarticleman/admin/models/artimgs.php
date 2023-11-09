@@ -2,7 +2,7 @@
 /*******
  * @package xbArticleManager
  * file administrator/components/com_xbarticleman/models/artimgs.php
- * @version 2.0.4.0 8th November 2023
+ * @version 2.0.4.1 9th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -316,7 +316,7 @@ class XbarticlemanModelArtimgs extends JModelList
                         $thisimg['host'] = '';
                     }
                     $thisimg['uri']= $uri;
-                    $pathinfo = pathinfo($uri);
+                    $pathinfo = pathinfo($imguri);
                     $thisimg['filename']= $pathinfo['basename'];
                     $thisimg['path']= $pathinfo['dirname'];
                     $attr = getimagesize($uri);
@@ -339,8 +339,10 @@ class XbarticlemanModelArtimgs extends JModelList
                     $thisimg['class'] = $img->getAttribute('class');
                     $thisimg['style'] = $img->getAttribute('style');
                     $thisimg['alttext'] = $img->getAttribute('alt');
+                    $thisimg['title'] = $img->getAttribute('title');
                     $item->imgtags[] = $thisimg;                    
                 }
+                
                 $intfull = json_decode($item->images);
                 $item->introimg = array();
                 if ($intfull->image_intro != '') {

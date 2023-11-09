@@ -2,7 +2,7 @@
 /*******
  * @package xbarticleman
  * file administrator/components/com_xbarticleman/views/artimgs/tmpl/default.php
- * @version 2.0.3.3 7th November 2023
+ * @version 2.0.4.1 9th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
@@ -144,10 +144,10 @@ if ($saveOrder)
 							<?php echo HTMLHelper::_('searchtools.sort', 'Category', 'category_title', $listDirn, $listOrder); ?>							
 						</th>
 						<th>
-							<?php Text::_('In-article &lt;img&gt;s'); ?>
+							<?php echo Text::_('In-article &lt;img&gt;s'); ?>
 						</th>
 						<th>
-							<?php Text::_('Intro & Fulltext images'); ?>
+							<?php echo Text::_('Intro & Fulltext images'); ?>
 						</th>
 						<th>
 							<?php echo HTMLHelper::_('searchtools.sort', 'XBARTMAN_HEADING_DATE_' . strtoupper($orderingColumn), 'a.' . $orderingColumn, $listDirn, $listOrder); ?>
@@ -157,7 +157,7 @@ if ($saveOrder)
 						</th>
 					</tr>
 				</thead>
-				<?php if ($rowcnt > 14) : ?>
+				<?php if ($rowcnt > 9) : ?>
 				<tfoot>
 					<tr>
 						<th>
@@ -175,10 +175,10 @@ if ($saveOrder)
 							<?php echo HTMLHelper::_('searchtools.sort', 'Category', 'category_title', $listDirn, $listOrder); ?>							
 						</th>
 						<th>
-							<?php Text::_('In-article &lt;img&gt;s'); ?>
+							<?php echo Text::_('In-article &lt;img&gt;s'); ?>
 						</th>
 						<th>
-							<?php Text::_('Intro & Fulltext images'); ?>
+							<?php echo Text::_('Intro & Fulltext images'); ?>
 						</th>
 						<th>
 							<?php echo HTMLHelper::_('searchtools.sort', 'XBARTMAN_HEADING_DATE_' . strtoupper($orderingColumn), 'a.' . $orderingColumn, $listDirn, $listOrder); ?>
@@ -297,7 +297,42 @@ if ($saveOrder)
     								<summary>
     									<a href="<?php echo $a['uri']; ?>" class="modal"><?php echo $a['filename']; ?></a>
     								</summary>
-    								<?php echo print_r($a,true); ?>
+									<ul>
+										<li><i>Host:</i>
+											<?php echo ($a['host']=='') ? 'local' : $a['host']; ?>
+										</li>
+										<li><i>Path:</i>
+											<?php echo $a['path'];?>
+										</li>
+										<li><i>Dimensions - native:</i>
+											<?php echo $a['nativesize'];
+											echo ($a['specsize'] != '') ? ' <i>img spec:</i> '.$a['specsize'] : ''; 
+											?>
+										</li>
+										<li><i>Mime type:</i>
+											<?php echo $a['mime'];?>
+										</li>
+										<?php if ($a['alttext'] != '') : ?>
+    										<li><i>Alt.text:</i>
+    											<?php echo $a['alttext'];?>
+    										</li>   						
+										<?php endif; ?>				
+										<?php if ($a['title'] != '') : ?>
+    										<li><i>Title</i>
+    											<?php echo $a['alttext'];?>
+    										</li>   						
+										<?php endif; ?>				
+										<?php if ($a['class'] != '') : ?>
+    										<li><i>Class:</i>
+    											<?php echo $a['class'];?>
+    										</li>
+										<?php endif; ?>
+										<?php if ($a['style'] != '') : ?>
+    										<li><i>Style:</i>
+    											<?php echo $a['style'];?>
+    										</li>   						
+										<?php endif; ?>				
+									</ul>
     							</details>
     						<?php endforeach; ?>
 						</td>
@@ -308,7 +343,30 @@ if ($saveOrder)
 									<summary>
     									<a href="<?php echo $a['uri']; ?>" class="modal"><?php echo $a['filename']; ?></a>
 									</summary>
-    								<?php echo print_r($a,true); ?>
+									<ul>
+										<li><i>Host:</i>
+											<?php echo ($a['host']=='') ? 'local' : $a['host']; ?>
+										</li>
+										<li><i>Path:</i>
+											<?php echo $a['path'];?>
+										</li>
+										<li><i>Dimensions - native:</i>
+											<?php echo $a['nativesize']; ?>
+										</li>
+										<li><i>Mime type:</i>
+											<?php echo $a['mime'];?>
+										</li>
+										<?php if ($a['alttext'] != '') : ?>
+    										<li><i>Alt.text:</i>
+    											<?php echo $a['alttext'];?>
+    										</li>   						
+										<?php endif; ?>				
+										<?php if ($a['caption'] != '') : ?>
+    										<li><i>Caption:</i>
+    											<?php echo $a['caption'];?>
+    										</li>   						
+										<?php endif; ?>				
+									</ul>
 								</details>
 							<?php endif; ?>
 							<?php $a = $item->fullimg;
@@ -317,7 +375,30 @@ if ($saveOrder)
 									<summary>
     									<a href="<?php echo $a['uri']; ?>" class="modal"><?php echo $a['filename']; ?></a>
 									</summary>
-    								<?php echo print_r($a,true); ?>
+									<ul>
+										<li><i>Host:</i>
+											<?php echo ($a['host']=='') ? 'local' : $a['host']; ?>
+										</li>
+										<li><i>Path:</i>
+											<?php echo $a['path'];?>
+										</li>
+										<li><i>Dimensions - native:</i>
+											<?php echo $a['nativesize']; ?>
+										</li>
+										<li><i>Mime type:</i>
+											<?php echo $a['mime'];?>
+										</li>
+										<?php if ($a['alttext'] != '') : ?>
+    										<li><i>Alt.text:</i>
+    											<?php echo $a['alttext'];?>
+    										</li>   						
+										<?php endif; ?>				
+										<?php if ($a['caption'] != '') : ?>
+    										<li><i>Caption:</i>
+    											<?php echo $a['caption'];?>
+    										</li>   						
+										<?php endif; ?>				
+									</ul>
 								</details>
 							<?php endif; ?>
 							
