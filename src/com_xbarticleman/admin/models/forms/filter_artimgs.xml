@@ -9,6 +9,20 @@
 			hint="JSEARCH_FILTER"
 		/>
 
+		<field name="artlist" type="list"
+			label="List type"
+			description="What images to include in list before filtering"
+			default="1"
+			onchange="this.form.submit();"
+		>
+			<option value="0">All Articles</option>
+			<option value="1">Articles with &lt;img&gt; tags</option>
+			<option value="4">Articles without &lt;img&gt; tags</option>				
+			<option value="2">Articles with Intro/Full images</option>				
+			<option value="5">Articles without Intro/Full images</option>				
+			<option value="3">Articles with any image</option>				
+			<option value="6">Articles without images</option>				
+		</field>
 		<field
 			name="published"
 			type="status"

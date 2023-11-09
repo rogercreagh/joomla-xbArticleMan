@@ -235,7 +235,7 @@ class XbarticlemanHelper extends ComponentHelper
 	    }
 	    return $aimgs;
 	}
-	
+		
 	public static function getDocShortcodes($articleText) {
 	    //strip out any highlighting tags
 	    //strip out xbshowref if present leaving enclosed content

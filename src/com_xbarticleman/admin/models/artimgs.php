@@ -2,14 +2,16 @@
 /*******
  * @package xbArticleManager
  * file administrator/components/com_xbarticleman/models/artimgs.php
- * @version 1.0.0.0 27th January 2019
+ * @version 2.0.4.0 8th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
  ******/
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
 use Joomla\Utilities\ArrayHelper;
+use Joomla\CMS\Uri\Uri;
 
 class XbarticlemanModelArtimgs extends JModelList
 {
@@ -35,8 +37,7 @@ class XbarticlemanModelArtimgs extends JModelList
                 'publish_down', 'a.publish_down',
                 'published', 'a.published',
                 'author_id',
-                'category_id',
-                'level',
+                'category_id', 'level', 'artlist'
             );
             
         }
@@ -46,7 +47,7 @@ class XbarticlemanModelArtimgs extends JModelList
     
     protected function populateState($ordering = 'a.id', $direction = 'desc')
     {
-        $app = JFactory::getApplication();
+        $app = Factory::getApplication();
         
         // Adjust the context to support modal layouts.
         if ($layout = $app->input->get('layout'))
@@ -68,6 +69,7 @@ class XbarticlemanModelArtimgs extends JModelList
         $access     = $this->getUserStateFromRequest($this->context . '.filter.access', 'filter_access');
         $authorId   = $this->getUserStateFromRequest($this->context . '.filter.author_id', 'filter_author_id');
         $categoryId = $this->getUserStateFromRequest($this->context . '.filter.category_id', 'filter_category_id');
+        $artlist        = $this->getUserStateFromRequest($this->context . '.filter.artlist', 'filter_artlist', '1');
         
         if ($formSubmited)
         {
@@ -80,6 +82,8 @@ class XbarticlemanModelArtimgs extends JModelList
             $categoryId = $app->input->post->get('category_id');
             $this->setState('filter.category_id', $categoryId);
             
+            $artlist = $app->input->post->get('artlist');
+            $this->setState('filter.artlist', $artlist);
         }
         
         // List state information.
@@ -104,18 +108,48 @@ class XbarticlemanModelArtimgs extends JModelList
         // Create a new query object.
         $db    = $this->getDbo();
         $query = $db->getQuery(true);
-        $user  = JFactory::getUser();
+        $user  = Factory::getUser();
         
         // Select the required fields from the table.
         $query->select(
             $this->getState(
                 'list.select',
-                'DISTINCT a.id, a.title, a.alias, a.checked_out, a.checked_out_time, a.catid' .
+                'DISTINCT a.id, a.title, a.alias, a.checked_out, a.checked_out_time, a.catid, a.images' .
                 ', a.state, a.access, a.created, a.created_by, a.created_by_alias, a.modified, a.ordering, a.featured, a.language, a.hits' .
                 ', a.publish_up, a.publish_down, a.note, a.urls, CONCAT(a.introtext," ",a.fulltext) AS arttext'
                 )
             );
         $query->from('#__content AS a');
+        
+        // list all articles or only tagged or only untagged
+        $artlist = $this->getState('filter.artlist');
+        switch ($artlist) {
+            case 1: //with <img 
+                $query->where('CONCAT(a.introtext," ",a.fulltext)'.' REGEXP '.$db->q('<img '));
+                break;
+            case 2: //with Intro/Full
+                $query->where('a.images REGEXP '.$db->q('image_((intro)|(fulltext))\":\"[^,]+\"'));
+                break;
+            case 3: //with either
+                $query->where('CONCAT(a.introtext," ",a.fulltext)'.' REGEXP '.$db->q('<img ').' OR '
+                    .'a.images REGEXP '.$db->q('image_((intro)|(fulltext))\":\"[^,]+\"'));
+                // {"image_intro":"images\/xbbooks\/samples\/books\/ashes-of-london.jpg","float_intro":"","image_intro_alt":"","image_intro_caption":"","image_fulltext":"images\/xbfilms\/samples\/films\/faces-places.jpg","float_fulltext":"","image_fulltext_alt":"","image_fulltext_caption":""}
+                break;
+            case 4: //no <img
+                $query->where('NOT CONCAT(a.introtext," ",a.fulltext)'.' REGEXP '.$db->q('<img '));
+                break;
+            case 5: //no Intro/Full
+                $query->where('NOT a.images REGEXP '.$db->q('image_((intro)|(fulltext))\":\"[^,]+\"'));
+                break;
+            case 6: //no images
+                $query->where('NOT CONCAT(a.introtext," ",a.fulltext)'.' REGEXP '.$db->q('<img ').' AND NOT '
+                    .'a.images REGEXP '.$db->q('image_((intro)|(fulltext))\":\"[^,]+\"'));
+                break;
+                
+            default: //all arrticles
+                // do nothing;
+            break;
+        }
         
         // Join over the language
         $query->select('l.title AS language_title, l.image AS language_image')
@@ -263,6 +297,95 @@ class XbarticlemanModelArtimgs extends JModelList
         $query->order($db->escape($orderCol) . ' ' . $db->escape($orderDirn));
 
 		return $query;
+    }
+    
+    public function getItems() {
+        $items  = parent::getItems();
+        if ($items) {
+            foreach ($items as $item) {
+                $imgtags = XbarticlemanHelper::getDocImgs($item->arttext);
+                $item->imgtags = array();
+                foreach ($imgtags as $img) {
+                    $thisimg = array();
+                    $imguri = $img->getAttribute('src');
+                    $uri_info = parse_url($imguri);
+                    if (key_exists('hostname', $uri_info)) {
+                        $thisimg['host'] = $uri_info['hostname'];
+                    } else {
+                        $uri = Uri::root().$imguri;
+                        $thisimg['host'] = '';
+                    }
+                    $thisimg['uri']= $uri;
+                    $pathinfo = pathinfo($uri);
+                    $thisimg['filename']= $pathinfo['basename'];
+                    $thisimg['path']= $pathinfo['dirname'];
+                    $attr = getimagesize($uri);
+                    $thisimg['nativesize'] = $attr[0].' x '.$attr[1].'px';
+                    $thisimg['mime'] = $attr['mime'];
+                    $w = ($img->getAttribute('width')) ? $img->getAttribute('width') : '';
+                    $h = ($img->getAttribute('height')) ? $img->getAttribute('height') : '';
+                    $specsize = ''; 
+                    if ($w != '') {
+                        $specsize .= $w;
+                        if ($h != '') {
+                            $specsize .= ' x '.$h.'px';
+                        } else {
+                            $specsize .= 'px wide';
+                        }
+                    } elseif ($h != '') {
+                        $specsize .= $h.'px high';
+                    }
+                    $thisimg['specsize'] = $specsize;
+                    $thisimg['class'] = $img->getAttribute('class');
+                    $thisimg['style'] = $img->getAttribute('style');
+                    $thisimg['alttext'] = $img->getAttribute('alt');
+                    $item->imgtags[] = $thisimg;                    
+                }
+                $intfull = json_decode($item->images);
+                $item->introimg = array();
+                if ($intfull->image_intro != '') {
+                    $imguri = $intfull->image_intro;
+                    $uri_info = parse_url($imguri);
+                    if (key_exists('hostname', $uri_info)) {
+                        $item->introimg['host'] = $uri_info['hostname'];
+                    } else {
+                        $uri = Uri::root().$imguri;
+                        $item->introimg['host'] = '';
+                    }
+                    $item->introimg['uri']= $uri;
+                    $pathinfo = pathinfo($uri);
+                    $item->introimg['filename']= $pathinfo['basename'];
+                    $item->introimg['path']= $pathinfo['dirname'];
+                    $item->introimg['alttext']= $intfull->image_intro_alt;
+                    $item->introimg['caption']= $intfull->image_intro_caption;
+                    $attr = getimagesize($uri);
+                    $item->introimg['nativesize'] = $attr[0].' x '.$attr[1].'px';
+                    $item->introimg['mime'] = $attr['mime'];
+                }
+                $item->fullimg = array();
+                if ($intfull->image_fulltext != '') {
+                    $imguri = $intfull->image_intro;
+                    $uri_info = parse_url($imguri);
+                    if (key_exists('hostname', $uri_info)) {
+                        $item->fullimg['host'] = $uri_info['hostname'];
+                    } else {
+                        $uri = Uri::root().$imguri;
+                        $item->fullimg['host'] = '';
+                    }
+                    $item->fullimg['uri']= $uri;
+                    $pathinfo = pathinfo($uri);
+                    $item->fullimg['filename']= $pathinfo['basename'];
+                    $item->fullimg['path']= $pathinfo['dirname'];
+                    $item->fullimg['alttext']= $intfull->image_fulltext_alt;
+                    $item->fullimg['caption']= $intfull->image_fulltext_caption;
+                    $attr = getimagesize($uri);
+                    $item->fullimg['nativesize'] = $attr[0].' x '.$attr[1].'px';
+                    $item->fullimg['mime'] = $attr['mime'];
+                }
+            }
+        }
+        return $items;
+        
     }
     
      public function getAuthors()

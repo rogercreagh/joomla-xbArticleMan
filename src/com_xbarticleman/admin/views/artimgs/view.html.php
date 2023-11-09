@@ -2,20 +2,25 @@
 /*******
  * @package xbArticleMan
  * file administrator/components/com_xbarticleman/views/artimgs/view.html.php
- * @version 1.0.0.0 27th January 2019
+ * @version 2.0.4.0 8th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
  ******/
  defined('_JEXEC') or die();
 
+ use Joomla\CMS\Factory;
+ use Joomla\CMS\Layout\FileLayout;
+ use Joomla\CMS\Toolbar\Toolbar;
+ use Joomla\CMS\Toolbar\ToolbarHelper;
+ use Joomla\CMS\Language\Text;
+ 
  class XbarticlemanViewArtimgs extends JViewLegacy
 {
     protected $items;
     protected $pagination;
     protected $state;
     protected $categories;
-    protected $tags;
      
 	public $filterForm;
 
@@ -26,10 +31,8 @@
 	public function display($tpl = null)
 	{	    
 	   // JLoader::register('TagsHelperRoute', JPATH_BASE . '/components/com_tags/helpers/route.php');
-	    if ($this->getLayout() !== 'modal')
-		{
-			XbarticlemanHelper::addSubmenu('artimgs');
-		}
+
+	    XbarticlemanHelper::addSubmenu('artimgs');
 
 		$this->items         = $this->get('Items');
 		$this->pagination    = $this->get('Pagination');
@@ -43,13 +46,22 @@
 			throw new Exception(implode("\n", $errors), 500);
 		}
 
-
-		// We don't need toolbar in the modal window.
-		if ($this->getLayout() !== 'modal')
-		{
-			$this->addToolbar();
-			$this->sidebar = JHtmlSidebar::render();
+		$where = 'state IN (1,0)';
+		$this->statefilt = 'published and unpublished';
+		if (array_key_exists('published', $this->activeFilters)) {
+		    $published = $this->activeFilters['published'];
+		    if (is_numeric($published)) {
+		        $where = 'state = ' . (int) $published;
+		        $this->statefilt = array('trashed','','unpublished','published','archived')[$published+2];
+		    } else {
+		        $this->statefilt = 'all';
+		        $where = '';
+		    }
 		}
+		$this->statearticles = XbarticlemanHelper::getItemCnt('#__content', $where);
+		
+		$this->addToolbar();
+		$this->sidebar = JHtmlSidebar::render();
 
 		return parent::display($tpl);
 	}
@@ -57,28 +69,28 @@
 	protected function addToolbar()
 	{
 		$canDo = XbarticlemanHelper::getActions();
-		$user  = JFactory::getUser();
+		$user  = Factory::getUser();
 
 		// Get the toolbar object instance
-		$bar = JToolbar::getInstance('toolbar');
+		$bar = Toolbar::getInstance('toolbar');
 
-		JToolbarHelper::title(JText::_('XBARTMAN_ADMIN_ARTIMGS_TITLE'), 'picture');
+		ToolbarHelper::title(JText::_('XBARTMAN_ADMIN_ARTIMGS_TITLE'), 'picture');
 
 		if ($canDo->get('core.create') || count($user->getAuthorisedCategories('com_xbarticleman', 'core.create')) > 0)
 		{
-			JToolbarHelper::addNew('arttags.newArticle');
+			ToolbarHelper::addNew('arttags.newArticle');
 		}
 
 		if ($canDo->get('core.edit') || $canDo->get('core.edit.own'))
 		{
-		    JToolbarHelper::editList('article.edit','Edit Tags Links');
-		    JToolbarHelper::editList('arttags.fullEdit','Full Edit');
+		    ToolbarHelper::editList('article.edit','Edit Tags Links');
+		    ToolbarHelper::editList('arttags.fullEdit','Full Edit');
 		}
 
 		if ($canDo->get('core.edit.state'))
 		{
-			JToolbarHelper::publish('arttags.publish', 'JTOOLBAR_PUBLISH', true);
-			JToolbarHelper::unpublish('arttags.unpublish', 'JTOOLBAR_UNPUBLISH', true);
+			ToolbarHelper::publish('arttags.publish', 'JTOOLBAR_PUBLISH', true);
+			ToolbarHelper::unpublish('arttags.unpublish', 'JTOOLBAR_UNPUBLISH', true);
 		}
 
 		// Add a batch button
@@ -89,7 +101,7 @@
 			$title = JText::_('JTOOLBAR_BATCH');
 
 			// Instantiate a new JLayoutFile instance and render the batch button
-			$layout = new JLayoutFile('joomla.toolbar.batch');
+			$layout = new FileLayout('joomla.toolbar.batch');
 
 			$dhtml = $layout->render(array('title' => $title));
 			$bar->appendButton('Custom', $dhtml, 'batch');
@@ -97,19 +109,19 @@
 
 		if ($this->state->get('filter.published') == -2 && $canDo->get('core.delete'))
 		{
-			JToolbarHelper::deleteList('JGLOBAL_CONFIRM_DELETE', 'arttags.delete', 'JTOOLBAR_EMPTY_TRASH');
+			ToolbarHelper::deleteList('JGLOBAL_CONFIRM_DELETE', 'arttags.delete', 'JTOOLBAR_EMPTY_TRASH');
 		}
 		elseif ($canDo->get('core.edit.state'))
 		{
-			JToolbarHelper::trash('arttags.trash');
+			ToolbarHelper::trash('arttags.trash');
 		}
 
 		if ($user->authorise('core.admin', 'com_xbarticleman') || $user->authorise('core.options', 'com_xbarticleman'))
 		{
-			JToolbarHelper::preferences('com_xbarticleman');
+			ToolbarHelper::preferences('com_xbarticleman');
 		}
 
-		JToolbarHelper::help('JHELP_CONTENT_ARTICLE_MANAGER');
+		ToolbarHelper::help('JHELP_CONTENT_ARTICLE_MANAGER');
 	}
 
 	protected function getSortFields()

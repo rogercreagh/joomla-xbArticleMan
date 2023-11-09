@@ -8,27 +8,34 @@
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
  ******/
 defined('_JEXEC') or die;
+
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Router\Route;
+use Joomla\CMS\Layout\LayoutHelper;
+use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\Helper\TagsHelper;
 use Joomla\Registry\Registry;
 //use Joomla\Utilities\ArrayHelper;
 
-JLoader::register('XbarticlemanHelper', JPATH_ADMINISTRATOR . '/components/com_xbarticleman/helpers/xbarticleman.php');
-JLoader::register('ContentHelperRoute', JPATH_SITE . '/components/com_content/helpers/route.php');
+//JLoader::register('XbarticlemanHelper', JPATH_ADMINISTRATOR . '/components/com_xbarticleman/helpers/xbarticleman.php');
+//JLoader::register('ContentHelperRoute', JPATH_SITE . '/components/com_content/helpers/route.php');
 
-JHtml::_('bootstrap.tooltip');
-JHtml::_('behavior.multiselect');
-JHtml::_('formbehavior.chosen', '.multipleTags', null, array('placeholder_text_multiple' => JText::_('JOPTION_SELECT_TAG')));
-JHtml::_('formbehavior.chosen', '.multipleCategories', null, array('placeholder_text_multiple' => JText::_('JOPTION_SELECT_CATEGORY')));
-JHtml::_('formbehavior.chosen', 'select');
-JHTML::_('behavior.modal');
+HTMLHelper::_('bootstrap.tooltip');
+HTMLHelper::_('behavior.multiselect');
+HTMLHelper::_('formbehavior.chosen', '.multipleTags', null, array('placeholder_text_multiple' => JText::_('JOPTION_SELECT_TAG')));
+HTMLHelper::_('formbehavior.chosen', '.multipleCategories', null, array('placeholder_text_multiple' => JText::_('JOPTION_SELECT_CATEGORY')));
+HTMLHelper::_('formbehavior.chosen', 'select');
+HTMLHelper::_('behavior.modal');
 
-$app       = JFactory::getApplication();
-$user      = JFactory::getUser();
+$app       = Factory::getApplication();
+$user      = Factory::getUser();
 $userId    = $user->get('id');
 $listOrder = $this->escape($this->state->get('list.ordering'));
 $listDirn  = $this->escape($this->state->get('list.direction'));
 $saveOrder = $listOrder == 'a.ordering';
-$columns   = 7;
-$cnt = count($this->items);
+$rowcnt = count($this->items);
 
 if (strpos($listOrder, 'publish_up') !== false)
 {
@@ -50,11 +57,11 @@ else
 if ($saveOrder)
 {
 	$saveOrderingUrl = 'index.php?option=com_xbarticleman&task=arttags.saveOrderAjax&tmpl=component';
-	JHtml::_('sortablelist.sortable', 'articleList', 'adminForm', strtolower($listDirn), $saveOrderingUrl);
+	HTMLHelper::_('sortablelist.sortable', 'articleList', 'adminForm', strtolower($listDirn), $saveOrderingUrl);
 }
 
 ?>
-<form action="<?php echo JRoute::_('index.php?option=com_xbarticleman&view=artimgs'); ?>" method="post" name="adminForm" id="adminForm">
+<form action="<?php echo Route::_('index.php?option=com_xbarticleman&view=artimgs'); ?>" method="post" name="adminForm" id="adminForm">
 
 <?php if (!empty( $this->sidebar)) : ?>
 	<div id="j-sidebar-container" class="span2">
@@ -64,50 +71,124 @@ if ($saveOrder)
 <?php else : ?>
 	<div id="j-main-container">
 <?php endif; ?>
+		<h3><?php echo Text::_('Article Images')?></h3>
+		<h4><?php echo $this->statearticles.' '.$this->statefilt; ?> articles available</h4>
+		<p>Listing <?php echo $this->pagination->total; ?> 
+    	<?php if (array_key_exists('artlist', $this->activeFilters)) {
+    	    switch ($this->activeFilters['artlist']) {
+    	    case 1:
+    	        echo Text::_('articles with &lt;img&gt; tags.');
+    	       break;
+    	    case 2:
+    	        echo Text::_('articles with Intro or Fulltext images.');
+    	        break;
+    	    case 3:
+    	        echo Text::_('articles with &lt;img&gt; tags or Intro or Fulltext images.');
+    	        break;
+    	    case 4:
+    	        echo Text::_('articles with no &lt;img&gt; tags.');
+    	        break;
+    	    case 5:
+    	        echo Text::_('articles with no Intro or Fulltext images.');
+    	        break;
+    	    case 6:
+    	        echo Text::_('articles with no images (Intro, Fulltext, or &lt;img&gt; tags).');
+    	        break;
+    	    default:
+    	       echo Text::_('articles');
+    	       break;
+    	   }  	    
+    	} else {
+    	    echo Text::_('articles');
+    	}
+        ?>
+        </p>
 		<?php
 		// Search tools bar
-		echo JLayoutHelper::render('joomla.searchtools.default', array('view' => $this));
+		echo LayoutHelper::render('joomla.searchtools.default', array('view' => $this));
 		?>
 		<?php if (empty($this->items)) : ?>
 			<div class="alert alert-no-items">
 				<?php echo JText::_('JGLOBAL_NO_MATCHING_RESULTS'); ?>
 			</div>
 		<?php else : ?>
-				
+			<?php $columns   = 8; 
+                $rowcnt = count($this->items);
+			?>	
+			
 			<table class="table table-striped" id="articleList">
+			<colgroup>
+				<col class="nowrap center hidden-phone" style="width:25px;"><!-- ordering -->
+				<col class="center hidden-phone" style="width:25px;"><!-- checkbox -->
+				<col class="nowrap center" style="width:55px;"><!-- status -->
+				<col ><!-- title, -->
+				<col ><!-- imgs -->
+				<col ><!-- intro/full -->
+				<col class="nowrap hidden-phone" style="width:110px;" ><!-- date -->
+				<col class="nowrap hidden-phone" style="width:45px;"><!-- id -->
+			</colgroup>	
 				<thead>
 					<tr>
-						<th width="1%" class="nowrap center hidden-phone">
-							<?php echo JHtml::_('searchtools.sort', '', 'a.ordering', $listDirn, $listOrder, null, 'asc', 'JGRID_HEADING_ORDERING', 'icon-menu-2'); ?>
-						</th>
-						<th width="1%" class="center">
-							<?php echo JHtml::_('grid.checkall'); ?>
-						</th>
-						<th width="1%" class="nowrap center">
-							<?php echo JHtml::_('searchtools.sort', 'JSTATUS', 'a.state', $listDirn, $listOrder); ?>
-						</th>
-						<th style="min-width:100px" class="nowrap">
-							<?php echo JHtml::_('searchtools.sort', 'JGLOBAL_TITLE', 'a.title', $listDirn, $listOrder); ?>
-							| (alias) |
-							<?php echo JHtml::_('searchtools.sort', 'Category', 'category_title', $listDirn, $listOrder); ?>							
+						<th>
+							<?php echo HTMLHelper::_('searchtools.sort', '', 'a.ordering', $listDirn, $listOrder, null, 'asc', 'JGRID_HEADING_ORDERING', 'icon-menu-2'); ?>
 						</th>
 						<th>
-							In-article &lt;img&gt;s
+							<?php echo HTMLHelper::_('grid.checkall'); ?>
 						</th>
-						<th width="10%" class="nowrap hidden-phone">
-							<?php echo JHtml::_('searchtools.sort', 'XBARTMAN_HEADING_DATE_' . strtoupper($orderingColumn), 'a.' . $orderingColumn, $listDirn, $listOrder); ?>
+						<th>
+							<?php echo HTMLHelper::_('searchtools.sort', 'JSTATUS', 'a.state', $listDirn, $listOrder); ?>
 						</th>
-						<th width="1%" class="nowrap hidden-phone">
-							<?php echo JHtml::_('searchtools.sort', 'JGRID_HEADING_ID', 'a.id', $listDirn, $listOrder); ?>
+						<th>
+							<?php echo HTMLHelper::_('searchtools.sort', 'JGLOBAL_TITLE', 'a.title', $listDirn, $listOrder); ?>
+							| (alias) |
+							<?php echo HTMLHelper::_('searchtools.sort', 'Category', 'category_title', $listDirn, $listOrder); ?>							
+						</th>
+						<th>
+							<?php Text::_('In-article &lt;img&gt;s'); ?>
+						</th>
+						<th>
+							<?php Text::_('Intro & Fulltext images'); ?>
+						</th>
+						<th>
+							<?php echo HTMLHelper::_('searchtools.sort', 'XBARTMAN_HEADING_DATE_' . strtoupper($orderingColumn), 'a.' . $orderingColumn, $listDirn, $listOrder); ?>
+						</th>
+						<th>
+							<?php echo HTMLHelper::_('searchtools.sort', 'JGRID_HEADING_ID', 'a.id', $listDirn, $listOrder); ?>
 						</th>
 					</tr>
 				</thead>
+				<?php if ($rowcnt > 14) : ?>
 				<tfoot>
 					<tr>
-						<td colspan="<?php echo $columns; ?>">
-						</td>
+						<th>
+							<?php echo HTMLHelper::_('searchtools.sort', '', 'a.ordering', $listDirn, $listOrder, null, 'asc', 'JGRID_HEADING_ORDERING', 'icon-menu-2'); ?>
+						</th>
+						<th>
+							<?php echo HTMLHelper::_('grid.checkall'); ?>
+						</th>
+						<th>
+							<?php echo HTMLHelper::_('searchtools.sort', 'JSTATUS', 'a.state', $listDirn, $listOrder); ?>
+						</th>
+						<th>
+							<?php echo HTMLHelper::_('searchtools.sort', 'JGLOBAL_TITLE', 'a.title', $listDirn, $listOrder); ?>
+							| (alias) |
+							<?php echo HTMLHelper::_('searchtools.sort', 'Category', 'category_title', $listDirn, $listOrder); ?>							
+						</th>
+						<th>
+							<?php Text::_('In-article &lt;img&gt;s'); ?>
+						</th>
+						<th>
+							<?php Text::_('Intro & Fulltext images'); ?>
+						</th>
+						<th>
+							<?php echo HTMLHelper::_('searchtools.sort', 'XBARTMAN_HEADING_DATE_' . strtoupper($orderingColumn), 'a.' . $orderingColumn, $listDirn, $listOrder); ?>
+						</th>
+						<th>
+							<?php echo HTMLHelper::_('searchtools.sort', 'JGRID_HEADING_ID', 'a.id', $listDirn, $listOrder); ?>
+						</th>
 					</tr>
 				</tfoot>
+				<?php endif; ?>
 				<tbody>
 				<?php foreach ($this->items as $i => $item) :
 					$item->max_ordering = 0;
@@ -123,6 +204,7 @@ if ($saveOrder)
 					$canEditOwnParCat = $user->authorise('core.edit.own',   'com_xbarticleman.category.' . $item->parent_category_id) && $item->parent_category_uid == $userId;
 					$helper = new XbarticlemanHelper;
 					$imgs = $helper->getDocImgs($item->arttext);
+					$intfull = json_decode($item->images);
 					//$tags = $helper->getItemTags('com_content.article',$item->id);
 					?>
 					<tr class="row<?php echo $i % 2; ?>" sortable-group-id="<?php echo $item->catid; ?>">
@@ -135,7 +217,7 @@ if ($saveOrder)
 							}
 							elseif (!$saveOrder)
 							{
-								$iconClass = ' inactive tip-top hasTooltip" title="' . JHtml::_('tooltipText', 'JORDERINGDISABLED');
+								$iconClass = ' inactive tip-top hasTooltip" title="' . HTMLHelper::_('tooltipText', 'JORDERINGDISABLED');
 							}
 							?>
 							<span class="sortable-handler<?php echo $iconClass ?>">
@@ -147,18 +229,18 @@ if ($saveOrder)
 							<?php echo $item->ordering;?>
 						</td>
 						<td class="center">
-							<?php echo JHtml::_('grid.id', $i, $item->id); ?>
+							<?php echo HTMLHelper::_('grid.id', $i, $item->id); ?>
 						</td>
 						<td class="center">
 							<div class="btn-group">
-								<?php echo JHtml::_('jgrid.published', $item->state, $i, 'arttags.', $canChange, 'cb', $item->publish_up, $item->publish_down); ?>
-								<?php //echo JHtml::_('contentadministrator.featured', $item->featured, $i, $canChange); ?>
+								<?php echo HTMLHelper::_('jgrid.published', $item->state, $i, 'arttags.', $canChange, 'cb', $item->publish_up, $item->publish_down); ?>
+								<?php //echo HTMLHelper::_('contentadministrator.featured', $item->featured, $i, $canChange); ?>
 								<?php // Create dropdown items and render the dropdown list.
 								if ($canChange)
 								{
-									JHtml::_('actionsdropdown.' . ((int) $item->state === 2 ? 'un' : '') . 'archive', 'cb' . $i, 'arttags');
-									JHtml::_('actionsdropdown.' . ((int) $item->state === -2 ? 'un' : '') . 'trash', 'cb' . $i, 'arttags');
-									echo JHtml::_('actionsdropdown.render', $this->escape($item->title));
+									HTMLHelper::_('actionsdropdown.' . ((int) $item->state === 2 ? 'un' : '') . 'archive', 'cb' . $i, 'arttags');
+									HTMLHelper::_('actionsdropdown.' . ((int) $item->state === -2 ? 'un' : '') . 'trash', 'cb' . $i, 'arttags');
+									echo HTMLHelper::_('actionsdropdown.render', $this->escape($item->title));
 								}
 								?>
 							</div>
@@ -166,11 +248,11 @@ if ($saveOrder)
 						<td class="has-context">
 							<div class="pull-left">
 								<?php if ($item->checked_out) : ?>
-									<?php echo JHtml::_('jgrid.checkedout', $i, $item->editor, $item->checked_out_time, 'arttags.', $canCheckin); ?>
+									<?php echo HTMLHelper::_('jgrid.checkedout', $i, $item->editor, $item->checked_out_time, 'arttags.', $canCheckin); ?>
 								<?php endif; ?>
 								<?php if ($canEdit || $canEditOwn) : ?>
 									<a class="hasTooltip" href="
-									<?php echo JRoute::_('index.php?option=com_xbarticleman&task=article.edit&id=' . $item->id).'&retview=artimgs';?>
+									<?php echo Route::_('index.php?option=com_xbarticleman&task=article.edit&id=' . $item->id).'&retview=artimgs';?>
 									" title="<?php echo JText::_('JACTION_EDIT').' '.JText::_('tags & links'); ?>">
 										<?php echo $this->escape($item->title); ?></a>
 								<?php else : ?>
@@ -183,8 +265,8 @@ if ($saveOrder)
 								</span>
 								<div class="small">
 									<?php
-									$ParentCatUrl = JRoute::_('index.php?option=com_categories&task=category.edit&id=' . $item->parent_category_id . '&extension=com_content');
-									$CurrentCatUrl = JRoute::_('index.php?option=com_categories&task=category.edit&id=' . $item->catid . '&extension=com_content');
+									$ParentCatUrl = Route::_('index.php?option=com_categories&task=category.edit&id=' . $item->parent_category_id . '&extension=com_content');
+									$CurrentCatUrl = Route::_('index.php?option=com_categories&task=category.edit&id=' . $item->catid . '&extension=com_content');
 									$EditCatTxt = JText::_('JACTION_EDIT') . ' ' . JText::_('JCATEGORY');
 
 										if ($item->category_level != '1') :
@@ -208,40 +290,56 @@ if ($saveOrder)
 								</div>
 							</div>
 						</td>
-						<td class="small">
-							<b><?php echo count($imgs).'</b> image tags found<br />';
-							     foreach ($imgs as $a) {
-							         $tip = '';
-							        if ($a->getAttribute('width')) {
-							            $tip .= 'width:'.$a->getAttribute('width').'px ';
-							            if ($a->getAttribute('height')) $tip .= 'x';
-							        }
-							        if ($a->getAttribute('height')) {
-							            echo $a->getAttribute('height').'px high';
-							        }
-							        echo '<span class="hasTooltip" title="'.$tip.'">'; 
-							        echo $a->getAttribute('src').'</span><br />';
-							     }
-							    ?>
+						<td>
+							<b><?php echo count($item->imgtags); ?></b> image tags found<br />
+							<?php foreach ($item->imgtags as $a) : ?>
+    							<details>
+    								<summary>
+    									<a href="<?php echo $a['uri']; ?>" class="modal"><?php echo $a['filename']; ?></a>
+    								</summary>
+    								<?php echo print_r($a,true); ?>
+    							</details>
+    						<?php endforeach; ?>
+						</td>
+						<td>
+							<?php $a = $item->introimg;
+							if (key_exists('uri',$a) ) : ?>
+								<details>
+									<summary>
+    									<a href="<?php echo $a['uri']; ?>" class="modal"><?php echo $a['filename']; ?></a>
+									</summary>
+    								<?php echo print_r($a,true); ?>
+								</details>
+							<?php endif; ?>
+							<?php $a = $item->fullimg;
+							if (key_exists('uri',$a) ) : ?>
+								<details>
+									<summary>
+    									<a href="<?php echo $a['uri']; ?>" class="modal"><?php echo $a['filename']; ?></a>
+									</summary>
+    								<?php echo print_r($a,true); ?>
+								</details>
+							<?php endif; ?>
+							
 						</td>
 						<td class="nowrap small hidden-phone">
 							<?php
 							$date = $item->{$orderingColumn};
-							echo $date > 0 ? JHtml::_('date', $date, JText::_('D d M \'y')) : '-';
+							echo $date > 0 ? HTMLHelper::_('date', $date, JText::_('D d M \'y')) : '-';
 							?>
 						</td>
 						<td class="hidden-phone">
 							<?php echo (int) $item->id; ?>
 						</td>
 					</tr>
-					<?php endforeach; ?>
+				<?php endforeach; ?>
 				</tbody>
 			</table>
 			<?php // Load the batch processing form. ?>
 			<?php if ($user->authorise('core.create', 'com_xbarticleman')
 				&& $user->authorise('core.edit', 'com_xbarticleman')
 				&& $user->authorise('core.edit.state', 'com_xbarticleman')) : ?>
-				<?php echo JHtml::_(
+				<?php echo HTMLHelper::_(
 					'bootstrap.renderModal',
 					'collapseModal',
 					array(
@@ -257,7 +355,7 @@ if ($saveOrder)
 
 		<input type="hidden" name="task" value="" />
 		<input type="hidden" name="boxchecked" value="0" />
-		<?php echo JHtml::_('form.token'); ?>
+		<?php echo HTMLHelper::_('form.token'); ?>
 	</div>
 </form>
 

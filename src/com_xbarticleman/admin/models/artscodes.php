@@ -11,6 +11,7 @@ defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
 use Joomla\Utilities\ArrayHelper;
+use Joomla\CMS\Table\Table;
 
 class XbarticlemanModelArtscodes extends JModelList
 
@@ -198,7 +199,7 @@ class XbarticlemanModelArtscodes extends JModelList
 		if (count($categoryId))
 		{
 		    $categoryId = ArrayHelper::toInteger($categoryId);
-		    $categoryTable = JTable::getInstance('Category', 'JTable');
+		    $categoryTable = Table::getInstance('Category', 'JTable');
 		    $subCatItemsWhere = array();
 		    
 		    foreach ($categoryId as $filter_catid)
