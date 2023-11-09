@@ -2,15 +2,12 @@
 <config>
 <!-- GENERAL TAB -->				
 	<fieldset name="general"
-		label="XBAOY_GENERAL"
-		description="XBAOY_GENERAL_DESC"
+		label="XB_GENERAL"
+		description="XB_GENERAL_DESC"
 	>
 		<field name="extlinkhint" type="radio"
-			label="Use External Link Hinting"
-			description="This will load xbextlinks.css on both site and admin for xbAOY component. 
-			It provides for icons to indicate external link in same tab, external link in new tab
-			and internal link in new tab. Disable if template already provides this site wide"
-			class="btn-group btn-group-yesno"
+			label="XB_EXTLINKS_LABEL"
+			description="XB_EXTLINKS_DESC"
  			default="0"
 			>
 			<option value="0" >Disable</option>
@@ -20,16 +17,16 @@
 		</field>	
 	
    		<field name="beernote" type="note"
-			label="XBAOY_CONFIG_BUY_A_BEER_LABEL"
-			description="XBAOY_CONFIG_BUY_A_BEER_DESC"
+			label="XB_BUY_A_BEER_LABEL"
+			description="XB_BUY_A_BEER_DESC"
 			class="info"
 		/>	
         
 	</fieldset>
 <!-- BEER TAB -->
 	<fieldset name="reg"
-			label="XB_BEER_LABEL"
-			description="XB_BEER_DESC"
+			label="XB_REGCRED_LABEL"
+			description="XB_REGCRED_DESC"
 	>
   		<field name="beernote" type="note"
 			label="XB_BEER_NOTE"
@@ -41,7 +38,7 @@
 			default=""
 		/>	
 		<field name="beernote2" type="note"
-			label="XB_PAY_AT_THE_BAR"
+			label="XB_BEER_PAY_AT_THE_BAR"
 			description="XB_BEER_FORM"			
 		/>
 		<field name="penpont" type="hidden"

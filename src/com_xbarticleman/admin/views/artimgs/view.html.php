@@ -2,7 +2,7 @@
 /*******
  * @package xbArticleMan
  * file administrator/components/com_xbarticleman/views/artimgs/view.html.php
- * @version 2.0.4.0 8th November 2023
+ * @version 2.0.4.2 9th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
@@ -57,8 +57,11 @@
 		        $this->statefilt = 'all';
 		        $where = '';
 		    }
+		} else {
+		    $this->statefilt = 'published and unpublished';
 		}
 		$this->statearticles = XbarticlemanHelper::getItemCnt('#__content', $where);
+		$this->totalarticles = XbarticlemanHelper::getItemCnt('#__content', '');
 		
 		$this->addToolbar();
 		$this->sidebar = JHtmlSidebar::render();

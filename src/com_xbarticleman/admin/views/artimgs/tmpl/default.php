@@ -1,7 +1,7 @@
 <?php
 /*******
  * @package xbarticleman
- * file administrator/components/com_xbarticleman/views/artimgs/tmpl/default.php
+ * @filesource administrator/components/com_xbarticleman/views/artimgs/tmpl/default.php
  * @version 2.0.4.1 9th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
@@ -72,9 +72,10 @@ if ($saveOrder)
 	<div id="j-main-container">
 <?php endif; ?>
 		<h3><?php echo Text::_('Article Images')?></h3>
-		<h4><?php echo $this->statearticles.' '.$this->statefilt; ?> articles available</h4>
-		<p>Listing <?php echo $this->pagination->total; ?> 
+		<h4><?php echo Text::_('Total articles').' '.$this->totalarticles.'. '.Text::_('Listing').' '.$this->statearticles.' '.Text::_('articles').' '.$this->statefilt; ?></h4>
+		<p> 
     	<?php if (array_key_exists('artlist', $this->activeFilters)) {
+    	    echo Text::_('Filtered to show').' '.$this->pagination->total.' ';
     	    switch ($this->activeFilters['artlist']) {
     	    case 1:
     	        echo Text::_('articles with &lt;img&gt; tags.');
@@ -99,7 +100,7 @@ if ($saveOrder)
     	       break;
     	   }  	    
     	} else {
-    	    echo Text::_('articles');
+    	    echo Text::_('showing all').' '.$this->statearticles.' '.Text::_('articles');
     	}
         ?>
         </p>
@@ -115,6 +116,7 @@ if ($saveOrder)
 			<?php $columns   = 8; 
                 $rowcnt = count($this->items);
 			?>	
+            <p><center>Auto close details dropdowns <input  type="checkbox" id="autoclose" name="autoclose" value="yes" checked="true" style="margin:0 5px;" /></center></p>
 			
 			<table class="table table-striped" id="articleList">
 			<colgroup>
@@ -122,13 +124,13 @@ if ($saveOrder)
 				<col class="center hidden-phone" style="width:25px;"><!-- checkbox -->
 				<col class="nowrap center" style="width:55px;"><!-- status -->
 				<col ><!-- title, -->
-				<col ><!-- imgs -->
-				<col ><!-- intro/full -->
+				<col style="width:450px;"><!-- imgs -->
+				<col style="width:450px;"><!-- intro/full -->
 				<col class="nowrap hidden-phone" style="width:110px;" ><!-- date -->
 				<col class="nowrap hidden-phone" style="width:45px;"><!-- id -->
 			</colgroup>	
 				<thead>
-					<tr>
+					<tr style="background-color:#d7d7d7;">
 						<th>
 							<?php echo HTMLHelper::_('searchtools.sort', '', 'a.ordering', $listDirn, $listOrder, null, 'asc', 'JGRID_HEADING_ORDERING', 'icon-menu-2'); ?>
 						</th>
@@ -159,7 +161,7 @@ if ($saveOrder)
 				</thead>
 				<?php if ($rowcnt > 9) : ?>
 				<tfoot>
-					<tr>
+					<tr style="background-color:#d7d7d7;">
 						<th>
 							<?php echo HTMLHelper::_('searchtools.sort', '', 'a.ordering', $listDirn, $listOrder, null, 'asc', 'JGRID_HEADING_ORDERING', 'icon-menu-2'); ?>
 						</th>
@@ -259,9 +261,9 @@ if ($saveOrder)
 									<span title="<?php echo JText::sprintf('JFIELD_ALIAS_LABEL', $this->escape($item->alias)); ?>"><?php echo $this->escape($item->title); ?></span>
 								<?php endif; ?>
 								<br />
-								<span class="small">
+								<span class="small"><?php echo $this->escape($item->alias); ?>
 										<?php echo '(Alias: <a class="modal hasTooltip" title="'.JText::_('XBARTMAN_MODAL_PREVIEW').'" href="'.JUri::root().'index.php?option=com_content&view=article&id='.(int)$item->id.'&tmpl=component">';
-										echo $this->escape($item->alias).' <span class="icon-eye"></span></a>)'; ?>
+										echo ' <span class="icon-eye"></span></a>)'; ?>
 								</span>
 								<div class="small">
 									<?php
@@ -294,8 +296,8 @@ if ($saveOrder)
 							<b><?php echo count($item->imgtags); ?></b> image tags found<br />
 							<?php foreach ($item->imgtags as $a) : ?>
     							<details>
-    								<summary>
-    									<a href="<?php echo $a['uri']; ?>" class="modal"><?php echo $a['filename']; ?></a>
+    								<summary><?php echo $a['filename']; ?>
+    									<a href="<?php echo $a['uri']; ?>" class="modal"> <span class="icon-eye"></span> </a>
     								</summary>
 									<ul>
 										<li><i>Host:</i>
@@ -340,8 +342,8 @@ if ($saveOrder)
 							<?php $a = $item->introimg;
 							if (key_exists('uri',$a) ) : ?>
 								<details>
-									<summary>
-    									<a href="<?php echo $a['uri']; ?>" class="modal"><?php echo $a['filename']; ?></a>
+									<summary><?php echo $a['filename']; ?>
+    									<a href="<?php echo $a['uri']; ?>" class="modal"> <span class="icon-eye"></span> </a>
 									</summary>
 									<ul>
 										<li><i>Host:</i>
@@ -372,8 +374,8 @@ if ($saveOrder)
 							<?php $a = $item->fullimg;
 							if (key_exists('uri',$a) ) : ?>
 								<details>
-									<summary>
-    									<a href="<?php echo $a['uri']; ?>" class="modal"><?php echo $a['filename']; ?></a>
+									<summary><?php echo $a['filename']; ?>
+    									<a href="<?php echo $a['uri']; ?>" class="modal"> <span class="icon-eye"></span> </a>
 									</summary>
 									<ul>
 										<li><i>Host:</i>
@@ -439,6 +441,9 @@ if ($saveOrder)
 		<?php echo HTMLHelper::_('form.token'); ?>
 	</div>
 </form>
+<script language="JavaScript" type="text/javascript"
+  src="<?php echo Uri::root(); ?>/media/com_xbarticleman/js/colsedetails.js" />
 
 <div class="clearfix"></div>
 <?php echo XbarticlemanHelper::credit('xbArticleMan');?>
+
