@@ -2,7 +2,7 @@
 /*******
  * @package xbarticleman
  * file administrator/components/com_xbarticleman/views/artscodes/tmpl/default.php
- * @version 2.0.3.3 7th November 2023
+ * @version 2.0.5.0 10th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
@@ -92,10 +92,6 @@ if ($saveOrder)
     	<div class="pull-left">
     		<?php  echo $this->pagination->getResultsCounter(); ?> 
           <?php if($this->pagination->pagesTotal > 1) echo ' on '.$this->pagination->getPagesCounter(); ?>
-    		<p>
-              
-                <?php echo 'Sorted by '.$listOrder.' '.$listDirn ; ?>
-    		</p>
     	</div>
         <div class="clearfix"></div>      
 
@@ -104,6 +100,14 @@ if ($saveOrder)
 				<?php echo JText::_('JGLOBAL_NO_MATCHING_RESULTS'); ?>
 			</div>
 		<?php else : ?>
+			<?php $columns   = 8; 
+                $rowcnt = count($this->items);
+			?>	
+    		<p>              
+                <?php echo 'Sorted by '.$listOrder.' '.$listDirn ; ?>
+    		</p>
+            <p><center>Auto close details dropdowns <input  type="checkbox" id="autoclose" name="autoclose" value="yes" checked="true" style="margin:0 5px;" /></center></p>
+			
 				
 			<table class="table table-striped table-hover" id="xbArticlemanShortcodesList">
 			<colgroup>
@@ -207,22 +211,27 @@ if ($saveOrder)
 							</div>
 						</td>
 						<td class="has-context">
-							<div class="pull-left">
+							<div class="pull-left"></div><p>
 								<?php if ($item->checked_out) : ?>
 									<?php echo HTMLHelper::_('jgrid.checkedout', $i, $item->editor, $item->checked_out_time, 'articles.', $canCheckin); ?>
 								<?php endif; ?>
 								<?php if ($canEdit || $canEditOwn) : ?>
 									<a class="hasTooltip" href="
 									<?php echo Route::_('index.php?option=com_xbarticleman&task=article.edit&id=' . $item->id).'&retview=artimgs';?>
-									" title="<?php echo JText::_('JACTION_EDIT').' '.JText::_('tags & links'); ?>">
-										<?php echo $this->escape($item->title); ?></a>
+									" title="<?php echo Text::_('quick edit (not content)'); ?>">
+										<?php echo $this->escape($item->title); ?></a> 
+									<a class="hasTooltip" href="
+									<?php echo Route::_('index.php?option=com_content&task=article.edit&id=' . $item->id).'&retview=artimgs';?>
+									" title="<?php echo Text::_('Full edit'); ?>">										
+										<span class="icon-edit"></span></a>
 								<?php else : ?>
-									<span title="<?php echo JText::sprintf('JFIELD_ALIAS_LABEL', $this->escape($item->alias)); ?>"><?php echo $this->escape($item->title); ?></span>
+									<span title="<?php echo Text::sprintf('JFIELD_ALIAS_LABEL', $this->escape($item->alias)); ?>"><?php echo $this->escape($item->title); ?></span>
 								<?php endif; ?>
-								<br />
-								<span class="small">
-										<?php echo '(Alias: <a class="modal hasTooltip" title="'.JText::_('XBARTMAN_MODAL_PREVIEW').'" href="'.JUri::root().'index.php?option=com_content&view=article&id='.(int)$item->id.'&tmpl=component">';
-										echo $this->escape($item->alias).' <span class="icon-eye"></spn></a>)'; ?>
+								</p>
+								<span><i>Alias</i>: <?php echo $this->escape($item->alias); ?>
+										<?php echo '<a class="hasTooltip"  data-toggle="modal" title="'.JText::_('XBARTMAN_MODAL_PREVIEW').'" href="#pvModal"
+                                        onClick="window.pvid='.$item->id.';">';
+										echo ' <span class="icon-eye"></span></a>'; ?>
 								</span>
 								<div class="small">
 									<?php
@@ -292,13 +301,28 @@ if ($saveOrder)
 					'bootstrap.renderModal',
 					'collapseModal',
 					array(
-						'title'  => JText::_('COM_CONTENT_BATCH_OPTIONS'),
+						'title'  => Text::_('COM_CONTENT_BATCH_OPTIONS'),
 						'footer' => $this->loadTemplate('batch_footer'),
+					    'modalWidth' => '50',
 					),
 					$this->loadTemplate('batch_body')
 				); ?>
 			<?php endif; ?>
-		<?php endif; ?>
+			<?php // Load the article preview modal ?>
+			<?php echo HTMLHelper::_(
+				'bootstrap.renderModal',
+				'pvModal',
+				array(
+					'title'  => Text::_('Article Preview'),
+					'footer' => '',
+				    'height' => '900vh',
+				    'bodyHeight' => '90',
+				    'modalWidth' => '80',
+				    'url' => Uri::root().'index.php?option=com_content&view=article&id='.'x'
+				),
+			); ?>
+
+ 		<?php endif; ?>
 
 		<?php echo $this->pagination->getListFooter(); ?>
 
@@ -307,8 +331,11 @@ if ($saveOrder)
 		<?php echo HTMLHelper::_('form.token'); ?>
 	</div>
 </form>
+<script language="JavaScript" type="text/javascript"
+  src="<?php echo Uri::root(); ?>media/com_xbarticleman/js/closedetails.js" ></script>
+<script language="JavaScript" type="text/javascript"
+  src="<?php echo Uri::root(); ?>media/com_xbarticleman/js/setifsrc.js" ></script>
 
 <div class="clearfix"></div>
 <?php echo XbarticlemanHelper::credit('xbArticleMan');?>
-
 

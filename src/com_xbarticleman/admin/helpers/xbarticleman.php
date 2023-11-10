@@ -2,7 +2,7 @@
 /*******
  * @package xbArticleManager
  * file administrator/components/com_xbarticleman/helpers/xbarticleman.php
- * @version 2.0.3.1 6th November 2023
+ * @version 2.0.5.0 10th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
@@ -48,14 +48,14 @@ class XbarticlemanHelper extends ComponentHelper
 			$vName == 'arttags'
 		);
 		JHtmlSidebar::addEntry(
-		    Text::_('XBARTMAN_ICONMENU_ARTLINKS'),
-		    'index.php?option=com_xbarticleman&view=artlinks',
-		    $vName == 'artlinks'
-		    );
-		JHtmlSidebar::addEntry(
 		    Text::_('XBARTMAN_ICONMENU_ARTIMGS'),
 		    'index.php?option=com_xbarticleman&view=artimgs',
 		    $vName == 'artimgs'
+		    );
+		JHtmlSidebar::addEntry(
+		    Text::_('XBARTMAN_ICONMENU_ARTLINKS'),
+		    'index.php?option=com_xbarticleman&view=artlinks',
+		    $vName == 'artlinks'
 		    );
 		JHtmlSidebar::addEntry(
 		    Text::_('XBARTMAN_ICONMENU_SHORTCODES'),

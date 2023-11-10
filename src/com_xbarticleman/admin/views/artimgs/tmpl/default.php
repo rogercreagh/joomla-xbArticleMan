@@ -2,7 +2,7 @@
 /*******
  * @package xbarticleman
  * @filesource administrator/components/com_xbarticleman/views/artimgs/tmpl/default.php
- * @version 2.0.4.3 10th November 2023
+ * @version 2.0.5.0 10th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
@@ -131,7 +131,7 @@ if ($saveOrder)
     		</p>
             <p><center>Auto close details dropdowns <input  type="checkbox" id="autoclose" name="autoclose" value="yes" checked="true" style="margin:0 5px;" /></center></p>
 			
-			<table class="table table-striped" id="articleList">
+			<table class="table table-striped table-hover" id="articleList">
 			<colgroup>
 				<col class="nowrap center hidden-phone" style="width:25px;"><!-- ordering -->
 				<col class="center hidden-phone" style="width:25px;"><!-- checkbox -->
@@ -159,10 +159,10 @@ if ($saveOrder)
 							<?php echo HTMLHelper::_('searchtools.sort', 'Category', 'category_title', $listDirn, $listOrder); ?>							
 						</th>
 						<th>
-							<?php echo Text::_('In-article &lt;img&gt;s'); ?>
+							<?php echo Text::_('In-article img tags'); ?>
 						</th>
 						<th>
-							<?php echo Text::_('Intro & Fulltext images'); ?>
+							<?php echo Text::_('Article Intro & Full images'); ?>
 						</th>
 						<th>
 							<?php echo HTMLHelper::_('searchtools.sort', 'XBARTMAN_HEADING_DATE_' . strtoupper($orderingColumn), 'a.' . $orderingColumn, $listDirn, $listOrder); ?>
@@ -446,10 +446,12 @@ if ($saveOrder)
 					array(
 						'title'  => Text::_('COM_CONTENT_BATCH_OPTIONS'),
 						'footer' => $this->loadTemplate('batch_footer'),
+					    'modalWidth' => '50',
 					),
 					$this->loadTemplate('batch_body')
 				); ?>
 			<?php endif; ?>
+			<?php // Load the article preview modal ?>
 			<?php echo HTMLHelper::_(
 				'bootstrap.renderModal',
 				'pvModal',
@@ -457,6 +459,8 @@ if ($saveOrder)
 					'title'  => Text::_('Article Preview'),
 					'footer' => '',
 				    'height' => '900vh',
+				    'bodyHeight' => '90',
+				    'modalWidth' => '80',
 				    'url' => Uri::root().'index.php?option=com_content&view=article&id='.'x'
 				),
 			); ?>

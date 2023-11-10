@@ -2,7 +2,7 @@
 /*******
  * @package xbarticleman
  * file administrator/components/com_xbarticleman/views/artlinks/tmpl/default.php
- * @version 2.0.3.3 7th November 2023
+ * @version 2.0.5.0 10th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
@@ -19,8 +19,8 @@ use Joomla\CMS\Helper\TagsHelper;
 use Joomla\Registry\Registry;
 //use Joomla\Utilities\ArrayHelper;
 
-JLoader::register('XbarticlemanHelper', JPATH_ADMINISTRATOR . '/components/com_xbarticleman/helpers/xbarticleman.php');
-JLoader::register('ContentHelperRoute', JPATH_SITE . '/components/com_content/helpers/route.php');
+//JLoader::register('XbarticlemanHelper', JPATH_ADMINISTRATOR . '/components/com_xbarticleman/helpers/xbarticleman.php');
+//JLoader::register('ContentHelperRoute', JPATH_SITE . '/components/com_content/helpers/route.php');
 
 HTMLHelper::_('bootstrap.tooltip');
 HTMLHelper::_('behavior.multiselect');
@@ -36,7 +36,7 @@ $listOrder = $this->escape($this->state->get('list.ordering'));
 $listDirn  = $this->escape($this->state->get('list.direction'));
 $saveOrder = $listOrder == 'a.ordering';
 $columns   = 9;
-$cnt = count($this->items);
+$rowcnt = count($this->items);
 
 if (strpos($listOrder, 'publish_up') !== false)
 {
@@ -72,36 +72,78 @@ if ($saveOrder)
 <?php else : ?>
 	<div id="j-main-container">
 <?php endif; ?>
+		<h3><?php echo Text::_('Article Links')?></h3>
+		<h4><?php echo Text::_('Total articles').' '.$this->totalarticles.'. '.Text::_('Listing').' '.$this->statearticles.' '.Text::_('articles').' '.$this->statefilt; ?></h4>
+		<p> 
+    	<?php if (array_key_exists('artlist', $this->activeFilters)) {
+    	    echo Text::_('Filtered to show').' '.$this->pagination->total.' ';
+    	    switch ($this->activeFilters['artlist']) {
+    	    case 1:
+    	        echo Text::_('articles with &lt;a href=... &gt; tags.');
+    	       break;
+    	    case 2:
+    	        echo Text::_('articles with related links (ABC).');
+    	        break;
+    	    case 3:
+    	        echo Text::_('articles with &lt;a &gt; tags or Related links.');
+    	        break;
+    	    case 4:
+    	        echo Text::_('articles with no &lt;a &gt; tags.');
+    	        break;
+    	    case 5:
+    	        echo Text::_('articles with no Related links.');
+    	        break;
+    	    case 6:
+    	        echo Text::_('articles with no links (embedded or related).');
+    	        break;
+    	    default:
+    	       echo Text::_('articles');
+    	       break;
+    	   }  	    
+    	} else {
+    	    echo Text::_('showing all').' '.$this->statearticles.' '.Text::_('articles');
+    	}
+        ?>
+        </p>
 		<?php
 		// Search tools bar
 		echo LayoutHelper::render('joomla.searchtools.default', array('view' => $this));
 		?>
+        <div class="pull-right pagination xbm0">
+    		<?php  echo $this->pagination->getPagesLinks(); ?>
+    	</div>
+    
+    	<div class="pull-left">
+    		<?php  echo $this->pagination->getResultsCounter(); ?> 
+          <?php if($this->pagination->pagesTotal > 1) echo ' on '.$this->pagination->getPagesCounter(); ?>
+    	</div>
+        <div class="clearfix"></div>      
+              
 		<?php if (empty($this->items)) : ?>
 			<div class="alert alert-no-items">
 				<?php echo Text::_('JGLOBAL_NO_MATCHING_RESULTS'); ?>
 			</div>
 		<?php else : ?>
 			<p><?php
-                echo 'Showing '.$cnt.' items ';
-				if ($cnt>10) { 
-				    echo '(Link checking disabled while more than 10 items shown) ';
+				if ($rowcnt>10) { 
+				    echo 'NB. Link checking disabled while more than 10 items shown ';
 				} ?>
 			</p>
-			<div <?php if ($cnt>10) echo 'style="display:none;"';?> >
+			<div <?php if ($rowcnt>10) echo 'style="display:none;"';?> >
 		         <p><b>Links to check:</b> Internal 
 		         <input type="checkbox" name="checkint" value="1" 
-		         <?php if (($this->checkint==1) && ($cnt<11)) echo 'checked="checked" ';
-		              if ($cnt>10) echo 'disabled';
+		         <?php if (($this->checkint==1) && ($rowcnt<11)) echo 'checked="checked" ';
+		              if ($rowcnt>10) echo 'disabled';
 		          ?> /> 
 		          External 
 		          <input type="checkbox" name="checkext" value="1" 
-		          <?php if (($this->checkext==1) && ($cnt<11)) echo 'checked="checked" ';
-		              if ($cnt>10) echo 'disabled';
+		          <?php if (($this->checkext==1) && ($rowcnt<11)) echo 'checked="checked" ';
+		              if ($rowcnt>10) echo 'disabled';
 		          ?> /> <span style="padding-left:20px;"> </span>
     			<input type="button" class="btn" value="Check Now" onClick="this.form.submit();" 
-		          <?php if ($cnt>10) { echo 'disabled';}?> /> 
+		          <?php if ($rowcnt>10) { echo 'disabled';}?> /> 
 </p>
-				<?php  if ($cnt<11) :?>
+				<?php  if ($rowcnt<11) :?>
 				<div class="alert">
                     <p><i>NB Link checking may make the page take a while to load if there are many links 
                     - minimise number of links shown with filter and pagination settings before clicking [Check Now].</i>
@@ -110,21 +152,37 @@ if ($saveOrder)
                 <?php endif; ?>
 			</div>
 				
-			<table class="table table-striped" id="articleList">
+    		<p>              
+                <?php echo 'Sorted by '.$listOrder.' '.$listDirn ; ?>
+    		</p>
+            <p><center>Auto close details dropdowns <input  type="checkbox" id="autoclose" name="autoclose" value="yes" checked="true" style="margin:0 5px;" /></center></p>
+			
+			<table class="table table-striped table-hover" id="articleList">
+			<colgroup>
+				<col class="nowrap center hidden-phone" style="width:25px;"><!-- ordering -->
+				<col class="center hidden-phone" style="width:25px;"><!-- checkbox -->
+				<col class="nowrap center" style="width:55px;"><!-- status -->
+				<col ><!-- title, -->
+				<col style="width:450px;"><!-- related -->
+				<col style="width:450px;"><!-- embedded -->
+				<col ><!-- anchors -->
+				<col class="nowrap hidden-phone" style="width:110px;" ><!-- date -->
+				<col class="nowrap hidden-phone" style="width:45px;"><!-- id -->
+			</colgroup>	
 				<thead>
-					<tr>
-						<th width="1%" class="nowrap center hidden-phone">
+					<tr style="background-color:#d7d7d7;">
+						<th >
 							<?php echo HTMLHelper::_('searchtools.sort', '', 'a.ordering', $listDirn, $listOrder, null, 'asc', 'JGRID_HEADING_ORDERING', 'icon-menu-2'); ?>
 						</th>
-						<th width="1%" class="center">
+						<th >
 							<?php echo HTMLHelper::_('grid.checkall'); ?>
 						</th>
-						<th width="1%" class="nowrap center">
+						<th >
 							<?php echo HTMLHelper::_('searchtools.sort', 'JSTATUS', 'a.state', $listDirn, $listOrder); ?>
 						</th>
-						<th style="min-width:100px" class="nowrap">
+						<th >
 							<?php echo HTMLHelper::_('searchtools.sort', 'JGLOBAL_TITLE', 'a.title', $listDirn, $listOrder); ?>
-							| (alias) |
+							<span class="xbnorm xbo9">(edit) |</span>  alias <span class="xbnorm xb09">(pv) |</span>
 							<?php echo HTMLHelper::_('searchtools.sort', 'Category', 'category_title', $listDirn, $listOrder); ?>							
 						</th>
 						<th>
@@ -145,20 +203,58 @@ if ($saveOrder)
 								<?php echo Text::_('XBARTMAN_COL_TARGS_TITLE'); ?>
 							</span>
 						</th>
-						<th width="10%" class="nowrap hidden-phone">
+						<th>
 							<?php echo HTMLHelper::_('searchtools.sort', 'XBARTMAN_HEADING_DATE_' . strtoupper($orderingColumn), 'a.' . $orderingColumn, $listDirn, $listOrder); ?>
 						</th>
-						<th width="1%" class="nowrap hidden-phone">
+						<th >
 							<?php echo HTMLHelper::_('searchtools.sort', 'JGRID_HEADING_ID', 'a.id', $listDirn, $listOrder); ?>
 						</th>
 					</tr>
 				</thead>
-				<tfoot>
-					<tr>
-						<td colspan="<?php echo $columns; ?>">
-						</td>
-					</tr>
-				</tfoot>
+				<?php if ($rowcnt > 9) : ?>
+    				<tfoot>
+    					<tr style="background-color:#d7d7d7;">
+						<th >
+							<?php echo HTMLHelper::_('searchtools.sort', '', 'a.ordering', $listDirn, $listOrder, null, 'asc', 'JGRID_HEADING_ORDERING', 'icon-menu-2'); ?>
+						</th>
+						<th >
+							<?php echo HTMLHelper::_('grid.checkall'); ?>
+						</th>
+						<th >
+							<?php echo HTMLHelper::_('searchtools.sort', 'JSTATUS', 'a.state', $listDirn, $listOrder); ?>
+						</th>
+						<th >
+							<?php echo HTMLHelper::_('searchtools.sort', 'JGLOBAL_TITLE', 'a.title', $listDirn, $listOrder); ?>
+							<span class="xbnorm xbo9">(edit) |</span>  alias <span class="xbnorm xb09">(pv) |</span>
+							<?php echo HTMLHelper::_('searchtools.sort', 'Category', 'category_title', $listDirn, $listOrder); ?>							
+						</th>
+						<th>
+							<span class="hasPopover" title="<?php echo Text::_('XBARTMAN_COL_RELLNK_TITLE'); ?> " 
+							data-content="<?php echo Text::_('XBARTMAN_COL_RELLNK_DESC').Text::_('XBARTMAN_COL_LINKS_GENERIC'); ?>">
+								<?php echo Text::_('XBARTMAN_COL_RELLNK_TITLE'); ?>
+							</span>
+						</th>
+						<th>
+							<span class="hasPopover" title="<?php echo Text::_('XBARTMAN_COL_LINKS_TITLE'); ?>" 
+							data-content="<?php echo Text::_('XBARTMAN_COL_LINKS_DESC').Text::_('XBARTMAN_COL_LINKS_GENERIC'); ?>">
+								<?php echo Text::_('XBARTMAN_COL_LINKS_TITLE'); ?>
+							</span>
+						</th>
+						<th width="10%" class="hidden-phone">
+							<span class="hasPopover" title="<?php echo Text::_('XBARTMAN_COL_TARGS_TITLE'); ?>"
+							data-content=" <?php echo Text::_('XBARTMAN_COL_TARGS_DESC'); ?>">
+								<?php echo Text::_('XBARTMAN_COL_TARGS_TITLE'); ?>
+							</span>
+						</th>
+						<th>
+							<?php echo HTMLHelper::_('searchtools.sort', 'XBARTMAN_HEADING_DATE_' . strtoupper($orderingColumn), 'a.' . $orderingColumn, $listDirn, $listOrder); ?>
+						</th>
+						<th >
+							<?php echo HTMLHelper::_('searchtools.sort', 'JGRID_HEADING_ID', 'a.id', $listDirn, $listOrder); ?>
+						</th>
+    					</tr>
+    				</tfoot>
+				<?php endif; ?>
 				<tbody>
 				<?php foreach ($this->items as $i => $item) :
 					$item->max_ordering = 0;
@@ -215,7 +311,7 @@ if ($saveOrder)
 							</div>
 						</td>
 						<td class="has-context">
-							<div class="pull-left">
+							<div class="pull-left"><p>
 								<?php if ($item->checked_out) : ?>
 									<?php echo HTMLHelper::_('jgrid.checkedout', $i, $item->editor, $item->checked_out_time, 'articles.', $canCheckin); ?>
 								<?php endif; ?>
@@ -224,13 +320,18 @@ if ($saveOrder)
 									<?php echo Route::_('index.php?option=com_xbarticleman&task=article.edit&id=' . $item->id).'&retview=artlinks';?>
 									" title="<?php echo Text::_('JACTION_EDIT').' '.Text::_('tags & links'); ?>">
 										<?php echo $this->escape($item->title); ?></a>
+									<a class="hasTooltip" href="
+									<?php echo Route::_('index.php?option=com_content&task=article.edit&id=' . $item->id).'&retview=artimgs';?>
+									" title="<?php echo Text::_('Full edit'); ?>">										
+										<span class="icon-edit"></span></a>
 								<?php else : ?>
 									<span title="<?php echo Text::sprintf('JFIELD_ALIAS_LABEL', $this->escape($item->alias)); ?>"><?php echo $this->escape($item->title); ?></span>
 								<?php endif; ?>
-								<br />
-								<span class="small">
-										<?php echo '(Alias: <a class="modal hasTooltip" title="'.Text::_('XBARTMAN_MODAL_PREVIEW').'" href="'.Uri::root().'index.php?option=com_content&view=article&id='.(int)$item->id.'&tmpl=component">';
-										echo $this->escape($item->alias).' <span class="icon-eye"></span></a>)'; ?>
+								</p>
+								<span><i>Alias</i>: <?php echo $this->escape($item->alias); ?>
+										<?php echo '<a class="hasTooltip"  data-toggle="modal" title="'.JText::_('XBARTMAN_MODAL_PREVIEW').'" href="#pvModal"
+                                        onClick="window.pvid='.$item->id.';">';
+										echo ' <span class="icon-eye"></span></a>'; ?>
 								</span>
 								<div class="small">
 									<?php
@@ -336,13 +437,28 @@ if ($saveOrder)
 					'bootstrap.renderModal',
 					'collapseModal',
 					array(
-						'title'  => Text::_('XBARTMAN_BATCH_OPTIONS'),
+						'title'  => Text::_('COM_CONTENT_BATCH_OPTIONS'),
 						'footer' => $this->loadTemplate('batch_footer'),
+					    'modalWidth' => '50',
 					),
 					$this->loadTemplate('batch_body')
 				); ?>
 			<?php endif; ?>
-		<?php endif; ?>
+			<?php // Load the article preview modal ?>
+			<?php echo HTMLHelper::_(
+				'bootstrap.renderModal',
+				'pvModal',
+				array(
+					'title'  => Text::_('Article Preview'),
+					'footer' => '',
+				    'height' => '900vh',
+				    'bodyHeight' => '90',
+				    'modalWidth' => '80',
+				    'url' => Uri::root().'index.php?option=com_content&view=article&id='.'x'
+				),
+			); ?>
+
+ 		<?php endif; ?>
 
 		<?php echo $this->pagination->getListFooter(); ?>
 
@@ -351,6 +467,11 @@ if ($saveOrder)
 		<?php echo HTMLHelper::_('form.token'); ?>
 	</div>
 </form>
+<script language="JavaScript" type="text/javascript"
+  src="<?php echo Uri::root(); ?>media/com_xbarticleman/js/closedetails.js" ></script>
+<script language="JavaScript" type="text/javascript"
+  src="<?php echo Uri::root(); ?>media/com_xbarticleman/js/setifsrc.js" ></script>
 
 <div class="clearfix"></div>
 <?php echo XbarticlemanHelper::credit('xbArticleMan');?>
+

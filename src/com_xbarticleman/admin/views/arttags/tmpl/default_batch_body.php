@@ -1,8 +1,8 @@
 <?php
 /*******
  * @package xbArticleManager
- * file administrator/components/com_xbarticleman/views/articles/tmpl/default_batch_body.php
- * @version 2.0.3.3 7th November 2023
+ * file administrator/components/com_xbarticleman/views/arttags/tmpl/default_batch_body.php
+ * @version 2.0.5.0 10th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -20,11 +20,11 @@ $published = $this->state->get('filter.published');
 		<?php if (($published >= 0) || ($published == '')) : ?>
 			<div class="control-group span6">
 				<div class="controls">
-					<?php echo JHtml::_('batch.item', 'com_content'); ?>
+					<?php echo HtmlHelper::_('batch.item', 'com_content'); ?>
 				</div>
 			</div>
         <?php else: ?>
-          <div class="span6">to change category exclude archived articles from list</div>
+          <div class="span6">to change category exclude trashed articles from list</div>
 		<?php endif; ?>
 		<div class="control-group span6">
 			<div class="controls">
