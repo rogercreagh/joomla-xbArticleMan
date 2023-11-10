@@ -2,7 +2,7 @@
 /*******
  * @package xbarticleman
  * @filesource administrator/components/com_xbarticleman/views/artimgs/tmpl/default.php
- * @version 2.0.4.1 9th November 2023
+ * @version 2.0.4.3 10th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
@@ -24,8 +24,8 @@ use Joomla\Registry\Registry;
 
 HTMLHelper::_('bootstrap.tooltip');
 HTMLHelper::_('behavior.multiselect');
-HTMLHelper::_('formbehavior.chosen', '.multipleTags', null, array('placeholder_text_multiple' => JText::_('JOPTION_SELECT_TAG')));
-HTMLHelper::_('formbehavior.chosen', '.multipleCategories', null, array('placeholder_text_multiple' => JText::_('JOPTION_SELECT_CATEGORY')));
+HTMLHelper::_('formbehavior.chosen', '.multipleTags', null, array('placeholder_text_multiple' => Text::_('JOPTION_SELECT_TAG')));
+HTMLHelper::_('formbehavior.chosen', '.multipleCategories', null, array('placeholder_text_multiple' => Text::_('JOPTION_SELECT_CATEGORY')));
 HTMLHelper::_('formbehavior.chosen', 'select');
 HTMLHelper::_('behavior.modal');
 
@@ -108,14 +108,27 @@ if ($saveOrder)
 		// Search tools bar
 		echo LayoutHelper::render('joomla.searchtools.default', array('view' => $this));
 		?>
+        <div class="pull-right pagination xbm0">
+    		<?php  echo $this->pagination->getPagesLinks(); ?>
+    	</div>
+    
+    	<div class="pull-left">
+    		<?php  echo $this->pagination->getResultsCounter(); ?> 
+          <?php if($this->pagination->pagesTotal > 1) echo ' on '.$this->pagination->getPagesCounter(); ?>
+    	</div>
+        <div class="clearfix"></div>      
+              
 		<?php if (empty($this->items)) : ?>
 			<div class="alert alert-no-items">
-				<?php echo JText::_('JGLOBAL_NO_MATCHING_RESULTS'); ?>
+				<?php echo Text::_('JGLOBAL_NO_MATCHING_RESULTS'); ?>
 			</div>
 		<?php else : ?>
 			<?php $columns   = 8; 
                 $rowcnt = count($this->items);
 			?>	
+    		<p>              
+                <?php echo 'Sorted by '.$listOrder.' '.$listDirn ; ?>
+    		</p>
             <p><center>Auto close details dropdowns <input  type="checkbox" id="autoclose" name="autoclose" value="yes" checked="true" style="margin:0 5px;" /></center></p>
 			
 			<table class="table table-striped" id="articleList">
@@ -142,7 +155,7 @@ if ($saveOrder)
 						</th>
 						<th>
 							<?php echo HTMLHelper::_('searchtools.sort', 'JGLOBAL_TITLE', 'a.title', $listDirn, $listOrder); ?>
-							| (alias) |
+							<span class="xbnorm xbo9">(edit) |</span>  alias <span class="xbnorm xb09">(pv) |</span>
 							<?php echo HTMLHelper::_('searchtools.sort', 'Category', 'category_title', $listDirn, $listOrder); ?>							
 						</th>
 						<th>
@@ -173,7 +186,7 @@ if ($saveOrder)
 						</th>
 						<th>
 							<?php echo HTMLHelper::_('searchtools.sort', 'JGLOBAL_TITLE', 'a.title', $listDirn, $listOrder); ?>
-							| (alias) |
+							<span class="xbnorm xbo9">(edit) |</span>  alias <span class="xbnorm xb09">(pv) |</span>
 							<?php echo HTMLHelper::_('searchtools.sort', 'Category', 'category_title', $listDirn, $listOrder); ?>							
 						</th>
 						<th>
@@ -248,28 +261,33 @@ if ($saveOrder)
 							</div>
 						</td>
 						<td class="has-context">
-							<div class="pull-left">
+							<div class="pull-left"><p>
 								<?php if ($item->checked_out) : ?>
 									<?php echo HTMLHelper::_('jgrid.checkedout', $i, $item->editor, $item->checked_out_time, 'arttags.', $canCheckin); ?>
 								<?php endif; ?>
 								<?php if ($canEdit || $canEditOwn) : ?>
 									<a class="hasTooltip" href="
 									<?php echo Route::_('index.php?option=com_xbarticleman&task=article.edit&id=' . $item->id).'&retview=artimgs';?>
-									" title="<?php echo JText::_('JACTION_EDIT').' '.JText::_('tags & links'); ?>">
-										<?php echo $this->escape($item->title); ?></a>
+									" title="<?php echo Text::_('quick edit (not content)'); ?>">
+										<?php echo $this->escape($item->title); ?></a> 
+									<a class="hasTooltip" href="
+									<?php echo Route::_('index.php?option=com_content&task=article.edit&id=' . $item->id).'&retview=artimgs';?>
+									" title="<?php echo Text::_('Full edit'); ?>">										
+										<span class="icon-edit"></span></a>
 								<?php else : ?>
-									<span title="<?php echo JText::sprintf('JFIELD_ALIAS_LABEL', $this->escape($item->alias)); ?>"><?php echo $this->escape($item->title); ?></span>
+									<span title="<?php echo Text::sprintf('JFIELD_ALIAS_LABEL', $this->escape($item->alias)); ?>"><?php echo $this->escape($item->title); ?></span>
 								<?php endif; ?>
-								<br />
-								<span class="small"><?php echo $this->escape($item->alias); ?>
-										<?php echo '(Alias: <a class="modal hasTooltip" title="'.JText::_('XBARTMAN_MODAL_PREVIEW').'" href="'.JUri::root().'index.php?option=com_content&view=article&id='.(int)$item->id.'&tmpl=component">';
-										echo ' <span class="icon-eye"></span></a>)'; ?>
+								</p>
+								<span><i>Alias</i>: <?php echo $this->escape($item->alias); ?>
+										<?php echo '<a class="hasTooltip"  data-toggle="modal" title="'.JText::_('XBARTMAN_MODAL_PREVIEW').'" href="#pvModal"
+                                        onClick="window.pvid='.$item->id.';">';
+										echo ' <span class="icon-eye"></span></a>'; ?>
 								</span>
 								<div class="small">
 									<?php
 									$ParentCatUrl = Route::_('index.php?option=com_categories&task=category.edit&id=' . $item->parent_category_id . '&extension=com_content');
 									$CurrentCatUrl = Route::_('index.php?option=com_categories&task=category.edit&id=' . $item->catid . '&extension=com_content');
-									$EditCatTxt = JText::_('JACTION_EDIT') . ' ' . JText::_('JCATEGORY');
+									$EditCatTxt = Text::_('JACTION_EDIT') . ' ' . Text::_('JCATEGORY');
 
 										if ($item->category_level != '1') :
 											     $bits = explode('/', $item->category_path);
@@ -408,7 +426,7 @@ if ($saveOrder)
 						<td class="nowrap small hidden-phone">
 							<?php
 							$date = $item->{$orderingColumn};
-							echo $date > 0 ? HTMLHelper::_('date', $date, JText::_('D d M \'y')) : '-';
+							echo $date > 0 ? HTMLHelper::_('date', $date, Text::_('D d M \'y')) : '-';
 							?>
 						</td>
 						<td class="hidden-phone">
@@ -426,13 +444,24 @@ if ($saveOrder)
 					'bootstrap.renderModal',
 					'collapseModal',
 					array(
-						'title'  => JText::_('COM_CONTENT_BATCH_OPTIONS'),
+						'title'  => Text::_('COM_CONTENT_BATCH_OPTIONS'),
 						'footer' => $this->loadTemplate('batch_footer'),
 					),
 					$this->loadTemplate('batch_body')
 				); ?>
 			<?php endif; ?>
-		<?php endif; ?>
+			<?php echo HTMLHelper::_(
+				'bootstrap.renderModal',
+				'pvModal',
+				array(
+					'title'  => Text::_('Article Preview'),
+					'footer' => '',
+				    'height' => '900vh',
+				    'url' => Uri::root().'index.php?option=com_content&view=article&id='.'x'
+				),
+			); ?>
+
+ 		<?php endif; ?>
 
 		<?php echo $this->pagination->getListFooter(); ?>
 
@@ -442,7 +471,9 @@ if ($saveOrder)
 	</div>
 </form>
 <script language="JavaScript" type="text/javascript"
-  src="<?php echo Uri::root(); ?>/media/com_xbarticleman/js/colsedetails.js" />
+  src="<?php echo Uri::root(); ?>media/com_xbarticleman/js/closedetails.js" ></script>
+<script language="JavaScript" type="text/javascript"
+  src="<?php echo Uri::root(); ?>media/com_xbarticleman/js/setifsrc.js" ></script>
 
 <div class="clearfix"></div>
 <?php echo XbarticlemanHelper::credit('xbArticleMan');?>
