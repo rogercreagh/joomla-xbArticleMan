@@ -11,7 +11,7 @@
 
 		<field name="artlist" type="list"
 			label="List type"
-			description="What images to include in list before filtering"
+			description="What articles to include in list"
 			default="1"
 			onchange="this.form.submit();"
 		>

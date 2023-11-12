@@ -9,6 +9,7 @@
 - [x] v2.0.3 improve lists and layouts for arttags
 - [ ] v2.0.4 improve lists and layouts for artimages
 - [ ] v2.0.5 improve lists and layouts for artlinks
+- [ ] v2.0.6 improve lists and layouts for arshortcodes
 - [ ] 
 
 **Subsequent releases (order not yet specified)**

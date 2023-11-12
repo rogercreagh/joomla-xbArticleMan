@@ -2,13 +2,19 @@
 /*******
  * @package xbArticleMan
  * file administrator/components/com_xbarticleman/views/artlinks/view.html.php
- * @version 1.0.0.0 22nd January 2019
+ * @version 2.0.5.0 12th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
  ******/
  defined('_JEXEC') or die();
 
+ use Joomla\CMS\Factory;
+ use Joomla\CMS\Layout\FileLayout;
+ use Joomla\CMS\Toolbar\Toolbar;
+ use Joomla\CMS\Toolbar\ToolbarHelper;
+ use Joomla\CMS\Language\Text;
+ 
  class XbarticlemanViewArtlinks extends JViewLegacy
 {
     protected $items;
@@ -45,7 +51,24 @@
 			throw new Exception(implode("\n", $errors), 500);
 		}
 
-
+		$where = 'state IN (1,0)';
+		$this->statefilt = 'published and unpublished';
+		if (array_key_exists('published', $this->activeFilters)) {
+		    $published = $this->activeFilters['published'];
+		    if (is_numeric($published)) {
+		        $where = 'state = ' . (int) $published;
+		        $this->statefilt = array('trashed','','unpublished','published','archived')[$published+2];
+		    } else {
+		        $this->statefilt = 'all';
+		        $where = '';
+		    }
+		} else {
+		    $this->statefilt = 'published and unpublished';
+		}
+		$this->statearticles = XbarticlemanHelper::getItemCnt('#__content', $where);
+		$this->totalarticles = XbarticlemanHelper::getItemCnt('#__content', '');
+		
+		
 		// We don't need toolbar in the modal window.
 		if ($this->getLayout() !== 'modal')
 		{
@@ -59,28 +82,28 @@
 	protected function addToolbar()
 	{
 		$canDo = XbarticlemanHelper::getActions();
-		$user  = JFactory::getUser();
+		$user  = Factory::getUser();
 
 		// Get the toolbar object instance
-		$bar = JToolbar::getInstance('toolbar');
+		$bar = Toolbar::getInstance('toolbar');
 
-		JToolbarHelper::title(JText::_('XBARTMAN_ADMIN_ARTLINKS_TITLE'), 'stack article');
+		ToolbarHelper::title(JText::_('XBARTMAN_ADMIN_ARTLINKS_TITLE'), 'stack article');
 
 		if ($canDo->get('core.create') || count($user->getAuthorisedCategories('com_xbarticleman', 'core.create')) > 0)
 		{
-			JToolbarHelper::addNew('articles.newArticle');
+			ToolbarHelper::addNew('articles.newArticle');
 		}
 
 		if ($canDo->get('core.edit') || $canDo->get('core.edit.own'))
 		{
-		    JToolbarHelper::editList('article.edit','Edit Tags Links');
-		    JToolbarHelper::editList('articles.fullEdit','Full Edit');
+		    ToolbarHelper::editList('article.edit','Edit Tags Links');
+		    ToolbarHelper::editList('articles.fullEdit','Full Edit');
 		}
 
 		if ($canDo->get('core.edit.state'))
 		{
-			JToolbarHelper::publish('articles.publish', 'JTOOLBAR_PUBLISH', true);
-			JToolbarHelper::unpublish('articles.unpublish', 'JTOOLBAR_UNPUBLISH', true);
+			ToolbarHelper::publish('articles.publish', 'JTOOLBAR_PUBLISH', true);
+			ToolbarHelper::unpublish('articles.unpublish', 'JTOOLBAR_UNPUBLISH', true);
 		}
 
 		// Add a batch button
@@ -99,19 +122,19 @@
 
 		if ($this->state->get('filter.published') == -2 && $canDo->get('core.delete'))
 		{
-			JToolbarHelper::deleteList('JGLOBAL_CONFIRM_DELETE', 'articles.delete', 'JTOOLBAR_EMPTY_TRASH');
+			ToolbarHelper::deleteList('JGLOBAL_CONFIRM_DELETE', 'articles.delete', 'JTOOLBAR_EMPTY_TRASH');
 		}
 		elseif ($canDo->get('core.edit.state'))
 		{
-			JToolbarHelper::trash('articles.trash');
+			ToolbarHelper::trash('articles.trash');
 		}
 
 		if ($user->authorise('core.admin', 'com_xbarticleman') || $user->authorise('core.options', 'com_xbarticleman'))
 		{
-			JToolbarHelper::preferences('com_xbarticleman');
+			ToolbarHelper::preferences('com_xbarticleman');
 		}
 
-		JToolbarHelper::help('JHELP_CONTENT_ARTICLE_MANAGER');
+		ToolbarHelper::help('JHELP_CONTENT_ARTICLE_MANAGER');
 	}
 
 	protected function getSortFields()

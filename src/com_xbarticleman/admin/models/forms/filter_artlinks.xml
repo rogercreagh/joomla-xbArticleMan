@@ -9,6 +9,21 @@
 			hint="JSEARCH_FILTER"
 		/>
 
+		<field name="artlist" type="list"
+			label="List type"
+			description="What articles to include in list"
+			default="1"
+			onchange="this.form.submit();"
+		>
+			<option value="0">All Articles</option>
+			<option value="1">Articles with embedded links</option>
+			<option value="4">Articles without embedded tags</option>				
+			<option value="2">Articles with related images</option>				
+			<option value="5">Articles without related images</option>				
+			<option value="3">Articles any links</option>				
+			<option value="6">Articles without any links</option>				
+		</field>
+
 		<field
 			name="published"
 			type="status"

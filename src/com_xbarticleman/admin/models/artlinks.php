@@ -2,14 +2,16 @@
 /*******
  * @package xbArticleManager
  * file administrator/components/com_xbarticleman/models/artlinks.php
- * @version 1.0.0.0 22nd January 2019
+ * @version 2.0.5.0 12th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
  ******/
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
 use Joomla\Utilities\ArrayHelper;
+use Joomla\CMS\Uri\Uri;
 
 class XbarticlemanModelArtlinks extends JModelList
 {
@@ -35,8 +37,7 @@ class XbarticlemanModelArtlinks extends JModelList
                 'publish_down', 'a.publish_down',
                 'published', 'a.published',
                 'author_id',
-                'category_id',
-                'level',
+                'category_id', 'level', 'artlist',
             );
             
         }
@@ -80,6 +81,7 @@ class XbarticlemanModelArtlinks extends JModelList
         $access     = $this->getUserStateFromRequest($this->context . '.filter.access', 'filter_access');
         $authorId   = $this->getUserStateFromRequest($this->context . '.filter.author_id', 'filter_author_id');
         $categoryId = $this->getUserStateFromRequest($this->context . '.filter.category_id', 'filter_category_id');
+        $artlist        = $this->getUserStateFromRequest($this->context . '.filter.artlist', 'filter_artlist', '1');
         
         if ($formSubmited)
         {
@@ -92,6 +94,9 @@ class XbarticlemanModelArtlinks extends JModelList
             $categoryId = $app->input->post->get('category_id');
             $this->setState('filter.category_id', $categoryId);
 
+            $artlist = $app->input->post->get('artlist');
+            $this->setState('filter.artlist', $artlist);
+            
 //             $checkint = $app->input->post->get('checkint');            
 //             $this->setState('checkint', $checklinks);
  
@@ -105,35 +110,53 @@ class XbarticlemanModelArtlinks extends JModelList
         
     }
     
-    protected function getStoreId($id = '')
-    {
-        // Compile the store id.
-        $id .= ':' . $this->getState('filter.search');
-        $id .= ':' . serialize($this->getState('filter.access'));
-        $id .= ':' . $this->getState('filter.published');
-        $id .= ':' . serialize($this->getState('filter.category_id'));
-        $id .= ':' . serialize($this->getState('filter.author_id'));
-        
-        return parent::getStoreId($id);
-    }
-    
     protected function getListQuery()
     {
         // Create a new query object.
         $db    = $this->getDbo();
         $query = $db->getQuery(true);
-        $user  = JFactory::getUser();
+        $user  = Factory::getUser();
         
         // Select the required fields from the table.
         $query->select(
             $this->getState(
                 'list.select',
-                'DISTINCT a.id, a.title, a.alias, a.checked_out, a.checked_out_time, a.catid' .
+                'DISTINCT a.id, a.title, a.alias, a.checked_out, a.checked_out_time, a.catid, a.urls' .
                 ', a.state, a.access, a.created, a.created_by, a.created_by_alias, a.modified, a.ordering, a.featured, a.language, a.hits' .
                 ', a.publish_up, a.publish_down, a.note, a.urls, CONCAT(a.introtext," ",a.fulltext) AS arttext'
                 )
             );
         $query->from('#__content AS a');
+        
+        // list all articles or only with images
+        $artlist = $this->getState('filter.artlist');
+        switch ($artlist) {
+            case 1: //with <mbedded
+                $query->where('CONCAT(a.introtext," ",a.fulltext)'.' REGEXP '.$db->q('<a '));
+                break;
+            case 2: //with Intro/Full
+                $query->where('a.urls REGEXP '.$db->q('/\"url[a-c]\":[^,]+?\"'));
+                break;
+            case 3: //with either
+                $query->where('CONCAT(a.introtext," ",a.fulltext)'.' REGEXP '.$db->q('<a ').' OR '
+                    .'a.urls REGEXP '.$db->q('/\"url[a-c]\":[^,]+?\"'));
+                // {"image_intro":"images\/xbbooks\/samples\/books\/ashes-of-london.jpg","float_intro":"","image_intro_alt":"","image_intro_caption":"","image_fulltext":"images\/xbfilms\/samples\/films\/faces-places.jpg","float_fulltext":"","image_fulltext_alt":"","image_fulltext_caption":""}
+                break;
+            case 4: //no <img
+                $query->where('NOT CONCAT(a.introtext," ",a.fulltext)'.' REGEXP '.$db->q('<a '));
+                break;
+            case 5: //no Intro/Full
+                $query->where('NOT a.urls REGEXP '.$db->q('/\"url[a-c]\":[^,]+?\"'));
+                break;
+            case 6: //no images
+                $query->where('NOT CONCAT(a.introtext," ",a.fulltext)'.' REGEXP '.$db->q('<a ').' AND NOT '
+                    .'a.urls REGEXP '.$db->q('/\"url[a-c]\":[^,]+?\"'));
+                break;
+                
+            default: //all arrticles
+                // do nothing;
+                break;
+        }
         
         // Join over the language
         $query->select('l.title AS language_title, l.image AS language_image')

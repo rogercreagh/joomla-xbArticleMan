@@ -2,7 +2,7 @@
 /*******
  * @package xbarticleman
  * file administrator/components/com_xbarticleman/views/artlinks/tmpl/default.php
- * @version 2.0.5.0 10th November 2023
+ * @version 2.0.5.0 12th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
@@ -79,16 +79,16 @@ if ($saveOrder)
     	    echo Text::_('Filtered to show').' '.$this->pagination->total.' ';
     	    switch ($this->activeFilters['artlist']) {
     	    case 1:
-    	        echo Text::_('articles with &lt;a href=... &gt; tags.');
+    	        echo Text::_('articles with embedded links.');
     	       break;
     	    case 2:
     	        echo Text::_('articles with related links (ABC).');
     	        break;
     	    case 3:
-    	        echo Text::_('articles with &lt;a &gt; tags or Related links.');
+    	        echo Text::_('articles with Embedded or Related links.');
     	        break;
     	    case 4:
-    	        echo Text::_('articles with no &lt;a &gt; tags.');
+    	        echo Text::_('articles with no embedded tags.');
     	        break;
     	    case 5:
     	        echo Text::_('articles with no Related links.');
@@ -126,16 +126,16 @@ if ($saveOrder)
 		<?php else : ?>
 			<p><?php
 				if ($rowcnt>10) { 
-				    echo 'NB. Link checking disabled while more than 10 items shown ';
+				    echo Text::_('XBARTMAN_LINK_CHECK_OFF');
 				} ?>
 			</p>
 			<div <?php if ($rowcnt>10) echo 'style="display:none;"';?> >
-		         <p><b>Links to check:</b> Internal 
+		         <p><b><?php echo Text::_('XBARTMAN_LINKS_TO_CHECK'); ?>:</b><span class="xbpl10"><?php echo Text::_('XB_INTERNAL'); ?></span> 
 		         <input type="checkbox" name="checkint" value="1" 
 		         <?php if (($this->checkint==1) && ($rowcnt<11)) echo 'checked="checked" ';
 		              if ($rowcnt>10) echo 'disabled';
 		          ?> /> 
-		          External 
+		          <span class="xbpl10"><?php echo Text::_('XB_EXTERNAL'); ?></span>
 		          <input type="checkbox" name="checkext" value="1" 
 		          <?php if (($this->checkext==1) && ($rowcnt<11)) echo 'checked="checked" ';
 		              if ($rowcnt>10) echo 'disabled';
@@ -145,8 +145,7 @@ if ($saveOrder)
 </p>
 				<?php  if ($rowcnt<11) :?>
 				<div class="alert">
-                    <p><i>NB Link checking may make the page take a while to load if there are many links 
-                    - minimise number of links shown with filter and pagination settings before clicking [Check Now].</i>
+                    <p><i><?php echo Text::_('XBARTMAN_LINK_CHECK_NOTE'); ?></i>
                     </p>
 				</div>
                 <?php endif; ?>
@@ -183,7 +182,7 @@ if ($saveOrder)
 						<th >
 							<?php echo HTMLHelper::_('searchtools.sort', 'JGLOBAL_TITLE', 'a.title', $listDirn, $listOrder); ?>
 							<span class="xbnorm xbo9">(edit) |</span>  alias <span class="xbnorm xb09">(pv) |</span>
-							<?php echo HTMLHelper::_('searchtools.sort', 'Category', 'category_title', $listDirn, $listOrder); ?>							
+							<?php echo HTMLHelper::_('searchtools.sort', 'XB_CATEGORY', 'category_title', $listDirn, $listOrder); ?>							
 						</th>
 						<th>
 							<span class="hasPopover" title="<?php echo Text::_('XBARTMAN_COL_RELLNK_TITLE'); ?> " 
@@ -318,17 +317,17 @@ if ($saveOrder)
 								<?php if ($canEdit || $canEditOwn) : ?>
 									<a class="hasTooltip" href="
 									<?php echo Route::_('index.php?option=com_xbarticleman&task=article.edit&id=' . $item->id).'&retview=artlinks';?>
-									" title="<?php echo Text::_('JACTION_EDIT').' '.Text::_('tags & links'); ?>">
+									" title="<?php echo Text::_('XBARTMAN_META_EDIT'); ?>">
 										<?php echo $this->escape($item->title); ?></a>
 									<a class="hasTooltip" href="
 									<?php echo Route::_('index.php?option=com_content&task=article.edit&id=' . $item->id).'&retview=artimgs';?>
-									" title="<?php echo Text::_('Full edit'); ?>">										
+									" title="<?php echo Text::_('XBARTMAN_FULL_EDIT'); ?>">										
 										<span class="icon-edit"></span></a>
 								<?php else : ?>
 									<span title="<?php echo Text::sprintf('JFIELD_ALIAS_LABEL', $this->escape($item->alias)); ?>"><?php echo $this->escape($item->title); ?></span>
 								<?php endif; ?>
 								</p>
-								<span><i>Alias</i>: <?php echo $this->escape($item->alias); ?>
+								<span><i><?php Text::_('XB_ALIAS'); ?></i>: <?php echo $this->escape($item->alias); ?>
 										<?php echo '<a class="hasTooltip"  data-toggle="modal" title="'.JText::_('XBARTMAN_MODAL_PREVIEW').'" href="#pvModal"
                                         onClick="window.pvid='.$item->id.';">';
 										echo ' <span class="icon-eye"></span></a>'; ?>
@@ -408,7 +407,7 @@ if ($saveOrder)
 						</td>
 						<td class="small">
 							<?php 
-							echo count($links["pageTargs"]).' targets found<br />';
+							echo count($links["pageTargs"]).' '.Text::_('XBARTMAN_TARGETS_FOUND').'<br />';
 							if (count($links["pageTargs"]) >0) {
 							    foreach ($links["pageTargs"] as $a) {
 							        echo 'id:'.$a->getAttribute('id').'<br />';
