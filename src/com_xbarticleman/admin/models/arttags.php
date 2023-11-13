@@ -2,7 +2,7 @@
 /*******
  * @package xbArticleManager
  * file administrator/components/com_xbarticleman/models/arttags.php
- * @version 2.0.3.2 6th November 2023
+ * @version 2.0.5.1 13th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
@@ -251,9 +251,20 @@ class XbarticlemanModelArttags extends JModelList
 		//filter by tag(s)
 		
 		if ($artlist < 2) {
-		    $tagfilt  = $this->getState('filter.tagfilt');
-		    $tagfilt = ArrayHelper::toInteger($tagfilt);
-		    $taglogic = $this->getState('filter.taglogic');
+		    $app = Factory::getApplication();
+		    //filter by tags
+		    $tagId = (int) $app->getUserStateFromRequest('tagid', 'tagid','');
+		    $app->setUserState('tagid', '');
+		    if (!empty($tagId)) {
+		        $tagfilt = array(abs($tagId));
+		        $taglogic = $tagId>0 ? 0 : 2;
+		    } else {
+		        $tagfilt = $this->getState('filter.tagfilt');
+		        $taglogic = $this->getState('filter.taglogic');  //0=ANY 1=ALL 2= None
+		    }
+//		    $tagfilt  = $this->getState('filter.tagfilt');
+//		    $tagfilt = ArrayHelper::toInteger($tagfilt);
+//		    $taglogic = $this->getState('filter.taglogic',0);
 		    $subquery = '(SELECT tmap.tag_id AS tlist FROM #__contentitem_tag_map AS tmap
                 WHERE tmap.type_alias = '.$db->quote('com_content.article').'
                 AND tmap.content_item_id = a.id)';		    
@@ -274,7 +285,7 @@ class XbarticlemanModelArttags extends JModelList
                     } else {
                         $tagIds = implode(',', $tagfilt);
                         if ($tagIds) {
-                            $subQueryAny = '(SELECT DISTINCT content_item_id FROM #__contentitem_tag_map
+                            $subQueryAny = '(SELECT DISTINCT content_item_id AS cid FROM #__contentitem_tag_map
                                 WHERE tag_id IN ('.$tagIds.') AND type_alias = '.$db->quote('com_content.article').')';
                             $query->innerJoin('(' . (string) $subQueryAny . ') AS tagmap ON tagmap.content_item_id = a.id');
                         }
@@ -319,7 +330,7 @@ class XbarticlemanModelArttags extends JModelList
 	    $db    = $this->getDbo();
 	    $query = $db->getQuery(true);
 	    
-	    $query->select('t.title AS title, tm.content_item_id AS artid')
+	    $query->select('t.title AS title, t.id AS tagid, tm.content_item_id AS artid')
 	    ->from($db->qn('#__contentitem_tag_map').' AS tm')
 	    ->join('LEFT', $db->qn('#__tags').' AS t ON t.id = tm.tag_id')
 	    ->where($db->qn('type_alias').' = '.$db->q('com_content.article'));

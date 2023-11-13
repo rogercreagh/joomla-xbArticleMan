@@ -2,7 +2,7 @@
 /*******
  * @package xbArticleManager
  * file script.xbarticleman.php
- * @version 2.0.3.3 7th November 2023
+ * @version 2.0.5.1 13th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2023
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
@@ -66,7 +66,7 @@ class com_xbarticlemanInstallerScript
     function postflight($type, $parent) {
         if (($type=='install') || ($type=='discover_install')) {
             $app = Factory::getApplication();
-            $componentXML = Installer::parseXMLInstallFile(Path::clean(JPATH_ADMINISTRATOR . '/components/com_xbaoy/xbaoy.xml'));
+            $componentXML = Installer::parseXMLInstallFile(Path::clean(JPATH_ADMINISTRATOR . '/components/com_xbarticleman/xbarticleman.xml'));
             $message = '<b>'.$this->extname.' '.$componentXML['version'].' '.$componentXML['creationDate'].'</b><br />';
             $message .= $this->createCssFromTmpl();
             

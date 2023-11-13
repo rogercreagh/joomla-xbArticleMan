@@ -2,7 +2,7 @@
 /*******
  * @package xbArticleManager
  * file administrator/components/com_xbarticleman/views/arttags/tmpl/default.php
- * @version 2.0.5.0 10th November 2023
+ * @version 2.0.5.1 13th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
@@ -73,13 +73,15 @@ if ($saveOrder)
 	<div id="j-main-container">
 <?php endif; ?>
 		<h3><?php echo Text::_('Articles with Tags')?></h3>
-		<h4> Found <?php echo count($this->alltags); ?> distinct tags across <?php echo $this->taggedarticles; ?> tagged articles from <?php echo $this->statearticles.' '.$this->statefilt; ?> articles</h4>
+		<h4> Found <?php echo count($this->tagcnts); ?> distinct tags across <?php echo $this->taggedarticles; ?> tagged articles from <?php echo $this->statearticles.' '.$this->statefilt; ?> articles</h4>
     	<ul class="inline">
     		<li><i>Counts for each type:</i></li>
-    		<?php foreach ($this->alltags as $key=>$cnt) : ?>
-    		    <li><span class="label label-tag"><?php echo $key.' ('.$cnt.')'; ?></span></li>
+    		<?php foreach ($this->tagcnts as $key=>$tag) : ?>
+    		    <li><a href="administrator/index.php?option=com_articleman&view=arttags&filter[tag]=<?php echo $tag['tagid']; ?>" 
+    		    	class="label label-tag"><?php echo $tag['title'].' ('.$tag['cnt'].')'; ?></a></li>
     		<?php endforeach; ?>
     	</ul>
+    	<span class="xbnit xb09">Click tag above to filter this list by the tag. Click tag name in list below to edit the tag</span>
     	<p><?php echo Text::_('Unfiltered list shows').' ';
     	if (array_key_exists('artlist', $this->activeFilters)) {
     	    switch ($this->activeFilters['artlist']) {
@@ -287,13 +289,13 @@ if ($saveOrder)
                         				<span class="tagline"><i><?php echo $f["founder"]; ?>:&nbsp; </i></span>
                                 		<?php 
                                 		ksort($f["children"]);
-                                        foreach ($f["children"] as $tg) :
-                                         //index.php?option=com_tags&task=tag.edit&id=
-                                            echo '<a href="index.php?option=com_content&view=articles&filter[tag]='.$tg->id.'" class="label label-info">'.$tg->title.'</a> ';   		
-                                        endforeach; ?>
+                                        foreach ($f["children"] as $tg) : ?>                                         
+                                            <a href="index.php?option=com_tags&task=tag.edit&id=<?php echo $tg->id; ?>" class="label label-info">
+                                            	<?php echo $tg->title; ?></a>   		
+                                        <?php endforeach; ?>
                         	    	</span><br />       
                             	<?php } ?>
-	</div>
+							</div>
 						</td>
 						<td class="nowrap small hidden-phone">
 							<?php

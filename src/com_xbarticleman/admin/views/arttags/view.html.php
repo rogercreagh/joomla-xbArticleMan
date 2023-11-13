@@ -2,7 +2,7 @@
 /*******
  * @package xbArticleManager
  * file administrator/components/com_xbarticleman/views/arttags/view.html.php
- * @version 2.0.3.3 7th November 2023
+ * @version 2.0.5.1 13th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
@@ -48,8 +48,19 @@
 			throw new Exception(implode("\n", $errors), 500);
 		}
 
-		$this->alltags = array_count_values(array_column($tags,'title'));
+//		$this->alltags = array_count_values(array_column($tags,'title'));
+//		$this->alltagsids = array_count_values(array_column($tags,'id'));
+
 		$this->taggedarticles=count(array_count_values(array_column($tags, 'artid')));
+
+		//because we want id, title and cnt we'll have to iterate the tags array rather than using array_count etc
+		$this->tagcnts = array();
+		foreach ($tags as $k=>$t) {
+		    if (!key_exists($t->tagid, $this->tagcnts)) {
+		        $this->tagcnts[$t->tagid] =array( 'tagid'=>$t->tagid,'title'=>$t->title,'cnt'=> 0 );
+		    }
+		    $this->tagcnts[$t->tagid]['cnt'] ++;
+		}
 		
 		$where = 'state IN (1,0)';
 		$this->statefilt = 'published and unpublished';

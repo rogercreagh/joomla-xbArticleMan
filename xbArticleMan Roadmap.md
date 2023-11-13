@@ -7,9 +7,9 @@
 - [x] v2.0.1 rename articles view arttags for consistency **done** 4th Nov
 - [x] v2.0.2 rename showcodes artscodes for consistency **done** 5th Nov
 - [x] v2.0.3 improve lists and layouts for arttags
-- [ ] v2.0.4 improve lists and layouts for artimages
-- [ ] v2.0.5 improve lists and layouts for artlinks
-- [ ] v2.0.6 improve lists and layouts for arshortcodes
+- [x] v2.0.4 improve lists and layouts for artimages
+- [x] v2.0.5 improve lists and layouts for artlinks
+- [ ] v2.0.6 improve lists and layouts for artscodes
 - [ ] 
 
 **Subsequent releases (order not yet specified)**
