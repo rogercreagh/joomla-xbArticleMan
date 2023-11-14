@@ -12,6 +12,7 @@ defined('_JEXEC') or die;
 use Joomla\CMS\Factory;
 use Joomla\Utilities\ArrayHelper;
 use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\Table\Table;
 
 class XbarticlemanModelArtlinks extends JModelList
 {
@@ -47,7 +48,7 @@ class XbarticlemanModelArtlinks extends JModelList
     
     protected function populateState($ordering = 'a.id', $direction = 'desc')
     {
-        $app = JFactory::getApplication();
+        $app = Factory::getApplication();
         
         // Adjust the context to support modal layouts.
         if ($layout = $app->input->get('layout'))
@@ -231,7 +232,7 @@ class XbarticlemanModelArtlinks extends JModelList
 		if (count($categoryId))
 		{
 		    $categoryId = ArrayHelper::toInteger($categoryId);
-		    $categoryTable = JTable::getInstance('Category', 'JTable');
+		    $categoryTable = Table::getInstance('Category', 'JTable');
 		    $subCatItemsWhere = array();
 		    
 		    foreach ($categoryId as $filter_catid)

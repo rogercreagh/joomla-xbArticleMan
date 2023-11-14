@@ -2,7 +2,7 @@
 /*******
  * @package xbArticleManager
  * file administrator/components/com_xbarticleman/models/arttags.php
- * @version 2.0.5.1 13th November 2023
+ * @version 2.0.6.0 14th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
@@ -79,7 +79,7 @@ class XbarticlemanModelArttags extends JModelList
 		$categoryId = $this->getUserStateFromRequest($this->context . '.filter.category_id', 'filter_category_id');
 		$tagfilt        = $this->getUserStateFromRequest($this->context . '.filter.tagfilt', 'filter_tagfilt', '');
 		$taglogic        = $this->getUserStateFromRequest($this->context . '.filter.taglogic', 'filter_taglogic', '');
-		$artlist        = $this->getUserStateFromRequest($this->context . '.filter.artlist', 'filter_artlist', '1');
+		$artlist        = $this->getUserStateFromRequest($this->context . '.filter.artlist', 'filter_artlist', '0');
 		
 		if ($formSubmited)
 		{
@@ -233,24 +233,25 @@ class XbarticlemanModelArttags extends JModelList
 
 		// list all articles or only tagged or only untagged
 		$artlist = $this->getState('filter.artlist');
-		if ($artlist === 0) {
-		    $query->join('LEFT', $db->quoteName('#__contentitem_tag_map', 'tagmap')
-		        . ' ON ' . $db->quoteName('tagmap.content_item_id') . ' = ' . $db->quoteName('a.id')
-		        . ' AND ' . $db->quoteName('tagmap.type_alias') . ' = ' . $db->quote('com_content.article')
-		        );
-		    
-		} elseif (($artlist == '') || ($artlist == 1)) {
+//		if (($artlist === 0) || ($artlist == '')) { //all - no filter here
+//		    $query->join('LEFT', $db->quoteName('#__contentitem_tag_map', 'tagmap')
+//		        . ' ON ' . $db->quoteName('tagmap.content_item_id') . ' = ' . $db->quoteName('a.id')
+//		        . ' AND ' . $db->quoteName('tagmap.type_alias') . ' = ' . $db->quote('com_content.article')
+//		        );		    
+//		} else
+		if ($artlist == 1) { //with
 		    $query->join('INNER', $db->quoteName('#__contentitem_tag_map', 'tagmap')
 				. ' ON ' . $db->quoteName('tagmap.content_item_id') . ' = ' . $db->quoteName('a.id')
 				. ' AND ' . $db->quoteName('tagmap.type_alias') . ' = ' . $db->quote('com_content.article')
 			);		    
-		} elseif ($artlist == 2) {
+		} elseif ($artlist == 2) { //without
 		    $query->where('a.id NOT IN (SELECT content_item_id FROM #__contentitem_tag_map WHERE type_alias  = '.$db->q('com_content.article').')');
 		}
 		
 		//filter by tag(s)
 		
 		if ($artlist < 2) {
+		    $tagfilt = '';
 		    $app = Factory::getApplication();
 		    //filter by tags
 		    $tagId = (int) $app->getUserStateFromRequest('tagid', 'tagid','');
@@ -260,37 +261,40 @@ class XbarticlemanModelArttags extends JModelList
 		        $taglogic = $tagId>0 ? 0 : 2;
 		    } else {
 		        $tagfilt = $this->getState('filter.tagfilt');
-		        $taglogic = $this->getState('filter.taglogic');  //0=ANY 1=ALL 2= None
+		        $taglogic = $this->getState('filter.taglogic',0);  //0=ANY 1=ALL 2= None
 		    }
 //		    $tagfilt  = $this->getState('filter.tagfilt');
 //		    $tagfilt = ArrayHelper::toInteger($tagfilt);
 //		    $taglogic = $this->getState('filter.taglogic',0);
-		    $subquery = '(SELECT tmap.tag_id AS tlist FROM #__contentitem_tag_map AS tmap
-                WHERE tmap.type_alias = '.$db->quote('com_content.article').'
-                AND tmap.content_item_id = a.id)';		    
-            switch ($taglogic) {
-                case 1: //all tags must be matched
-                    for ($i = 0; $i < count($tagfilt); $i++) {
-                        $query->where($tagfilt[$i].' IN '.$subquery);
-                    }
-                    break;
-                case 2: //none of the tags must be matched
-                    for ($i = 0; $i < count($tagfilt); $i++) {
-                        $query->where($tagfilt[$i].' NOT IN '.$subquery);
-                    }
-                    break;
-                case 0: //any match will do
-                    if (count($tagfilt) == 1) {
-                        $query->where($tagfilt[0].' IN '.$subquery);
-                    } else {
-                        $tagIds = implode(',', $tagfilt);
-                        if ($tagIds) {
-                            $subQueryAny = '(SELECT DISTINCT content_item_id AS cid FROM #__contentitem_tag_map
-                                WHERE tag_id IN ('.$tagIds.') AND type_alias = '.$db->quote('com_content.article').')';
-                            $query->innerJoin('(' . (string) $subQueryAny . ') AS tagmap ON tagmap.content_item_id = a.id');
+		    if (is_array($tagfilt)) {
+    		    $subquery = '(SELECT tmap.tag_id AS tlist FROM #__contentitem_tag_map AS tmap
+                    WHERE tmap.type_alias = '.$db->quote('com_content.article').'
+                    AND tmap.content_item_id = a.id)';		    
+                switch ($taglogic) {
+                    case 1: //all tags must be matched
+                        for ($i = 0; $i < count($tagfilt); $i++) {
+                            $query->where($tagfilt[$i].' IN '.$subquery);
                         }
-                    break; 
+                        break;
+                    case 2: //none of the tags must be matched
+                        for ($i = 0; $i < count($tagfilt); $i++) {
+                            $query->where($tagfilt[$i].' NOT IN '.$subquery);
+                        }
+                        break;
+                    case 0: //any match will do
+                        if (count($tagfilt) == 1) {
+                            $query->where($tagfilt[0].' IN '.$subquery);
+                        } else {
+                            $tagIds = implode(',', $tagfilt);
+                            if ($tagIds) {
+                                $subQueryAny = '(SELECT DISTINCT content_item_id AS cid FROM #__contentitem_tag_map
+                                    WHERE tag_id IN ('.$tagIds.') AND type_alias = '.$db->quote('com_content.article').')';
+                                $query->innerJoin('(' . (string) $subQueryAny . ') AS tm ON tm.cid = a.id');
+                            }
+                        break; 
+                    }
                 }
+		    }
 // 		    if (is_numeric($tagfilt)) {    
 // 		        $query->where($db->quoteName('tagmap.tag_id') . ' = ' . (int) $tagfilt);
 //     		}
@@ -301,9 +305,9 @@ class XbarticlemanModelArttags extends JModelList
 //     		    if (!empty($tagfilt)) {  
 //     		        $query->where($db->quoteName('tagmap.tag_id') . ' IN (' . $tagfilt . ')');
 //     			}
-    		}
+   		}
 		    
-		}
+
 		
 
 		//only published tags

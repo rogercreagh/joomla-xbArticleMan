@@ -2,7 +2,7 @@
 /*******
  * @package xbArticleMan
  * file administrator/components/com_xbarticleman/views/artscodes/view.html.php
- * @version 2.0.0.1 3rd November 2023
+ * @version 2.0.6.0 14th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
@@ -46,9 +46,11 @@
 			throw new Exception(implode("\n", $errors), 500);
 		}
 
+		$this->shortcodearticles = 0;
         $this->sccnts = array();
 		foreach ($this->items as $item) {
 		    $item->thiscnts = array_count_values(array_column($item->artscodes,1));		    
+    		if ($item->thiscnts) $this->shortcodearticles ++;
 		    foreach($item->thiscnts as $key => $value) {
 		        if (isset($this->sccnts[$key])) {
 		            $this->sccnts[$key] += $value;
@@ -57,6 +59,18 @@
 		        }
 		    }
 		}
+		
+		$where = 'state IN (1,0)';
+		$this->statefilt = 'published and unpublished';
+		if (array_key_exists('published', $this->activeFilters)) {
+		    $published = $this->activeFilters['published'];
+		    if (is_numeric($published)) {
+		        $where = 'state = ' . (int) $published;
+		        $this->statefilt = array('trashed','','unpublished','published','archived')[$published+2];
+		    }
+		}
+		$this->statearticles = XbarticlemanHelper::getItemCnt('#__content', $where);
+		
 		$this->addToolbar();
  		$this->sidebar = JHtmlSidebar::render();
 

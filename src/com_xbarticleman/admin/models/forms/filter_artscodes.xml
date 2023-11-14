@@ -9,6 +9,17 @@
 			hint="JSEARCH_FILTER"
 		/>
 
+		<field name="artlist" type="list"
+			label="List type"
+			description="What articles to include in list"
+			default="0"
+			onchange="this.form.submit();"
+		>
+			<option value="0">All Articles</option>
+			<option value="1">Articles with shortcodes</option>
+			<option value="4">Articles without shortcodes</option>				
+		</field>
+
 		<field
 			name="published"
 			type="status"
@@ -45,6 +56,13 @@
 			<option value="">Select Category Levels</option>
 		</field>
 				
+		<field
+			name="scfilt" type="text"
+			label="Shortcode to filter"
+			description="enter the shortcode name only without braces {}"
+			filter="string"
+			>
+		</field>
 
 		<input type="hidden" name="form_submited" value="1"/>
 	</fields>

@@ -2,7 +2,7 @@
 /*******
  * @package xbArticleManager
  * file administrator/components/com_xbarticleman/views/arttags/tmpl/default.php
- * @version 2.0.5.1 13th November 2023
+ * @version 2.0.6.0 14th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
@@ -75,14 +75,14 @@ if ($saveOrder)
 		<h3><?php echo Text::_('Articles with Tags')?></h3>
 		<h4> Found <?php echo count($this->tagcnts); ?> distinct tags across <?php echo $this->taggedarticles; ?> tagged articles from <?php echo $this->statearticles.' '.$this->statefilt; ?> articles</h4>
     	<ul class="inline">
-    		<li><i>Counts for each type:</i></li>
+    		<li><i>Counts for each tag:</i></li>
     		<?php foreach ($this->tagcnts as $key=>$tag) : ?>
-    		    <li><a href="administrator/index.php?option=com_articleman&view=arttags&filter[tag]=<?php echo $tag['tagid']; ?>" 
+    		    <li><a href="index.php?option=com_xbarticleman&view=arttags&tagid=<?php echo $tag['tagid']; ?>&filter[tagfilt]=<?php echo $tag['tagid']; ?>" 
     		    	class="label label-tag"><?php echo $tag['title'].' ('.$tag['cnt'].')'; ?></a></li>
     		<?php endforeach; ?>
     	</ul>
     	<span class="xbnit xb09">Click tag above to filter this list by the tag. Click tag name in list below to edit the tag</span>
-    	<p><?php echo Text::_('Unfiltered list shows').' ';
+    	<p><?php echo Text::_('List shows').' ';
     	if (array_key_exists('artlist', $this->activeFilters)) {
     	    switch ($this->activeFilters['artlist']) {
     	    case 2:
@@ -97,10 +97,11 @@ if ($saveOrder)
     	   }  	    
     	} else {
     	    echo $this->pagination->total.' '.Text::_('tagged articles');
-    	}
+    	} ?>
+    	<br /><span class="xbit xb09">additional filters by status, category, and tag may be applied below</span>
 
-		// Search tools bar
-		echo LayoutHelper::render('joomla.searchtools.default', array('view' => $this));
+		<?php // Search tools bar
+		  echo LayoutHelper::render('joomla.searchtools.default', array('view' => $this));
 		?>
         <div class="pull-right pagination xbm0">
     		<?php  echo $this->pagination->getPagesLinks(); ?>

@@ -2,7 +2,7 @@
 /*******
  * @package xbArticleManager
  * file administrator/components/com_xbarticleman/models/artscodes.php
- * @version 2.0.0.0 2nd November 2023
+ * @version 2.0.6.0 14th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -42,7 +42,7 @@ class XbarticlemanModelArtscodes extends JModelList
                 'published', 'a.published',
                 'author_id',
                 'category_id',
-                'level',
+                'level', 'scfilt', 'artlist',
             );
             
         }
@@ -74,6 +74,8 @@ class XbarticlemanModelArtscodes extends JModelList
         $access     = $this->getUserStateFromRequest($this->context . '.filter.access', 'filter_access');
         $authorId   = $this->getUserStateFromRequest($this->context . '.filter.author_id', 'filter_author_id');
         $categoryId = $this->getUserStateFromRequest($this->context . '.filter.category_id', 'filter_category_id');
+        $artlist        = $this->getUserStateFromRequest($this->context . '.filter.artlist', 'filter_artlist', '0');
+        $scfilt        = $this->getUserStateFromRequest($this->context . '.filter.scfilt', 'filter_scfilt', '');
         
         if ($formSubmited)
         {
@@ -85,24 +87,18 @@ class XbarticlemanModelArtscodes extends JModelList
             
             $categoryId = $app->input->post->get('category_id');
             $this->setState('filter.category_id', $categoryId);
+
+            $artlist = $app->input->post->get('artlist');
+            $this->setState('filter.artlist', $artlist);
+            
+            $scfilt = $app->input->post->get('scfilt');
+            $this->setState('filter.scfilt', $scfilt);
             
         }
         
         // List state information.
         parent::populateState($ordering, $direction);
         
-    }
-    
-    protected function getStoreId($id = '')
-    {
-        // Compile the store id.
-        $id .= ':' . $this->getState('filter.search');
-        $id .= ':' . serialize($this->getState('filter.access'));
-        $id .= ':' . $this->getState('filter.published');
-        $id .= ':' . serialize($this->getState('filter.category_id'));
-        $id .= ':' . serialize($this->getState('filter.author_id'));
-        
-        return parent::getStoreId($id);
     }
     
     protected function getListQuery()
@@ -122,9 +118,6 @@ class XbarticlemanModelArtscodes extends JModelList
                 )
             );
         $query->from('#__content AS a');
-        
-        //test for presence of shortcode 
-        $query->where('CONCAT(a.introtext," ",a.fulltext)'.' REGEXP '.$db->q('{(\\w+).*}'));
         
         // Join over the language
         $query->select('l.title AS language_title, l.image AS language_image')
@@ -261,7 +254,33 @@ class XbarticlemanModelArtscodes extends JModelList
 		    }
 		}
 										
-        // Add the list ordering clause.
+		// list all articles or only ones with/without shortcodes
+		$artlist = $this->getState('filter.artlist');
+//		if (($artlist === 0) || ($artlist == '')) { //all - no filter here
+		if ($artlist == 1) { //with
+		    $query->where('CONCAT(a.introtext," ",a.fulltext)'.' REGEXP '.$db->q('{[[:alpha:]].+?}'));
+		} elseif ($artlist == 2) { //without
+		    $query->where('CONCAT(a.introtext," ",a.fulltext)'.' NOT REGEXP '.$db->q('{[[:alpha:]].+?}'));
+		}
+		
+		//filter by shortcode
+		if ($artlist < 2) {
+		    $scfilt = '';
+		    $app = Factory::getApplication();
+		    //filter by tags
+		    $sc = $app->getUserStateFromRequest('sc', 'sc','','STRING');
+		    $app->setUserState('sc', '');
+		    if (!empty($sc)) {
+		        $scfilt = $sc;
+		    } else {
+		        $scfilt = $this->getState('filter.scfilt','','STRING');
+		    }
+		    if ($scfilt != '') {
+		        $query->where('CONCAT(a.introtext," ",a.fulltext) LIKE '.$db->q('%{'.$scfilt.'%'));
+		    }
+		}
+		
+		// Add the list ordering clause.
         $orderCol  = $this->state->get('list.ordering', 'a.id');
         $orderDirn = $this->state->get('list.direction', 'DESC');
         

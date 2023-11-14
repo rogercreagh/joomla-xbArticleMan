@@ -2,7 +2,7 @@
 /*******
  * @package xbarticleman
  * file administrator/components/com_xbarticleman/views/artscodes/tmpl/default.php
- * @version 2.0.5.0 10th November 2023
+ * @version 2.0.6.0 14th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
@@ -20,7 +20,7 @@ use Joomla\Registry\Registry;
 //use Joomla\Utilities\ArrayHelper;
 
 //JLoader::register('XbarticlemanHelper', JPATH_ADMINISTRATOR . '/components/com_xbarticleman/helpers/xbarticleman.php');
-JLoader::register('ContentHelperRoute', JPATH_SITE . '/components/com_content/helpers/route.php');
+//JLoader::register('ContentHelperRoute', JPATH_SITE . '/components/com_content/helpers/route.php');
 
 HTMLHelper::_('bootstrap.tooltip');
 HTMLHelper::_('behavior.multiselect');
@@ -73,16 +73,36 @@ if ($saveOrder)
 	<div id="j-main-container">
 <?php endif; ?>
 		<h3><?php echo Text::_('Articles with Shortcodes')?></h3>
-		<h4> Found <?php count($this->sccnts); ?> distinct shortcodes across <?php echo $this->pagination->total; ?> articles from <?php echo XbarticlemanHelper::getItemCnt('#__content'); ?> total articles</h4>
+		<h4> Found <?php echo count($this->sccnts); ?> distinct shortcodes across <?php echo $this->shortcodearticles; ?> articles containing shortcodes from <?php echo $this->statearticles.' '.$this->statefilt; ?> articles</h4>
     	<ul class="inline">
-    		<li><i>Counts for each type:</i></li>
-    		<?php foreach ($this->sccnts as $key=>$cnt) {
-    		    echo '<li><b>'.$key.'</b> : '.$cnt.'</li>';
-    		}?>
+    		<li><i>Counts for each shortcode:</i></li>
+    		<?php foreach ($this->sccnts as $key=>$cnt) : ?>
+    		    <li><a href="index.php?option=com_xbarticleman&view=artscodes&sc=<?php echo $key; ?>&filter[scfilt]=<?php echo $key; ?>" 
+					 class="label label-yellow"><?php echo $key; ?> (<?php echo $cnt; ?>)</a></li>
+    	<?php endforeach; ?>
     	</ul>
-		<?php
-		// Search tools bar
-		echo LayoutHelper::render('joomla.searchtools.default', array('view' => $this));
+       	<span class="xbnit xb09">Click shortcode above to filter this list by it.</span>
+    	<p><?php echo Text::_('List shows').' ';
+    	if (array_key_exists('artlist', $this->activeFilters)) {
+    	    switch ($this->activeFilters['artlist']) {
+    	    case 2:
+    	        echo $this->pagination->total.' '.Text::_('articles without shortcodes');
+    	       break;
+    	    case 1:
+    	       echo $this->pagination->total.' '.Text::_('articles containing shortcodes');
+    	       break;
+    	    default:
+    	       echo Text::_('all articles');
+    	       break;
+    	   }  	    
+    	} else {
+    	    echo $this->pagination->total.' '.Text::_('tagged articles');
+    	} ?>
+    	 from <?php echo XbarticlemanHelper::getItemCnt('#__content'); ?> total available articles
+    	<br /><span class="xbit xb09">additional filters by status, category, and tag may be applied below</span>
+
+		<?php // Search tools bar
+		  echo LayoutHelper::render('joomla.searchtools.default', array('view' => $this));
 		?>
 
         <div class="pull-right pagination xbm0">

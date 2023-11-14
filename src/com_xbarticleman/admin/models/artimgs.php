@@ -2,7 +2,7 @@
 /*******
  * @package xbArticleManager
  * file administrator/components/com_xbarticleman/models/artimgs.php
- * @version 2.0.4.1 9th November 2023
+ * @version 2.0.6.0 14th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -309,16 +309,17 @@ class XbarticlemanModelArtimgs extends JModelList
                     $thisimg = array();
                     $imguri = $img->getAttribute('src');
                     $uri_info = parse_url($imguri);
-                    if (key_exists('hostname', $uri_info)) {
-                        $thisimg['host'] = $uri_info['hostname'];
+                    if (key_exists('host', $uri_info)) {
+                        $thisimg['host'] = $uri_info['scheme'].'://'.$uri_info['host'];
+                        $uri = $imguri;
                     } else {
                         $uri = Uri::root().$imguri;
                         $thisimg['host'] = '';
                     }
                     $thisimg['uri']= $uri;
-                    $pathinfo = pathinfo($imguri);
+                    $pathinfo = pathinfo($uri_info['path']);
                     $thisimg['filename']= $pathinfo['basename'];
-                    $thisimg['path']= $pathinfo['dirname'];
+                    $thisimg['path']= $pathinfo['dirname'].'/';
                     $attr = getimagesize($uri);
                     $thisimg['nativesize'] = $attr[0].' x '.$attr[1].'px';
                     $thisimg['mime'] = $attr['mime'];
