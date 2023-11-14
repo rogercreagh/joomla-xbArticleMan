@@ -162,14 +162,15 @@
 		<field
 			name="image_intro"
 			type="media"
-			label="COM_CONTENT_FIELD_INTRO_LABEL"
-			description="COM_CONTENT_FIELD_INTRO_DESC" 
+			label="Article Intro Image"
+			description="Typcally make this smaller than the full image. Will only show with the article intor text, not the full article" 
+			class="input-xxlarge"
 		/>
 		
 		<field
 			name="float_intro"
 			type="list"
-			label="COM_CONTENT_FLOAT_LABEL"
+			label="Image Float"
 			description="COM_CONTENT_FLOAT_DESC"
 			useglobal="true"
 			>
@@ -181,7 +182,7 @@
 		<field 
 			name="image_intro_alt"
 			type="text"
-			label="COM_CONTENT_FIELD_IMAGE_ALT_LABEL"
+			label="Image Alt Text"
 			description="COM_CONTENT_FIELD_IMAGE_ALT_DESC"
 			size="20"
 		/>
@@ -189,28 +190,23 @@
 		<field 
 			name="image_intro_caption"
 			type="text"
-			label="COM_CONTENT_FIELD_IMAGE_CAPTION_LABEL"
+			label="Image Caption"
 			description="COM_CONTENT_FIELD_IMAGE_CAPTION_DESC"
-			size="20"
-		/>
-
-		<field
-			name="spacer1"
-			type="spacer"
-			hr="true"
+			class="input-xxlarge"
 		/>
 
 		<field
 			name="image_fulltext"
 			type="media"
-			label="COM_CONTENT_FIELD_FULL_LABEL"
+			label="Full Article Image"
 			description="COM_CONTENT_FIELD_FULL_DESC"
+			class="input-xxlarge"
 		/>
 
 		<field
 			name="float_fulltext"
 			type="list"
-			label="COM_CONTENT_FLOAT_LABEL"
+			label="Image Float"
 			description="COM_CONTENT_FLOAT_DESC"
 			useglobal="true"
 			>
@@ -222,7 +218,7 @@
 		<field 
 			name="image_fulltext_alt"
 			type="text"
-			label="COM_CONTENT_FIELD_IMAGE_ALT_LABEL"
+			label="Image Alt Text"
 			description="COM_CONTENT_FIELD_IMAGE_ALT_DESC"
 			size="20"
 		/>
@@ -230,9 +226,9 @@
 		<field 
 			name="image_fulltext_caption"
 			type="text"
-			label="COM_CONTENT_FIELD_IMAGE_CAPTION_LABEL"
+			label="Image Caption"
 			description="COM_CONTENT_FIELD_IMAGE_CAPTION_DESC"
-			size="20"
+			class="input-xxlarge"
 		/>
 	</fields>
 	<fields name="urls" label="COM_CONTENT_FIELD_URLS_OPTIONS">
@@ -244,6 +240,7 @@
 			validate="url"
 			filter="url"
 			relative="true"
+			class="input-xxlarge"
 		/>
 
 		<field 
@@ -251,7 +248,7 @@
 			type="text"
 			label="XBARTMAN_FIELD_URLA_LINK_TEXT_LABEL"
 			description="XBARTMAN_FIELD_URL_LINK_TEXT_DESC"
-			size="20"
+			class="input-xxlarge"
 		/>
 
 		<field
@@ -270,12 +267,6 @@
 		</field>
 
 		<field
-			name="spacer3"
-			type="spacer"
-			label="&lt;p&gt; &lt;/p&gt;"
-		/>
-
-		<field
 			name="urlb"
 			type="url"
 			label="XBARTMAN_FIELD_URLB_LABEL"
@@ -283,6 +274,7 @@
 			validate="url"
 			filter="url"
 			relative="true"
+			class="input-xxlarge"
 		/>
 
 		<field 
@@ -290,7 +282,7 @@
 			type="text"
 			label="XBARTMAN_FIELD_URLB_LINK_TEXT_LABEL"
 			description="XBARTMAN_FIELD_URL_LINK_TEXT_DESC"
-			size="20"
+			class="input-xxlarge"
 		/>
 
 		<field
@@ -309,12 +301,6 @@
 		</field>
 
 		<field
-			name="spacer4"
-			type="spacer"
-			label="&lt;p&gt; &lt;/p&gt;"
-		/>
-
-		<field
 			name="urlc"
 			type="url"
 			label="XBARTMAN_FIELD_URLC_LABEL"
@@ -322,6 +308,7 @@
 			validate="url"
 			filter="url"
 			relative="true"
+			class="input-xxlarge"
 		/>
 
 		<field
@@ -329,7 +316,7 @@
 			type="text"
 			label="XBARTMAN_FIELD_URLC_LINK_TEXT_LABEL"
 			description="XBARTMAN_FIELD_URL_LINK_TEXT_DESC"
-			size="20"
+			class="input-xxlarge"
 		/>
 
 		<field
@@ -346,11 +333,6 @@
 			<option value="2">JBROWSERTARGET_POPUP</option>
 			<option value="3">JBROWSERTARGET_MODAL</option>
 		</field>
-		<field
-			name="spacer5"
-			type="spacer"
-			label="&lt;p&gt; &lt;/p&gt;"
-		/>
 
 	</fields>
 

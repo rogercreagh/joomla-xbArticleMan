@@ -2,19 +2,26 @@
 /*******
  * @package xbArticleManager
  * file administrator/components/com_xbarticleman/views/article/tmpl/edit.php
- * @version 1.0.0.0 22nd January 2019
+ * @version 2.0.6.1 14th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
  ******/
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Router\Route;
+use Joomla\CMS\Layout\LayoutHelper;
+use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\Helper\TagsHelper;
 use Joomla\Registry\Registry;
 
-JHtml::_('behavior.formvalidation');
-JHtml::_('behavior.keepalive');
-JHtml::_('formbehavior.chosen', '#jform_catid', null, array('disable_search_threshold' => 0 ));
-JHtml::_('formbehavior.chosen', 'select');
+HTMLHelper::_('behavior.formvalidation');
+HTMLHelper::_('behavior.keepalive');
+HTMLHelper::_('formbehavior.chosen', '#jform_catid', null, array('disable_search_threshold' => 0 ));
+HTMLHelper::_('formbehavior.chosen', 'select');
 
 $this->configFieldsets  = array('editorConfig');
 $this->hiddenFieldsets  = array('basic-limited');
@@ -42,58 +49,82 @@ JFactory::getDocument()->addScriptDeclaration('
 ?>
 
 <p><i>Use <a href="
-    <?php echo JRoute::_('index.php?option=com_content&task=article.edit&id='.(int) $this->item->id); ?>"
+    <?php echo Route::_('index.php?option=com_content&task=article.edit&id='.(int) $this->item->id); ?>"
     class="btn">Content : Article Edit</a> to switch to full edit view (unsaved changes here will be lost). &nbsp;
 	To create new file use <a href="
-	<?php echo JRoute::_('index.php?option=com_content&view=article&layout=edit'); ?>" class="btn">
+	<?php echo Route::_('index.php?option=com_content&view=article&layout=edit'); ?>" class="btn">
 	Content : Add New Article</a>
 </i></p>
 <hr />
-<form action="<?php echo JRoute::_('index.php?option=com_xbarticleman&layout=edit&id='. (int) $this->item->id); ?>"
+<form action="<?php echo Route::_('index.php?option=com_xbarticleman&layout=edit&id='. (int) $this->item->id); ?>"
 	method="post" name="adminForm" id="item-form" class="form-validate" >
-	<?php echo JLayoutHelper::render('joomla.edit.title_alias', $this); ?>
+	<?php echo LayoutHelper::render('joomla.edit.title_alias', $this); ?>
 	<hr />
-		<div class="row-fluid">
-			<div class="span9">
-				<fieldset class="adminform">
-					<div class="control-label">
-						<?php echo $this->form->getLabel('tags'); ?>
-					</div>
-					<div class="controls">
-						<?php echo $this->form->getInput('tags'); ?>
-					</div>
-					<p></br>Links to related items</p>
-					<?php foreach ($this->form->getGroup('urls') as $field) : ?>
-    					<div class="span3">
-    						<?php echo $field->renderField(); ?>
-    					</div>
-					<?php endforeach; ?>
-				</fieldset>
+	<div class="row-fluid">
+		<div class="span9">
+			<div class="control-label">
+				<?php echo $this->form->getLabel('tags'); ?>
 			</div>
-			<div class="span3">
-					<div class="control-label">
-						<?php echo $this->form->getLabel('catid'); ?>
-					</div>
-					<div class="controls" style="margin-bottom:20px;">
-						<?php echo $this->form->getInput('catid'); ?>
-					</div>
-					<div class="control-label">
-						<?php echo $this->form->getLabel('state'); ?>
-					</div>
-					<div class="controls" style="margin-bottom:20px;">
-						<?php echo $this->form->getInput('state'); ?>
-					</div>
-					<div class="control-label">
-						<?php echo $this->form->getLabel('note'); ?>
-					</div>
-					<div class="controls style="margin-bottom:20px;"">
-						<?php echo $this->form->getInput('note'); ?>
-					</div>
+			<div class="controls">
+				<?php echo $this->form->getInput('tags'); ?>
 			</div>
 		</div>
-		<input type="hidden" name="task" value="" />
-		<?php echo JHtml::_('form.token'); ?>
-		<input type="hidden" name="retview" value="<?php echo $input->getCmd('retview'); ?>" />
+	</div>
+	<hr />
+	<div class="row-fluid">
+		<div class="span9">
+			<fieldset class="adminform">
+				<p><b>Article Feature Images</b></p>
+				
+				<div class="row-fluid">
+    				<div class="span6">
+                		<?php $cnt = 0; ?>
+    					<?php foreach ($this->form->getGroup('images') as $field) : ?>
+    						<?php echo $field->renderField(); ?>
+    						<?php $cnt ++; 
+    						if ($cnt == 4) echo '</div><div class="span6">'; ?>
+    					<?php endforeach; ?>
+    				</div>
+				</div>
+				<p><b>Related Items Links</b></p>
+                <div class="row-fluid">
+                <?php $cnt = 0; ?>
+					 <?php foreach ($this->form->getGroup('urls') as $field) : ?>
+						<div class="span4">
+							<?php echo $field->renderField(); ?>
+						</div>
+						<?php $cnt ++; 
+						if (($cnt % 3 ) == 0) { 
+						    if ($cnt < 9) echo '</div><div class="row-fluid"><hr /></div><div class="row-fluid">';							    
+						}?>
+					<?php endforeach; ?>
+				</div>
+			</fieldset>
+		</div>
+		<div class="span3">
+				<div class="control-label">
+					<?php echo $this->form->getLabel('catid'); ?>
+				</div>
+				<div class="controls" style="margin-bottom:20px;">
+					<?php echo $this->form->getInput('catid'); ?>
+				</div>
+				<div class="control-label">
+					<?php echo $this->form->getLabel('state'); ?>
+				</div>
+				<div class="controls" style="margin-bottom:20px;">
+					<?php echo $this->form->getInput('state'); ?>
+				</div>
+				<div class="control-label">
+					<?php echo $this->form->getLabel('note'); ?>
+				</div>
+				<div class="controls" style="margin-bottom:20px;">
+					<?php echo $this->form->getInput('note'); ?>
+				</div>
+		</div>
+	</div>
+	<input type="hidden" name="task" value="" />
+	<?php echo HTMLHelper::_('form.token'); ?>
+	<input type="hidden" name="retview" value="<?php echo $input->getCmd('retview'); ?>" />
 
 </form>
 
