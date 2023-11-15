@@ -2,7 +2,7 @@
 /*******
  * @package xbarticleman
  * file administrator/components/com_xbarticleman/views/artlinks/tmpl/default.php
- * @version 2.0.5.0 12th November 2023
+ * @version 2.0.6.3 15th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
@@ -162,8 +162,8 @@ if ($saveOrder)
 				<col class="center hidden-phone" style="width:25px;"><!-- checkbox -->
 				<col class="nowrap center" style="width:55px;"><!-- status -->
 				<col ><!-- title, -->
-				<col style="width:450px;"><!-- related -->
-				<col style="width:450px;"><!-- embedded -->
+				<col style="width:400px;"><!-- related -->
+				<col style="width:400px;"><!-- embedded -->
 				<col ><!-- anchors -->
 				<col class="nowrap hidden-phone" style="width:110px;" ><!-- date -->
 				<col class="nowrap hidden-phone" style="width:45px;"><!-- id -->
@@ -181,7 +181,7 @@ if ($saveOrder)
 						</th>
 						<th >
 							<?php echo HTMLHelper::_('searchtools.sort', 'JGLOBAL_TITLE', 'a.title', $listDirn, $listOrder); ?>
-							<span class="xbnorm xbo9">(edit) |</span>  alias <span class="xbnorm xb09">(pv) |</span>
+							<span class="xbnorm xbo9">(edit) (pv) |</span>  alias <span class="xbnorm xb09"> | </span>
 							<?php echo HTMLHelper::_('searchtools.sort', 'XB_CATEGORY', 'category_title', $listDirn, $listOrder); ?>							
 						</th>
 						<th>
@@ -224,7 +224,7 @@ if ($saveOrder)
 						</th>
 						<th >
 							<?php echo HTMLHelper::_('searchtools.sort', 'JGLOBAL_TITLE', 'a.title', $listDirn, $listOrder); ?>
-							<span class="xbnorm xbo9">(edit) |</span>  alias <span class="xbnorm xb09">(pv) |</span>
+							<span class="xbnorm xbo9">(edit) (pv) |</span>  alias <span class="xbnorm xb09"> | </span>
 							<?php echo HTMLHelper::_('searchtools.sort', 'Category', 'category_title', $listDirn, $listOrder); ?>							
 						</th>
 						<th>
@@ -320,17 +320,18 @@ if ($saveOrder)
 									" title="<?php echo Text::_('XBARTMAN_META_EDIT'); ?>">
 										<?php echo $this->escape($item->title); ?></a>
 									<a class="hasTooltip" href="
-									<?php echo Route::_('index.php?option=com_content&task=article.edit&id=' . $item->id).'&retview=artimgs';?>
+									<?php echo Route::_('index.php?option=com_content&task=article.edit&id=' . $item->id);?>
 									" title="<?php echo Text::_('XBARTMAN_FULL_EDIT'); ?>">										
-										<span class="icon-edit"></span></a>
+										<span class="icon-edit xbpl10"></span></a>
 								<?php else : ?>
 									<span title="<?php echo Text::sprintf('JFIELD_ALIAS_LABEL', $this->escape($item->alias)); ?>"><?php echo $this->escape($item->title); ?></span>
 								<?php endif; ?>
+								<?php $pvuri = "'".(Uri::root().'index.php?option=com_content&view=article&id='.$item->id)."'"; ?>
+                                <a class="hasTooltip"  data-toggle="modal" title="<?php echo Text::_('XBARTMAN_MODAL_PREVIEW'); ?>" href="#pvModal"
+                                onClick="window.pvuri=<?php echo $pvuri; ?>;">
+									<span class="icon-eye xbpl10"></span></a>
 								</p>
-								<span><i><?php Text::_('XB_ALIAS'); ?></i>: <?php echo $this->escape($item->alias); ?>
-										<?php echo '<a class="hasTooltip"  data-toggle="modal" title="'.JText::_('XBARTMAN_MODAL_PREVIEW').'" href="#pvModal"
-                                        onClick="window.pvid='.$item->id.';">';
-										echo ' <span class="icon-eye"></span></a>'; ?>
+								<span class="xbpl20"><i><?php Text::_('XB_ALIAS'); ?></i>: <?php echo $this->escape($item->alias); ?>
 								</span>
 								<div class="small">
 									<?php
@@ -359,51 +360,221 @@ if ($saveOrder)
 								</div>
 							</div>
 						</td>
-						<td class="small"><?php 
+						<td><?php 
 							$urls = json_decode($item->urls); 
-							if ($urls->urla) {
-							    echo 'A: '.XbarticlemanHelper::getLinkDisplay($urls->urla, $urls->urlatext, $urls->targeta, $this->checkint, $this->checkext);
-							}
-							if ($urls->urlb) {
-							    echo 'B: '.XbarticlemanHelper::getLinkDisplay($urls->urlb, $urls->urlbtext, $urls->targetb, $this->checkint, $this->checkext);
-							}
-							if ($urls->urlc) {
-							    echo 'C: '.XbarticlemanHelper::getLinkDisplay($urls->urlc, $urls->urlctext, $urls->targetc, $this->checkint, $this->checkext);
-							}
-							?>
+							$targets = array('current window/tab','new window/tab','popup window','modal window');
+							if ($urls->urla) : ?>
+								<details>
+									<?php $colour = 'blue';
+									$url = $urls->urla;
+									$url_info = parse_url($url); 
+									if (!key_exists('scheme',$url_info)) $url_info['scheme'] = '';
+									if (!key_exists('host',$url_info)) $url_info['host'] = '';
+									$local = XbarticlemanHelper::isLocalLink($url);
+									if ($local) {
+									   if ($this->checkint) {
+									       $colour = (!XbarticlemanHelper::check_url($url)) ? 'red' : 'green';
+									   }								
+									   if (!isset($url_info['host'])) $url = Uri::root().$url;
+									} else {
+									   if ($this->checkext) {
+									       $colour = (!XbarticlemanHelper::check_url($url)) ? 'red' : 'green';
+									   }									    
+									} ?>
+									<summary>
+										<i>Link C</i>: <?php if ($url_info['scheme'] == 'mailto') echo '<span class="icon-mail"></span> '; ?>
+										<a class="hasTooltip"  data-toggle="modal" title="<?php echo Text::_('XBARTMAN_MODAL_PREVIEW'); ?>" href="#pvModal"
+                                			onClick="window.pvuri=<?php echo "'".$url."'"; ?>" style="color:<?php echo $colour; ?>">
+										  	<?php echo ($urls->urlatext == '') ? $url : $urls->urlatext; ?> <span class="icon-eye"></span></a>
+									</summary>
+										<i>Host</i>: <?php echo ($local) ? 'local' : $url_info['scheme'].'://'.$url_info['host']; ?><br />
+										<i>Path</i>: <?php if (isset($url_info['path'])) echo $url_info['path']; ?>/<br/>
+										<i>Target</i>: <?php echo ($urls->targeta === '') ? '(use global)' : $targets[$urls->targeta]; ?>
+								</details>
+							<?php endif; 
+							if ($urls->urlb) : ?>
+								<details>
+									<?php $colour = 'blue';
+									$url = $urls->urlb;
+									$url_info = parse_url($url); 
+									if (!key_exists('scheme',$url_info)) $url_info['scheme'] = '';
+									if (!key_exists('host',$url_info)) $url_info['host'] = '';
+									$local = XbarticlemanHelper::isLocalLink($url);
+									if ($local) {
+									   if ($this->checkint) {
+									       $colour = (!XbarticlemanHelper::check_url($url)) ? 'red' : 'green';
+									   }								
+									   if (!isset($url_info['host'])) $url = Uri::root().$url;
+									} else {
+									   if ($this->checkext) {
+									       $colour = (!XbarticlemanHelper::check_url($url)) ? 'red' : 'green';
+									   }									    
+									} ?>
+									<summary>
+										<i>Link C</i>: <?php if ($url_info['scheme'] == 'mailto') echo '<span class="icon-mail"></span> '; ?>
+										<a class="hasTooltip"  data-toggle="modal" title="<?php echo Text::_('XBARTMAN_MODAL_PREVIEW'); ?>" href="#pvModal"
+                                			onClick="window.pvuri=<?php echo "'".$url."'"; ?>" style="color:<?php echo $colour; ?>">
+										  	<?php echo ($urls->urlbtext == '') ? $url : $urls->urlbtext; ?> <span class="icon-eye"></span></a>
+									</summary>
+										<i>Host</i>: <?php echo ($local) ? 'local' : $url_info['scheme'].'://'.$url_info['host']; ?><br />
+										<i>Path</i>: <?php if (isset($url_info['path'])) echo $url_info['path']; ?>/<br/>
+										<i>Target</i>: <?php echo ($urls->targetb === '') ? '(use global)' : $targets[$urls->targetb]; ?>
+								</details>
+							<?php endif; 
+							if ($urls->urlc) : ?>
+								<details>
+									<?php $colour = 'blue';
+									$url = $urls->urlc;
+									$url_info = parse_url($url); 
+									if (!key_exists('scheme',$url_info)) $url_info['scheme'] = '';
+									if (!key_exists('host',$url_info)) $url_info['host'] = '';
+									$local = XbarticlemanHelper::isLocalLink($url);
+									if ($local) {
+									   if ($this->checkint) {
+									       $colour = (!XbarticlemanHelper::check_url($url)) ? 'red' : 'green';
+									   }								
+									   if (!isset($url_info['host'])) $url = Uri::root().$url;
+									} else {
+									   if ($this->checkext) {
+									       $colour = (!XbarticlemanHelper::check_url($url)) ? 'red' : 'green';
+									   }									    
+									} ?>
+									<summary>
+										<i>Link C</i>: <?php if ($url_info['scheme'] == 'mailto') echo '<span class="icon-mail"></span> '; ?>
+										<a class="hasTooltip"  data-toggle="modal" title="<?php echo Text::_('XBARTMAN_MODAL_PREVIEW'); ?>" href="#pvModal"
+                                			onClick="window.pvuri=<?php echo "'".$url."'"; ?>" style="color:<?php echo $colour; ?>">
+										  	<?php echo ($urls->urlctext == '') ? $url : $urls->urlctext; ?> <span class="icon-eye"></span></a>
+									</summary>
+										<i>Host</i>: <?php echo ($local) ? 'local' : $url_info['scheme'].'://'.$url_info['host']; ?><br />
+										<i>Path</i>: <?php if (isset($url_info['path'])) echo $url_info['path']; ?>/<br/>
+										<i>Target</i>: <?php echo ($urls->targetc === '') ? '(use global)' : $targets[$urls->targetc]; ?>
+								</details>
+							<?php endif; ?>
 						</td>
-						<td class="small">							
+						<td>							
 							<?php
-							if (count($links["pageLinks"]) >0) {
-							    echo '<b>Page Links:</b> : '.count($links["pageLinks"]).'<br /> ';
-							    foreach ($links["pageLinks"] as $a) {
-							        echo '<span class="hasTooltip" title="'.$a->textContent.'">';
-							        echo $a->getAttribute('href').'</span>, ';
-							    }
-							    echo '<br />';
-							}
-							if (count($links["localLinks"]) >0) {
-							    echo '<b>Internal Links: </b> : '.count($links["localLinks"]).'<br /> ';
-							    foreach ($links["localLinks"] as $a) {
-							        $targ = ($a->getAttribute('target') == '_blank') ? 1 : 0;
-							        echo XbarticlemanHelper::getLinkDisplay($a->getAttribute('href'), $a->textContent, $targ, $this->checkint, $this->checkext);
- 							    }
-							}
-							if (count($links["extLinks"]) >0) {
-							    echo '<b>External Links: </b> : '.count($links["extLinks"]).'<br /> ';
-							    foreach ($links["extLinks"] as $a) {
-							        $targ = ($a->getAttribute('target') == '_blank') ? 1 : 0;
-							        echo XbarticlemanHelper::getLinkDisplay($a->getAttribute('href'), $a->textContent, $targ, $this->checkint, $this->checkext);
-							    }
-							}							
-							if (count($links["others"]) >0) {
-							    echo '<b>Others: </b> : '.count($links["others"]).'<br /> ';
-							    foreach ($links["others"] as $a) {
-							        echo '<span class="hasTooltip" title="'.$a->textContent.'">';
-							        echo $a->getAttribute('href').'</span>, ';
-							    }
-							}
-							?>
+							if (count($links["pageLinks"]) >0) : ?>
+								<b>Internal Page Links: <?php count($links["pageLinks"]); ?></b>
+								<?php foreach ($links["pageLinks"] as $a) : ?>
+									<?php $colour = 'blue';
+									$url = $a->getAttribute('href');
+									$url_info = parse_url($url); 
+									if (!key_exists('scheme',$url_info)) $url_info['scheme'] = '';
+									if (!key_exists('host',$url_info)) $url_info['host'] = '';
+									$local = XbarticlemanHelper::isLocalLink($url);
+									if ($local) {
+									   if ($this->checkint) {
+									       $colour = (!XbarticlemanHelper::check_url($url)) ? 'red' : 'green';
+									   }
+									   if (!isset($url_info['host'])) $url = Uri::root().$url;
+									} else {
+									   if ($this->checkext) {
+									       $colour = (!XbarticlemanHelper::check_url($url)) ? 'red' : 'green';
+									   }									    
+									} ?>
+    							    <details>
+    							    	<summary><?php if (key_exists('scheme',$url_info) && ($url_info['scheme'] == 'mailto')) echo '<span class="icon-mail"></span> '; ?>
+											<a class="hasTooltip"  data-toggle="modal" title="<?php echo Text::_('XBARTMAN_MODAL_PREVIEW'); ?>" href="#pvModal"
+                                			onClick="window.pvuri=<?php echo "'".$url."'"; ?>" style="color:<?php echo $colour; ?>">
+										  	<?php echo $a->textContent; ?> <span class="icon-eye"></span></a>
+    							    	</summary>    							    	
+										<i>Host</i>: <?php echo ($local) ? 'local' : $url_info['scheme'].'://'.$url_info['host']; ?><br />
+										<i>Path</i>: <?php if (isset($url_info['path'])) echo $url_info['path']; ?>/<br/>
+										<?php if (key_exists('fragment',$url_info)) ?> <i>hash</i>: #<?php echo $url_info['fragment']; ?>/<br/>
+										<?php if (key_exists('query',$url_info)) ?> <i>Query</i>: <?php echo $url_info['query']; ?>/<br/>
+										<?php if ($a->getAttribute('target') != '') ?><i>Target</i>: <?php echo $a->getAttribute('target'); ?>
+										<?php if ($a->getAttribute('class') != '') ?><i>Class</i>: <?php echo $a->getAttribute('class'); ?>
+    							    </details>
+							    <?php endforeach; ?>
+							   	<br />;
+							<?php endif; ?>
+							<?php
+							if (count($links["localLinks"]) >0) : ?>
+								<b>Local Links: <?php count($links["localLinks"]); ?></b>
+								<?php foreach ($links["localLinks"] as $a) : ?>
+									<?php $colour = 'blue';
+									$url = $a->getAttribute('href');
+									$url_info = parse_url($url); 
+									$local = XbarticlemanHelper::isLocalLink($url);
+									if ($local) {
+									   if ($this->checkint) {
+									       $colour = (!XbarticlemanHelper::check_url($url)) ? 'red' : 'green';
+									   }
+									   if (!isset($url_info['host'])) $url = Uri::root().$url;
+									} else {
+									   if ($this->checkext) {
+									       $colour = (!XbarticlemanHelper::check_url($url)) ? 'red' : 'green';
+									   }									    
+									} ?>
+    							    <details>
+    							    	<summary><?php if (key_exists('scheme',$url_info) && ($url_info['scheme'] == 'mailto')) echo '<span class="icon-mail"></span> '; ?>
+										<a class="hasTooltip"  data-toggle="modal" title="<?php echo Text::_('XBARTMAN_MODAL_PREVIEW'); ?>" href="#pvModal"
+                                			onClick="window.pvuri=<?php echo "'".$url."'"; ?>" style="color:<?php echo $colour; ?>">
+										  	<?php echo $a->textContent; ?> <span class="icon-eye"></span></a>
+    							    	</summary>
+										<i>Host</i>: <?php echo ($local) ? 'local' : $url_info['scheme'].'://'.$url_info['host']; ?><br />
+										<i>Path</i>: <?php if (isset($url_info['path'])) echo $url_info['path']; ?>/<br/>
+										<?php if (isset($url_info['fragment'])) ?> <i>hash</i>: #<?php echo $url_info['fragment']; ?>/<br/>
+										<?php if (isset($url_info['query'])) ?> <i>Query</i>: <?php echo $url_info['query']; ?>/<br/>
+										<?php if ($a->getAttribute('target') != '') ?><i>Target</i>: <?php echo $a->getAttribute('target'); ?>
+										<?php if ($a->getAttribute('class') != '') ?><i>Class</i>: <?php echo $a->getAttribute('class'); ?>
+    							    </details>
+							    <?php endforeach; ?>
+							   	<br />;
+							<?php endif; ?>
+							<?php
+							if (count($links["extLinks"]) >0) : ?>
+								<b>External Links: <?php count($links["extLinks"]); ?></b>
+								<?php foreach ($links["extLinks"] as $a) : ?>
+									<?php $colour = 'blue';
+									$url = $a->getAttribute('href');
+									$url_info = parse_url($url); 
+									$local = XbarticlemanHelper::isLocalLink($url);
+									if ($local) {
+									   if ($this->checkint) {
+									       $colour = (!XbarticlemanHelper::check_url($url)) ? 'red' : 'green';
+									   }
+									   if (!isset($url_info['host'])) $url = Uri::root().$url;
+									} else {
+									   if ($this->checkext) {
+									       $colour = (!XbarticlemanHelper::check_url($url)) ? 'red' : 'green';
+									   }									    
+									} ?>
+    							    <details>
+    							    	<summary><?php if (key_exists('scheme',$url_info) && ($url_info['scheme'] == 'mailto')) echo '<span class="icon-mail"></span> '; ?>
+										<a class="hasTooltip"  data-toggle="modal" title="<?php echo Text::_('XBARTMAN_MODAL_PREVIEW'); ?>" href="#pvModal"
+                                			onClick="window.pvuri=<?php echo "'".$url."'"; ?>" style="color:<?php echo $colour; ?>">
+										  	<?php echo $a->textContent; ?> <span class="icon-eye"></span></a>
+    							    	</summary>    							    	
+										<i>Host</i>: <?php echo ($local) ? 'local' : $url_info['scheme'].'://'.$url_info['host']; ?><br />
+										<i>Path</i>: <?php if (isset($url_info['path'])) echo $url_info['path']; ?>/<br/>
+										<?php if (isset($url_info['fragment'])) ?> <i>hash</i>: #<?php echo $url_info['fragment']; ?>/<br/>
+										<?php if (isset($url_info['query'])) ?> <i>Query</i>: <?php echo $url_info['query']; ?>/<br/>
+										<?php if ($a->getAttribute('target') != '') ?><i>Target</i>: <?php echo $a->getAttribute('target'); ?>
+										<?php if ($a->getAttribute('class') != '') ?><i>Class</i>: <?php echo $a->getAttribute('class'); ?>
+    							    </details>
+							    <?php endforeach; ?>
+							   	<br />;
+							<?php endif; ?>
+							<?php
+							if (count($links["others"]) >0) : ?>
+								<b>Other Links: <?php count($links["others"]); ?></b>
+								<?php foreach ($links["others"] as $a) : ?>
+									<?php $colour = 'blue';
+									$url = $a->getAttribute('href');
+									$url_info = parse_url($url); 
+									$local = XbarticlemanHelper::isLocalLink($url);
+									if ($local) {
+									   if (!isset($url_info['host'])) $url = Uri::root().$url;
+									} ?>
+    							    <details>
+    							    	<summary><?php if (key_exists('scheme',$url_info) && ($url_info['scheme'] == 'mailto')) echo '<span class="icon-mail"></span> '; ?>
+										  	<?php echo $a->textContent; ?>
+    							    	</summary>    							    	
+    							    </details>
+							    <?php endforeach; ?>
+							   	<br />;
+							<?php endif; ?>
 						</td>
 						<td class="small">
 							<?php 

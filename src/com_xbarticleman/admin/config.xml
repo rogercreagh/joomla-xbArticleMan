@@ -8,6 +8,7 @@
 		<field name="extlinkhint" type="radio"
 			label="XB_EXTLINKS_LABEL"
 			description="XB_EXTLINKS_DESC"
+ 			class="btn-group btn-group-yesno"
  			default="0"
 			>
 			<option value="0" >Disable</option>

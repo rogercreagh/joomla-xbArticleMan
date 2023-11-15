@@ -2,7 +2,7 @@
 /*******
  * @package xbarticleman
  * @filesource administrator/components/com_xbarticleman/views/artimgs/tmpl/default.php
- * @version 2.0.5.0 10th November 2023
+ * @version 2.0.6.3 15th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
@@ -155,7 +155,7 @@ if ($saveOrder)
 						</th>
 						<th>
 							<?php echo HTMLHelper::_('searchtools.sort', 'JGLOBAL_TITLE', 'a.title', $listDirn, $listOrder); ?>
-							<span class="xbnorm xbo9">(edit) |</span>  alias <span class="xbnorm xb09">(pv) |</span>
+							<span class="xbnorm xbo9">(edit) (pv) |</span>  alias <span class="xbnorm xb09"> | </span>
 							<?php echo HTMLHelper::_('searchtools.sort', 'Category', 'category_title', $listDirn, $listOrder); ?>							
 						</th>
 						<th>
@@ -186,7 +186,7 @@ if ($saveOrder)
 						</th>
 						<th>
 							<?php echo HTMLHelper::_('searchtools.sort', 'JGLOBAL_TITLE', 'a.title', $listDirn, $listOrder); ?>
-							<span class="xbnorm xbo9">(edit) |</span>  alias <span class="xbnorm xb09">(pv) |</span>
+							<span class="xbnorm xbo9">(edit) (pv) |</span>  alias <span class="xbnorm xb09"> | </span>
 							<?php echo HTMLHelper::_('searchtools.sort', 'Category', 'category_title', $listDirn, $listOrder); ?>							
 						</th>
 						<th>
@@ -271,17 +271,18 @@ if ($saveOrder)
 									" title="<?php echo Text::_('quick edit (not content)'); ?>">
 										<?php echo $this->escape($item->title); ?></a> 
 									<a class="hasTooltip" href="
-									<?php echo Route::_('index.php?option=com_content&task=article.edit&id=' . $item->id).'&retview=artimgs';?>
-									" title="<?php echo Text::_('Full edit'); ?>">										
-										<span class="icon-edit"></span></a>
+									<?php echo Route::_('index.php?option=com_content&task=article.edit&id=' . $item->id);?>
+									" title="<?php echo Text::_('Full edit'); ?>" >										
+										<span class="icon-edit xbpl10"></span></a>
 								<?php else : ?>
 									<span title="<?php echo Text::sprintf('JFIELD_ALIAS_LABEL', $this->escape($item->alias)); ?>"><?php echo $this->escape($item->title); ?></span>
 								<?php endif; ?>
+								<?php $pvuri = "'".(Uri::root().'index.php?option=com_content&view=article&id='.$item->id)."'"; ?>
+                                <a class="hasTooltip"  data-toggle="modal" title="<?php echo Text::_('XBARTMAN_MODAL_PREVIEW'); ?>" href="#pvModal"
+                                onClick="window.pvuri=<?php echo $pvuri; ?>;">
+									<span class="icon-eye xbpl10"></span></a>
 								</p>
-								<span><i>Alias</i>: <?php echo $this->escape($item->alias); ?>
-										<?php echo '<a class="hasTooltip"  data-toggle="modal" title="'.JText::_('XBARTMAN_MODAL_PREVIEW').'" href="#pvModal"
-                                        onClick="window.pvid='.$item->id.';">';
-										echo ' <span class="icon-eye"></span></a>'; ?>
+								<span class="xbpl20"><i>Alias</i>: <?php echo $this->escape($item->alias); ?>
 								</span>
 								<div class="small">
 									<?php
@@ -360,7 +361,7 @@ if ($saveOrder)
 							<?php $a = $item->introimg;
 							if (key_exists('uri',$a) ) : ?>
 								<details>
-									<summary><?php echo $a['filename']; ?>
+									<summary><i>Intro</i> <?php echo $a['filename']; ?>
     									<a href="<?php echo $a['uri']; ?>" class="modal"> <span class="icon-eye"></span> </a>
 									</summary>
 									<ul>
@@ -392,7 +393,7 @@ if ($saveOrder)
 							<?php $a = $item->fullimg;
 							if (key_exists('uri',$a) ) : ?>
 								<details>
-									<summary><?php echo $a['filename']; ?>
+									<summary><i>Full</i> <?php echo $a['filename']; ?>
     									<a href="<?php echo $a['uri']; ?>" class="modal"> <span class="icon-eye"></span> </a>
 									</summary>
 									<ul>

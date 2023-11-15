@@ -2,7 +2,7 @@
 /*******
  * @package xbArticleManager
  * file administrator/components/com_xbarticleman/views/arttags/tmpl/default.php
- * @version 2.0.6.0 14th November 2023
+ * @version 2.0.6.3 15th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
@@ -149,7 +149,7 @@ if ($saveOrder)
 						</th>
 						<th >
 							<?php echo HTMLHelper::_('searchtools.sort', 'JGLOBAL_TITLE', 'a.title', $listDirn, $listOrder); ?>
-							<span class="xbnorm xbo9">(edit) |</span>  alias <span class="xbnorm xb09">(pv) |</span>
+							<span class="xbnorm xbo9">(edit) (v) |</span>  alias <span class="xbnorm xb09"> | </span>
 							<?php echo HTMLHelper::_('searchtools.sort', 'Category', 'category_title', $listDirn, $listOrder); ?>							
 						</th>
 						<th>
@@ -163,12 +163,35 @@ if ($saveOrder)
 						</th>
 					</tr>
 				</thead>
+				<?php if ($rowcnt > 9) : ?>
 				<tfoot>
 					<tr>
-						<td colspan="<?php echo $columns; ?>">
-						</td>
+						<th>
+							<?php echo HTMLHelper::_('searchtools.sort', '', 'a.ordering', $listDirn, $listOrder, null, 'asc', 'JGRID_HEADING_ORDERING', 'icon-menu-2'); ?>
+						</th>
+						<th >
+							<?php echo HTMLHelper::_('grid.checkall'); ?>
+						</th>
+						<th >
+							<?php echo HTMLHelper::_('searchtools.sort', 'JSTATUS', 'a.state', $listDirn, $listOrder); ?>
+						</th>
+						<th >
+							<?php echo HTMLHelper::_('searchtools.sort', 'JGLOBAL_TITLE', 'a.title', $listDirn, $listOrder); ?>
+							<span class="xbnorm xbo9">(edit) (v) |</span>  alias <span class="xbnorm xb09"> | </span>
+							<?php echo HTMLHelper::_('searchtools.sort', 'Category', 'category_title', $listDirn, $listOrder); ?>							
+						</th>
+						<th>
+							<?php echo Text::_('Tags'); ?>
+						</th>
+						<th >
+							<?php echo HTMLHelper::_('searchtools.sort', 'XBARTMAN_HEADING_DATE_' . strtoupper($orderingColumn), 'a.' . $orderingColumn, $listDirn, $listOrder); ?>
+						</th>
+						<th >
+							<?php echo HTMLHelper::_('searchtools.sort', 'JGRID_HEADING_ID', 'a.id', $listDirn, $listOrder); ?>
+						</th>
 					</tr>
 				</tfoot>
+				<?php endif; ?>
 				<tbody>
 				<?php foreach ($this->items as $i => $item) :
 					$item->max_ordering = 0;
@@ -234,17 +257,18 @@ if ($saveOrder)
 									" title="<?php echo Text::_('quick edit (not content)'); ?>">
 										<?php echo $this->escape($item->title); ?></a> 
 									<a class="hasTooltip" href="
-									<?php echo Route::_('index.php?option=com_content&task=article.edit&id=' . $item->id).'&retview=artimgs';?>
+									<?php echo Route::_('index.php?option=com_content&task=article.edit&id=' . $item->id);?>
 									" title="<?php echo Text::_('Full edit'); ?>">										
-										<span class="icon-edit"></span></a>
+										<span class="icon-edit xbpl10"></span></a>
 								<?php else : ?>
 									<span title="<?php echo Text::sprintf('JFIELD_ALIAS_LABEL', $this->escape($item->alias)); ?>"><?php echo $this->escape($item->title); ?></span>
 								<?php endif; ?>
+								<?php $pvuri = "'".(Uri::root().'index.php?option=com_content&view=article&id='.$item->id)."'"; ?>
+                                <a class="hasTooltip"  data-toggle="modal" title="<?php echo Text::_('XBARTMAN_MODAL_PREVIEW'); ?>" href="#pvModal"
+                                onClick="window.pvuri=<?php echo $pvuri; ?>;">';
+									<span class="icon-eye xbpl10"></span></a>
 								</p>
-								<span><i>Alias</i>: <?php echo $this->escape($item->alias); ?>
-										<?php echo '<a class="hasTooltip"  data-toggle="modal" title="'.JText::_('XBARTMAN_MODAL_PREVIEW').'" href="#pvModal"
-                                        onClick="window.pvid='.$item->id.';">';
-										echo ' <span class="icon-eye"></span></a>'; ?>
+								<span class="xbpl20"><i>Alias</i>: <?php echo $this->escape($item->alias); ?>
 								</span>
 								<div class="small">
 									<?php

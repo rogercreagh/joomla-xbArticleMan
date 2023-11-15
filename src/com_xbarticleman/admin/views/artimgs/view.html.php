@@ -10,6 +10,7 @@
  defined('_JEXEC') or die();
 
  use Joomla\CMS\Factory;
+ use Joomla\CMS\Component\ComponentHelper;
  use Joomla\CMS\Layout\FileLayout;
  use Joomla\CMS\Toolbar\Toolbar;
  use Joomla\CMS\Toolbar\ToolbarHelper;
@@ -39,7 +40,7 @@
 		$this->state         = $this->get('State');
 		$this->filterForm    = $this->get('FilterForm');
 		$this->activeFilters = $this->get('ActiveFilters');
-
+		
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))
 		{

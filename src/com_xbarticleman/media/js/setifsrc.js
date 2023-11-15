@@ -10,8 +10,8 @@
 **/
     jQuery(document).ready(function(){
         jQuery('#pvModal').on('show', function () {
-            jQuery(this).find('.modal-body iframe').attr("src",
-                "/index.php?option=com_content\&view=article\&id="+window.pvid);
+            jQuery(this).find('.modal-body iframe').attr("src", window.pvuri);
+//                "/index.php?option=com_content\&view=article\&id="+window.pvid);
         })
         jQuery('#pvModal').on('hidden', function () {
             jQuery(this).find('.modal-body iframe').attr("src","");
