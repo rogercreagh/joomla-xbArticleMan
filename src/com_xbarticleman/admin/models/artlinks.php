@@ -2,7 +2,7 @@
 /*******
  * @package xbArticleManager
  * file administrator/components/com_xbarticleman/models/artlinks.php
- * @version 2.0.5.0 12th November 2023
+ * @version 2.0.6.5 16th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
@@ -16,6 +16,9 @@ use Joomla\CMS\Table\Table;
 
 class XbarticlemanModelArtlinks extends JModelList
 {
+    
+    protected $extlinkcnt; 
+    
     public function __construct($config = array())
     {
         if (empty($config['filter_fields']))
@@ -306,8 +309,24 @@ class XbarticlemanModelArtlinks extends JModelList
 
 		return $query;
     }
+ 
+    public function getItems() {
+        $this->extlinkcnt = 0;
+        $items  = parent::getItems();
+        if ($items) {
+            foreach ($items as $item) {
+                $item->links = XbarticlemanHelper::getDocAnchors($item->arttext);   
+                $this->extlinkcnt += count($item->links['extLinks']);
+            }
+        }        
+        return $items;        
+    }  
     
-     public function getAuthors()
+    public function getExtlinkcnt() {
+        return $this->extlinkcnt;
+    }
+    
+    public function getAuthors()
     {
         // Create a new query object.
         $db    = $this->getDbo();
@@ -326,4 +345,5 @@ class XbarticlemanModelArtlinks extends JModelList
         // Return the result
         return $db->loadObjectList();
     }
+
 }

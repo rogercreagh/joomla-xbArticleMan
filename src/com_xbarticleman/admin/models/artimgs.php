@@ -320,9 +320,7 @@ class XbarticlemanModelArtimgs extends JModelList
                     $pathinfo = pathinfo($uri_info['path']);
                     $thisimg['filename']= $pathinfo['basename'];
                     $thisimg['path']= $pathinfo['dirname'].'/';
-                    $attr = getimagesize($uri);
-                    $thisimg['nativesize'] = $attr[0].' x '.$attr[1].'px';
-                    $thisimg['mime'] = $attr['mime'];
+                    
                     $w = ($img->getAttribute('width')) ? $img->getAttribute('width') : '';
                     $h = ($img->getAttribute('height')) ? $img->getAttribute('height') : '';
                     $specsize = ''; 
@@ -336,7 +334,18 @@ class XbarticlemanModelArtimgs extends JModelList
                     } elseif ($h != '') {
                         $specsize .= $h.'px high';
                     }
-                    $thisimg['specsize'] = $specsize;
+                    $thisimg['specsize'] = $specsize;                        
+
+                    $thisimg['nativesize'] ='??';
+                    $thisimg['mime'] ='??';
+                    if (XbarticlemanHelper::check_url($uri)) {
+                        $attr = getimagesize($uri);
+                        if ($attr !== false) {
+                            $thisimg['nativesize'] = $attr[0].' x '.$attr[1].'px';
+                            $thisimg['mime'] = $attr['mime'];
+                        }
+                    }
+                    
                     $thisimg['class'] = $img->getAttribute('class');
                     $thisimg['style'] = $img->getAttribute('style');
                     $thisimg['alttext'] = $img->getAttribute('alt');

@@ -2,7 +2,7 @@
 /*******
  * @package xbarticleman
  * file administrator/components/com_xbarticleman/views/artlinks/tmpl/default.php
- * @version 2.0.6.3 15th November 2023
+ * @version 2.0.6.5 16th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
@@ -61,45 +61,40 @@ if ($saveOrder)
 	HTMLHelper::_('sortablelist.sortable', 'articleList', 'adminForm', strtolower($listDirn), $saveOrderingUrl);
 }
 
+Factory::getDocument()->addScriptDeclaration('function pleaseWait(targ) {
+		document.getElementById(targ).style.display = "block";
+	}');
+?>
+
 ?>
 <form action="<?php echo Route::_('index.php?option=com_xbarticleman&view=artlinks'); ?>" method="post" name="adminForm" id="adminForm">
 
 <?php if (!empty( $this->sidebar)) : ?>
-	<div id="j-sidebar-container" class="span2">
+	<div id="j-sidebar-container">
 		<?php echo $this->sidebar; ?>
 	</div>
-	<div id="j-main-container" class="span10">
-<?php else : ?>
-	<div id="j-main-container">
+	<div id="j-main-container" >
 <?php endif; ?>
+    	<div id="waiter" class="xbbox alert-info" style="display:none;">
+          <table style="width:100%">
+              <tr>
+                  <td style="width:200px;"><img src="/media/com_xbarticleman/images/waiting.gif" style="height:100px" /> </td>
+                  <td style="vertical-align:middle;"><b><?php echo Text::_('XB_WAITING_REPLY'); ?></b> </td>
+              </tr>
+          </table>
+    	</div>
 		<h3><?php echo Text::_('Article Links')?></h3>
 		<h4><?php echo Text::_('Total articles').' '.$this->totalarticles.'. '.Text::_('Listing').' '.$this->statearticles.' '.Text::_('articles').' '.$this->statefilt; ?></h4>
 		<p> 
     	<?php if (array_key_exists('artlist', $this->activeFilters)) {
     	    echo Text::_('Filtered to show').' '.$this->pagination->total.' ';
-    	    switch ($this->activeFilters['artlist']) {
-    	    case 1:
-    	        echo Text::_('articles with embedded links.');
-    	       break;
-    	    case 2:
-    	        echo Text::_('articles with related links (ABC).');
-    	        break;
-    	    case 3:
-    	        echo Text::_('articles with Embedded or Related links.');
-    	        break;
-    	    case 4:
-    	        echo Text::_('articles with no embedded tags.');
-    	        break;
-    	    case 5:
-    	        echo Text::_('articles with no Related links.');
-    	        break;
-    	    case 6:
-    	        echo Text::_('articles with no links (embedded or related).');
-    	        break;
-    	    default:
-    	       echo Text::_('articles');
-    	       break;
-    	   }  	    
+    	    $prompts = array('articles','articles with embedded links.','articles with related links (ABC).','articles with Embedded or Related links.'
+    	        ,'articles with no Embedded links.','articles with no Related links.','articles with no links (embedded or related).');
+    	    if ($this->activeFilters['artlist'] > 0) {
+    	        echo Text::_($prompts[$this->activeFilters['artlist']]);
+    	    } else {
+    	        echo Text::_('articles');
+    	    }
     	} else {
     	    echo Text::_('showing all').' '.$this->statearticles.' '.Text::_('articles');
     	}
@@ -124,33 +119,26 @@ if ($saveOrder)
 				<?php echo Text::_('JGLOBAL_NO_MATCHING_RESULTS'); ?>
 			</div>
 		<?php else : ?>
-			<p><?php
-				if ($rowcnt>10) { 
-				    echo Text::_('XBARTMAN_LINK_CHECK_OFF');
-				} ?>
-			</p>
-			<div <?php if ($rowcnt>10) echo 'style="display:none;"';?> >
-		         <p><b><?php echo Text::_('XBARTMAN_LINKS_TO_CHECK'); ?>:</b><span class="xbpl10"><?php echo Text::_('XB_INTERNAL'); ?></span> 
-		         <input type="checkbox" name="checkint" value="1" 
-		         <?php if (($this->checkint==1) && ($rowcnt<11)) echo 'checked="checked" ';
-		              if ($rowcnt>10) echo 'disabled';
-		          ?> /> 
-		          <span class="xbpl10"><?php echo Text::_('XB_EXTERNAL'); ?></span>
-		          <input type="checkbox" name="checkext" value="1" 
-		          <?php if (($this->checkext==1) && ($rowcnt<11)) echo 'checked="checked" ';
-		              if ($rowcnt>10) echo 'disabled';
-		          ?> /> <span style="padding-left:20px;"> </span>
-    			<input type="button" class="btn" value="Check Now" onClick="this.form.submit();" 
-		          <?php if ($rowcnt>10) { echo 'disabled';}?> /> 
-</p>
-				<?php  if ($rowcnt<11) :?>
-				<div class="alert">
-                    <p><i><?php echo Text::_('XBARTMAN_LINK_CHECK_NOTE'); ?></i>
-                    </p>
-				</div>
-                <?php endif; ?>
-			</div>
-				
+			<?php $checklimit = 20;
+			$extenabled = true;
+			if ($this->extlinkcnt > $checklimit) $extenabled = false;
+			if (!$extenabled) : ?>
+				<div class="alert"><p>
+    				<?php echo Text::_('NB. External Link checking disabled while more than '.$checklimit.' external links shown'); ?>
+				</p></div> 
+			<?php else : ?>
+			<?php endif; ?>
+    			<div>
+					<p><b><?php echo Text::_('XBARTMAN_LINKS_TO_CHECK'); ?>:</b><span class="xbpl10"><?php echo Text::_('XB_INTERNAL'); ?></span> 
+    		        <input type="checkbox" name="checkint" value="1" checked="checked" style="margin:0 5px;" />
+					<span class="xbpl10<?php echo (!$extenabled)? ' xbdim' : ''?>"><?php echo Text::_('XB_EXTERNAL'); ?></span>
+    		        <input type="checkbox" name="checkext" value="1" <?php echo ($extenabled)? 'checked="checked"' : 'disabled'; ?> style="margin:0 5px;" /> 
+    		        <span style="padding-left:20px;"> </span>
+        			<input type="button" class="btn" value="Check Now" onClick="pleaseWait('waiter');this.form.submit();" /> 
+                    <span class="alert-info xbpl20"><i><?php echo Text::_('XBARTMAN_LINK_CHECK_NOTE'); ?></i></span>
+    				</p>
+    			</div>
+			
     		<p>              
                 <?php echo 'Sorted by '.$listOrder.' '.$listDirn ; ?>
     		</p>
@@ -268,7 +256,7 @@ if ($saveOrder)
 					$canEditParCat    = $user->authorise('core.edit',       'com_xbarticleman.category.' . $item->parent_category_id);
 					$canEditOwnParCat = $user->authorise('core.edit.own',   'com_xbarticleman.category.' . $item->parent_category_id) && $item->parent_category_uid == $userId;
 					//$helper = new XbarticlemanHelper;
-					$links = XbarticlemanHelper::getDocAnchors($item->arttext);
+					$links = $item->links;
 					//$tags = $helper->getItemTags('com_content.article',$item->id);
 					?>
 					<tr class="row<?php echo $i % 2; ?>" sortable-group-id="<?php echo $item->catid; ?>">

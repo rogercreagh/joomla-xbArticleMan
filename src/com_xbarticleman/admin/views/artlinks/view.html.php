@@ -2,7 +2,7 @@
 /*******
  * @package xbArticleMan
  * file administrator/components/com_xbarticleman/views/artlinks/view.html.php
- * @version 2.0.5.0 12th November 2023
+ * @version 2.0.6.5 16th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
@@ -44,6 +44,7 @@
 		$this->activeFilters = $this->get('ActiveFilters');
 		$this->checkint    = $this->state->get('checkint');
 		$this->checkext      = $this->state->get('checkext');
+		$this->extlinkcnt = $this->get('Extlinkcnt');
 
 		// Check for errors.
 		if (count($errors = $this->get('Errors')))

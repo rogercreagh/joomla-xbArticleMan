@@ -2,7 +2,7 @@
 /*******
  * @package xbarticleman
  * @filesource administrator/components/com_xbarticleman/views/artimgs/tmpl/default.php
- * @version 2.0.6.3 15th November 2023
+ * @version 2.0.6.5 16th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
@@ -76,29 +76,13 @@ if ($saveOrder)
 		<p> 
     	<?php if (array_key_exists('artlist', $this->activeFilters)) {
     	    echo Text::_('Filtered to show').' '.$this->pagination->total.' ';
-    	    switch ($this->activeFilters['artlist']) {
-    	    case 1:
-    	        echo Text::_('articles with &lt;img&gt; tags.');
-    	       break;
-    	    case 2:
-    	        echo Text::_('articles with Intro or Fulltext images.');
-    	        break;
-    	    case 3:
-    	        echo Text::_('articles with &lt;img&gt; tags or Intro or Fulltext images.');
-    	        break;
-    	    case 4:
-    	        echo Text::_('articles with no &lt;img&gt; tags.');
-    	        break;
-    	    case 5:
-    	        echo Text::_('articles with no Intro or Fulltext images.');
-    	        break;
-    	    case 6:
-    	        echo Text::_('articles with no images (Intro, Fulltext, or &lt;img&gt; tags).');
-    	        break;
-    	    default:
-    	       echo Text::_('articles');
-    	       break;
-    	   }  	    
+    	    $prompts = array('articles','articles with &lt;img&gt; tags.','articles with Intro or Fulltext images.','articles with &lt;img&gt; tags or Intro or Fulltext images.'
+    	        ,'articles with no &lt;img&gt; tags.','articles with no Intro or Fulltext images.','articles with no images (Intro, Fulltext, or &lt;img&gt; tags).');
+    	    if ($this->activeFilters['artlist'] > 0) {
+    	        echo Text::_($prompts[$this->activeFilters['artlist']]);
+    	    } else {
+    	        echo Text::_('articles');
+    	    }
     	} else {
     	    echo Text::_('showing all').' '.$this->statearticles.' '.Text::_('articles');
     	}
@@ -159,7 +143,7 @@ if ($saveOrder)
 							<?php echo HTMLHelper::_('searchtools.sort', 'Category', 'category_title', $listDirn, $listOrder); ?>							
 						</th>
 						<th>
-							<?php echo Text::_('In-article img tags'); ?>
+							<?php echo Text::_('In-article Images'); ?>
 						</th>
 						<th>
 							<?php echo Text::_('Article Intro & Full images'); ?>
@@ -190,7 +174,7 @@ if ($saveOrder)
 							<?php echo HTMLHelper::_('searchtools.sort', 'Category', 'category_title', $listDirn, $listOrder); ?>							
 						</th>
 						<th>
-							<?php echo Text::_('In-article &lt;img&gt;s'); ?>
+							<?php echo Text::_('In-article Images'); ?>
 						</th>
 						<th>
 							<?php echo Text::_('Intro & Fulltext images'); ?>
@@ -312,11 +296,16 @@ if ($saveOrder)
 							</div>
 						</td>
 						<td>
-							<b><?php echo count($item->imgtags); ?></b> image tags found<br />
+							<b><?php echo count($item->imgtags); ?></b> images found<br />
 							<?php foreach ($item->imgtags as $a) : ?>
     							<details>
-    								<summary><?php echo $a['filename']; ?>
-    									<a href="<?php echo $a['uri']; ?>" class="modal"> <span class="icon-eye"></span> </a>
+    								<summary>
+    									<?php if ($a['nativesize']=='??') : ?>
+        									<span style="color:red;"><?php echo $a['filename']; ?></span>
+    									<?php else : ?>
+    										<?php echo $a['filename']; ?> 
+        									<a href="<?php echo $a['uri']; ?>" class="modal"> <span class="icon-eye"></span> </a>
+    									<?php endif; ?>
     								</summary>
 									<ul>
 										<li><i>Host:</i>
