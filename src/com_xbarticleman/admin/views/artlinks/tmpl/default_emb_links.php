@@ -2,7 +2,7 @@
 /*******
  * @package xbarticleman
  * file administrator/components/com_xbarticleman/views/artlinks/tmpl/default_emb_links.php
- * @version 2.0.6.4 15th November 2023
+ * @version 2.0.6.4 16th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
@@ -18,10 +18,16 @@ foreach ($links as $a) : ?>
 	<?php $colour = 'blue';
 	$url = $a->getAttribute('href');
 	$url_info = parse_url($url); 
-	if (!key_exists('scheme',$url_info)) $url_info['scheme'] = '';
+	if (key_exists('scheme',$url_info)) {
+	    $url_info['scheme'] .= '://';	    
+	} else {
+	    $url_info['scheme'] = '';
+	}
 	if (!key_exists('host',$url_info)) $url_info['host'] = '';
+	if (!key_exists('path',$url_info)) $url_info['path'] = '';
 	$local = XbarticlemanHelper::isLocalLink($url);
 	if ($local) {
+	   if ($url_info['host'] == '') $url = Uri::root() . $url;
 	   if ($this->checkint) {
 	       $colour = (!XbarticlemanHelper::check_url($url)) ? 'red' : 'green';
 	   }
@@ -32,16 +38,21 @@ foreach ($links as $a) : ?>
 	   }									    
 	} ?>
     <details>
-    	<summary><?php if (key_exists('scheme',$url_info) && ($url_info['scheme'] == 'mailto')) echo '<span class="icon-mail"></span> '; ?>
-			<a class="hasTooltip"  data-toggle="modal" title="<?php echo Text::_('XBARTMAN_MODAL_PREVIEW'); ?>" href="#pvModal"
-			onClick="window.pvuri=<?php echo "'".$url."'"; ?>" style="color:<?php echo $colour; ?>">
-		  	<?php echo $a->textContent; ?> <span class="icon-eye"></span></a>
+    	<summary><i>Text</i>: <?php if ($url_info['scheme'] == 'mailto') echo '<span class="icon-mail"></span> '; ?>
+    		<?php if ($url_info['scheme'].$url_info['host'].$url_info['path'] == '') : ?>
+    			<?php echo $a->textContent; ?>
+    		<?php else: ?>
+    			<a class="hasTooltip"  data-toggle="modal" title="<?php echo Text::_('XBARTMAN_MODAL_PREVIEW'); ?>" href="#pvModal"
+    			onClick="window.pvuri=<?php echo "'".$url."'"; ?>" style="color:<?php echo $colour; ?>">
+    		  	<?php echo $a->textContent; ?> <span class="icon-eye"></span></a>
+    		<?php endif; ?>
     	</summary>    							    	
-		<i>Host</i>: <?php echo ($local) ? 'local' : $url_info['scheme'].'://'.$url_info['host']; ?><br />
-		<i>Path</i>: <?php if (isset($url_info['path'])) echo $url_info['path']; ?>/<br/>
-		<?php if (key_exists('fragment',$url_info)) ?> <i>hash</i>: #<?php echo $url_info['fragment']; ?>/<br/>
-		<?php if (key_exists('query',$url_info)) ?> <i>Query</i>: <?php echo $url_info['query']; ?>/<br/>
-		<?php if ($a->getAttribute('target') != '') ?><i>Target</i>: <?php echo $a->getAttribute('target'); ?>
-		<?php if ($a->getAttribute('class') != '') ?><i>Class</i>: <?php echo $a->getAttribute('class'); ?>
+		<i>Host</i>: <?php echo ($local) ? '(local)' : $url_info['scheme'].$url_info['host']; ?><br />
+		<?php if ($url_info['path'] != '') : ?><i>Path</i>:  <?php echo $url_info['path'].'<br/>'; endif; ?>
+		<?php if (key_exists('fragment',$url_info)) : ?> <i>hash</i>: #<?php echo $url_info['fragment'].'<br/>'; endif; ?>
+		<?php if (key_exists('query',$url_info)) : ?> <i>Query</i>: ?<?php echo $url_info['query'].'<br/>'; endif; ?>
+		<?php if ($a->getAttribute('target') != '') : ?><i>Target</i>: <?php echo $a->getAttribute('target').'<br/>'; endif; ?>
+		<?php if ($a->getAttribute('class') != '') : ?><i>Class</i>: <?php echo $a->getAttribute('class'); endif; ?>
+		<br />
     </details>
 <?php endforeach; ?>

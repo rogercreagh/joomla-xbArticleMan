@@ -15,11 +15,17 @@ use Joomla\CMS\Uri\Uri;
 
 $url = $this->rellink->url;
 $colour = 'blue';
+$targets = array('current window/tab','new window/tab','popup window','modal window');
 $url_info = parse_url($url);
-if (!key_exists('scheme',$url_info)) $url_info['scheme'] = '';
+if (key_exists('scheme',$url_info)) {
+    $url_info['scheme'] .= '://';
+} else {
+    $url_info['scheme'] = '';
+}
 if (!key_exists('host',$url_info)) $url_info['host'] = '';
 $local = XbarticlemanHelper::isLocalLink($url);
 if ($local) {
+    if ($url_info['host'] == '') $url = Uri::root() . $url;
     if ($this->checkint) {
         $colour = (!XbarticlemanHelper::check_url($url)) ? 'red' : 'green';
     }
@@ -37,7 +43,10 @@ if ($local) {
 			onClick="window.pvuri=<?php echo "'".$url."'"; ?>" style="color:<?php echo $colour; ?>">
 		  	<?php echo ($this->rellink->text == '') ? $url : $this->rellink->text; ?> <span class="icon-eye"></span></a>
 	</summary>
-		<i>Host</i>: <?php echo ($local) ? 'local' : $url_info['scheme'].'://'.$url_info['host']; ?><br />
-		<i>Path</i>: <?php if (isset($url_info['path'])) echo $url_info['path']; ?>/<br/>
+		<i>Host</i>: <?php echo ($local) ? '(local)' : $url_info['scheme'].$url_info['host']; ?><br />
+		<i>Path</i>: <?php if (key_exists('path',$url_info)) { echo $url_info['path'].'<br/>'; } ?>
+		<?php if (key_exists('fragment',$url_info)) : ?> <i>hash</i>: #<?php echo $url_info['fragment'].'<br/>'; endif; ?>
+		<?php if (key_exists('query',$url_info)) : ?> <i>Query</i>: ?<?php echo $url_info['query'].'<br/>'; endif; ?>
 		<i>Target</i>: <?php echo ($this->rellink->target === '') ? '(use global)' : $targets[$this->rellink->target]; ?>
+		<br />
 </details>

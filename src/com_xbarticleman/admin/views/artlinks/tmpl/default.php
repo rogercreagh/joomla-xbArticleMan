@@ -391,14 +391,14 @@ if ($saveOrder)
 								<?php $this->emblinks = $links["pageLinks"]; 
 								echo $this->loadTemplate('emb_links');
 								?>
-							   	<br />;
+							   	<br />
 							<?php endif; ?>
 							<?php if (count($links["localLinks"]) >0) : ?>
 								<b>Local Links: <?php count($links["localLinks"]); ?></b>
 								<?php $this->emblinks = $links["localLinks"]; 
 								echo $this->loadTemplate('emb_links');
 								?>
-							   	<br />;
+							   	<br />
 							<?php endif; ?>
 							<?php
 							if (count($links["extLinks"]) >0) : ?>
@@ -406,7 +406,7 @@ if ($saveOrder)
 								<?php $this->emblinks = $links["extLinks"]; 
 								echo $this->loadTemplate('emb_links');
 								?>
-							   	<br />;
+							   	<br />
 							<?php endif; ?>
 							<?php
 							if (count($links["others"]) >0) : ?>
@@ -420,12 +420,16 @@ if ($saveOrder)
 						<td>
 							<?php 
 							echo count($links["pageTargs"]).' '.Text::_('XBARTMAN_TARGETS_FOUND').'<br />';
-							if (count($links["pageTargs"]) >0) {
-							    foreach ($links["pageTargs"] as $a) {
-							        echo 'id:'.$a->getAttribute('id').'<br />';
-							    }
-							}							
-							?>
+							if (count($links["pageTargs"]) >0) : ?>
+							    <?php foreach ($links["pageTargs"] as $a) : ?>
+							    	<?php $url = Uri::root().'index.php?option=com_content&view=article&id='.$item->id; ?>
+							        <i>id</i>:
+									<a class="hasTooltip"  data-toggle="modal" title="<?php echo Text::_('XBARTMAN_MODAL_PREVIEW'); ?>" href="#pvModal"
+    									onClick="window.pvuri=<?php echo "'".$url."#".$a->getAttribute('id')."'"; ?>" >							        
+							        	<b><?php echo $a->getAttribute('id'); ?></b> <span class="icon-eye"></span></a>
+							        <br />
+							    <?php endforeach; ?>
+							<?php endif; ?>							
 						</td>
 						<td class="nowrap small hidden-phone">
 							<?php
