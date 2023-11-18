@@ -2,7 +2,7 @@
 /*******
  * @package xbArticleManager
  * file administrator/components/com_xbarticleman/helpers/xbarticleman.php
- * @version 2.0.5.0 10th November 2023
+ * @version 2.1.0.0 17th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
@@ -42,12 +42,17 @@ class XbarticlemanHelper extends ComponentHelper
 	}
 	
 	public static function addSubmenu($vName) {
-		JHtmlSidebar::addEntry(
-			Text::_('XBARTMAN_ICONMENU_ARTTAGS'),
-			'index.php?option=com_xbarticleman&view=arttags',
-			$vName == 'arttags'
-		);
-		JHtmlSidebar::addEntry(
+	    JHtmlSidebar::addEntry(
+	        Text::_('XBARTMAN_ICONMENU_DASHBOARD'),
+	        'index.php?option=com_xbarticleman&view=dashboard',
+	        $vName == 'dashboard'
+	        );
+	    JHtmlSidebar::addEntry(
+	        Text::_('XBARTMAN_ICONMENU_ARTTAGS'),
+	        'index.php?option=com_xbarticleman&view=arttags',
+	        $vName == 'arttags'
+	        );
+	    JHtmlSidebar::addEntry(
 		    Text::_('XBARTMAN_ICONMENU_ARTIMGS'),
 		    'index.php?option=com_xbarticleman&view=artimgs',
 		    $vName == 'artimgs'
@@ -58,7 +63,7 @@ class XbarticlemanHelper extends ComponentHelper
 		    $vName == 'artlinks'
 		    );
 		JHtmlSidebar::addEntry(
-		    Text::_('XBARTMAN_ICONMENU_SHORTCODES'),
+		    Text::_('XBARTMAN_ICONMENU_ARTSCODES'),
 		    'index.php?option=com_xbarticleman&view=artscodes',
 		    $vName == 'artscodes'
 		    );
@@ -151,79 +156,6 @@ class XbarticlemanHelper extends ComponentHelper
 	    return false; //we have no host or path WTF; its not local!
 	}
 
-	public static function getLinkDisplay($link, $text, $target, $chkint, $chkext) {
-
-    	$tip = 'Text: <b>'.$text.'</b><br />';
-    	$tip .= 'Link: '.$link.'<br />';
-
-    	if ($target==1) {
-    	    $tip .= '[new tab] ';
-    	}
-    	$class='';
-    	$colour = 'blue';
-    	$parsed = parse_url($link);
-    	$display =  $link;
-    	if (XbarticlemanHelper::isLocalLink($link)) {
-    	    $thisServer = parse_url(Uri::root(),PHP_URL_HOST);
-    	    if (!(array_key_exists('host',$parsed))) {
-    	        $thisPath = parse_url(Uri::root(),PHP_URL_PATH);
-    	        $path = $parsed["path"];
-    	        if (stristr($path,$thisPath)==false) {
-    	            $path = $thisPath.ltrim($path,'/');
-    	        }
-    	        $link = 'http://'.$thisServer.'/'.ltrim($path,'/');
-    	    } else {
-    	        $link = 'http://'.$thisServer.'/'.ltrim($parsed["path"],'/');
-    	    }
-    	    $display = '/'.ltrim($parsed["path"],'/');
-    	    if (array_key_exists('query',$parsed)) { //add back the query string
-    	        $link .= '?'.$parsed["query"];
-    	        //if there is a ? string we are just going to display that
-    	        //$display = '?'.$parsed["query"];
-    	        $display = ''; //$parsed["query"];
-    	        parse_str($parsed["query"], $arrQuery);
-    	        if  (array_key_exists('option',$arrQuery) && $arrQuery["option"]=='com_content') {
-    	            $display .= 'Content view:';
-    	            if  (array_key_exists('view',$arrQuery)) {
-    	                $display .= $arrQuery["view"].' ';
-    	            }
-    	            if  (array_key_exists('id',$arrQuery)) {
-    	                $display .= 'id:'.$arrQuery["id"].' ';
-    	            }
-    	            if  (array_key_exists('catid',$arrQuery)) {
-    	                $display .= 'cat:'.$arrQuery["id"].' ';
-    	            }
-    	        } else {
-    	            $display .= $parsed["query"];
-    	        }
-    	        $link .= '&';
-    	    } else {
-    	        $link .= '?';
-    	    }
-    	    $link .= 'tmpl=component';
-       	    $targ = '';
-    	    $class .=' modal';
-    	    $tip .= '[local] ';
-    	    if ($chkint) {
-    	        $colour = (!XbarticlemanHelper::check_url($link)) ? 'red' : 'green';
-    	    }
-    	} else {
-    	    $targ = 'target="_blank" ';
-    	    $display = str_replace('https://','',$display);
-    	    $display = str_replace('http://','',$display);
-    	    $display = str_replace('www.','',$display);  	    
-    	    if ($chkext) {
-    	        $colour = (!XbarticlemanHelper::check_url($link)) ? 'red' : 'green';
-    	    }
-    	}
-    	$ret ='';
-    	if ($target == 1) $ret .= '[T] ';
-    	$ret .= '<a class="hasTooltip'.$class.'" title="'.$tip.'" ';
-    	$ret .= 'href="'.$link.'" '.$targ.'><span style="color:'.$colour.';">';
-    	$ret .= $display.'</span></a><br />';
-    	return $ret;
-	}
-	
 	public static function getDocImgs($html) {
 	    $aimgs = array();
 	    

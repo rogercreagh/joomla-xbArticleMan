@@ -370,9 +370,15 @@ class XbarticlemanModelArtimgs extends JModelList
                     $item->introimg['path']= $pathinfo['dirname'];
                     $item->introimg['alttext']= $intfull->image_intro_alt;
                     $item->introimg['caption']= $intfull->image_intro_caption;
-                    $attr = getimagesize($uri);
-                    $item->introimg['nativesize'] = $attr[0].' x '.$attr[1].'px';
-                    $item->introimg['mime'] = $attr['mime'];
+                    $thisimg['nativesize'] ='??';
+                    $thisimg['mime'] ='??';
+                    if (XbarticlemanHelper::check_url($uri)) {
+                        $attr = getimagesize($uri);
+                        if ($attr !== false) {
+                            $thisimg['nativesize'] = $attr[0].' x '.$attr[1].'px';
+                            $thisimg['mime'] = $attr['mime'];
+                        }
+                    }
                 }
                 $item->fullimg = array();
                 if ($intfull->image_fulltext != '') {
@@ -390,9 +396,15 @@ class XbarticlemanModelArtimgs extends JModelList
                     $item->fullimg['path']= $pathinfo['dirname'];
                     $item->fullimg['alttext']= $intfull->image_fulltext_alt;
                     $item->fullimg['caption']= $intfull->image_fulltext_caption;
-                    $attr = getimagesize($uri);
-                    $item->fullimg['nativesize'] = $attr[0].' x '.$attr[1].'px';
-                    $item->fullimg['mime'] = $attr['mime'];
+                    $thisimg['nativesize'] ='??';
+                    $thisimg['mime'] ='??';
+                    if (XbarticlemanHelper::check_url($uri)) {
+                        $attr = getimagesize($uri);
+                        if ($attr !== false) {
+                            $thisimg['nativesize'] = $attr[0].' x '.$attr[1].'px';
+                            $thisimg['mime'] = $attr['mime'];
+                        }
+                    }
                 }
             }
         }
