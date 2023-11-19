@@ -25,43 +25,60 @@ class XbarticlemanModelDashboard extends JModelList {
         parent::__construct();
     }
       
+    public function getClient() {
+        $result = array();
+        $client = Factory::getApplication()->client;
+        $class = new ReflectionClass('Joomla\Application\Web\WebClient');
+        $constants = array_flip($class->getConstants());
+        
+        $result['browser'] = $constants[$client->browser].' '.$client->browserVersion;
+        $result['platform'] = $constants[$client->platform].($client->mobile ? ' (mobile)' : '');
+        $result['mobile'] = $client->mobile;
+        return $result;
+    }
+    
     /**
      * @name getArticleCnts
      * @desc gets count of all articles and states
      * @return array()
      */
     public function getArticleCnts() {
-        $artcnts = array('total'=>0, 'published'=>0, 'unpublished'=>0, 'archived'=>0, 'trashed'=>0, 'tagged'=>0, 'embimged'=>0, 'emblinked'=>0, 'rellinked'=>0, 'scoded'=>0);
+        $artcnts = array('total'=>0, 'published'=>0, 'unpublished'=>0, 'archived'=>0, 'trashed'=>0, 
+            'catcnt'=>0, 'uncat'=>0, 'nocat'=>0, 'tagged'=>0, 'embimaged'=>0, 'emblinked'=>0, 'rellinked'=>0, 'scoded'=>0);
         //get states
         $artcnts = array_merge($artcnts,$this->stateCnts());
         //get categories
         $db = Factory::getDbo();
         $query = $db->getQuery(true);
-        $query->select('a.title as title, (SELECT COUNT(DISTINCT(b.id) FROM #__content AS b WHERE b.catid = a.id) AS artcnt) ')
-            ->from('#__categories AS a')
-            ->where('a.extension = con_content');        
+        $query->select('COUNT(a.id) AS catcnt')->from('#__categories AS a')->where('a.extension = '.$db->q('com_content'));
         $query->order('title ASC');
         $db->setQuery($query);
-        $artcnts['cats'] = $db->loadAssoc();
+        $artcnts['catcnt'] = $db->loadResult();
+        $query->clear();
+        $query->select('COUNT(a.id) AS catcnt')
+            ->from('#__content AS a')
+            ->join('LEFT','#__categories AS c ON a.catid = c.id')
+            ->where('c.extension = '.$db->q('com_content').' AND c.alias = '.$db->q('uncategorised'));
+        $db->setQuery($query);
+        $artcnts['uncat'] = $db->loadResult();
+        $query->clear();
+        $query->select('COUNT(a.id) AS catcnt from #__content AS a')
+            ->where(' a.catid = 0 ');
+        $db->setQuery($query);
+        $artcnts['nocat'] = $db->loadResult();
+            
         //get tagged - articles with tags
         $query->clear();
-        $query->select('SELECT COUNT(DISTINCT(a.content_item_id)) AS artstagged')
+        $query->select('COUNT(DISTINCT(a.content_item_id)) AS artstagged')
             ->from('#__contentitem_tag_map AS a')
             ->where('a.type_alias = '.$db->q('com_content.article'));
-//         $query->select('COUNT(DISTINCT(a.id)) AS tagged')
-//             ->from('#__content AS a')
-//             ->where('CONCAT(a.introtext," ",a.fulltext) AS arttext');
-//         $query->join('INNER', $db->quoteName('#__contentitem_tag_map', 'tagmap')
-//             . ' ON ' . $db->quoteName('tagmap.content_item_id') . ' = ' . $db->quoteName('a.id')
-//             . ' AND ' . $db->quoteName('tagmap.type_alias') . ' = ' . $db->quote('com_content.article')
-//             );
         $db->setQuery($query);
-        $res = $db->loadResult();
+        $res = $db->loadResult();        
         if ($res>0) $artcnts['tagged'] = $res;
         
         //get imgcnts - articles with images by type (rel/embed)
         $query->clear();
-        $query->select('COUNT(DISTINCT(a.id)) AS relimged)')
+        $query->select('COUNT(DISTINCT(a.id)) AS relimged')
         ->from('#__content AS a')
         ->where('a.images REGEXP '.$db->q('image_((intro)|(fulltext))\":\"[^,]+\"'));
         $db->setQuery($query);
@@ -69,7 +86,7 @@ class XbarticlemanModelDashboard extends JModelList {
         if ($res>0) $artcnts['relimged'] = $res;
         
         $query->clear();
-        $query->select('COUNT(DISTINCT(a.id)) AS embimged)')
+        $query->select('COUNT(DISTINCT(a.id)) AS embimaged')
             ->from('#__content AS a')
             ->where('CONCAT(a.introtext," ",a.fulltext)'.' REGEXP '.$db->q('<img '));
         $db->setQuery($query);
@@ -78,7 +95,7 @@ class XbarticlemanModelDashboard extends JModelList {
         
         //get linkcnts - articles with links by type (art/embed)
         $query->clear();
-        $query->select('COUNT(DISTINCT(a.id)) AS relimged)')
+        $query->select('COUNT(DISTINCT(a.id)) AS emblinked')
             ->from('#__content AS a')
             ->where('CONCAT(a.introtext," ",a.fulltext)'.' REGEXP '.$db->q('<a [^\>]*?href'));
         $db->setQuery($query);
@@ -86,7 +103,7 @@ class XbarticlemanModelDashboard extends JModelList {
         if ($res>0) $artcnts['emblinked'] = $res;
         
         $query->clear();
-        $query->select('COUNT(DISTINCT(a.id)) AS embimged)')
+        $query->select('COUNT(DISTINCT(a.id)) AS rellinked')
             ->from('#__content AS a')
             ->where('a.urls REGEXP '.$db->q('/\"url[a-c]\":[^,]+?\"'));
         $db->setQuery($query);
@@ -95,7 +112,7 @@ class XbarticlemanModelDashboard extends JModelList {
         
         //get scode cnts - articles with scodes
         $query->clear();
-        $query->select('COUNT(DISTINCT(a.id)) AS embimged)')
+        $query->select('COUNT(DISTINCT(a.id)) AS embimged')
             ->from('#__content AS a')
             ->where('CONCAT(a.introtext," ",a.fulltext)'.' REGEXP '.$db->q('{[[:alpha:]].+?}'));
         $db->setQuery($query);
@@ -113,20 +130,20 @@ class XbarticlemanModelDashboard extends JModelList {
         $db = Factory::getDbo();
         $query = $db->getQuery(true);
         
-        $query->select('SELECT COUNT(DISTINCT(a.tag_id)) AS tagsused')
+        $query->select('COUNT(DISTINCT(a.tag_id)) AS tagsused')
             ->from('#__contentitem_tag_map AS a')
             ->where('a.type_alias = '.$db->q('com_content.article'));
         $db->setQuery($query);
-        $res = $db->loadAssoc();
+        $res = $db->loadResult();
         if ($res>0) $tagcnts['tagsused'] = $res;
         return $tagcnts;
     }
     
-    public function getImagesCnts() {
-        $imgcnts = array('embed'=>0, 'related'=>0);
-        
-        $db->setQuery($query);
-        $query->select('SELECT COUNT(DISTINCT(a.id)) AS relcnt')
+    public function getImageCnts() {
+        $imgcnts = array('totalimgs'=>0,'embed'=>0, 'related'=>0);
+        $db = Factory::getDbo();
+        $query = $db->getQuery(true);
+        $query->select('COUNT(DISTINCT(a.id)) AS relcnt')
             ->from('#__content AS a')
             ->where('a.images REGEXP '.$db->q('image_((intro)|(fulltext))\":\"[^,]+\"'));
         $db->setQuery($query);
@@ -137,6 +154,7 @@ class XbarticlemanModelDashboard extends JModelList {
             $artimgs = XbarticlemanHelper::getDocImgs($arttext);
             $imgcnts['embed'] += count($artimgs);
         }
+        $imgcnts['totalimgs']= $imgcnts['embed'] + $imgcnts['related'];
         return $imgcnts;
     }
     
@@ -162,11 +180,11 @@ class XbarticlemanModelDashboard extends JModelList {
      */
     public function getScodeCnts() {
         $scodes = array();
-        $sccnts = array('totscs'=>0, 'uniquescs'=>0);
+        $sccnts = array('totalscs'=>0, 'uniquescs'=>0);
         foreach ($this->arttexts as $arttext) {
             $artscodes = XbarticlemanHelper::getDocShortcodes($arttext);
-            $sccnts['totscs'] += count($artscodes);
-            $scodes = array_unique(array_merge($scodes,$artscodes));
+            $sccnts['totalscs'] += count($artscodes);
+            $scodes = array_unique(array_merge($scodes,array_column($artscodes,1)));
         }
         $sccnts['uniquescs'] = count($scodes);
         return $sccnts;
@@ -179,8 +197,8 @@ class XbarticlemanModelDashboard extends JModelList {
         $query->select('CONCAT(a.introtext," ",a.fulltext) AS arttext')
         ->from('#__content AS a');
         $db->setQuery($query);
-        $res = $db->loadAssocList();
-        
+        $res = $db->loadColumn();
+        return $res;
     }
         
     private function stateCnts() {

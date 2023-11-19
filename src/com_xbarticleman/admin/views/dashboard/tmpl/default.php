@@ -2,7 +2,7 @@
 /*******
  * @package xbArticleMan
  * @filesource admin/views/dashboard/tmpl/default.php
- * @version 2.1.0.0 18th November 2023
+ * @version 2.1.0.0 19th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2023
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
@@ -31,240 +31,181 @@ $userId = $user->get('id');
 	</div>
 	<div id="j-main-container" >
 		<h3><?php echo Text::_('XB_STATUS_SUM'); ?></h3>
-		<div class="row-fluid">
-        	<div class="span8">
-        		<div class="row-fluid">
-        			<div class="span12">
-    					<div class="xbbox gradmag">
-    						<p>
-    							<span class="badge badge-info pull-right"><?php echo Text::_('XB_TOTAL').' '. $this->artcnts['']; ?>
-    							articles on the site
-    							
-    							
-    							</span> 
-    							<b><?php echo Text::_('XB_ARTICLES'); ?></b>
-    						</p>
-    							published	unpublished
-    							archived	in trash
-    							X article categories defined, X articles uncategorised, X articles have no category (error)
-    							X are tagged, Y 
-    							X include images
-    							X have links or anchor targets
-    							X use shortcodes with plugins to insert content
-    					</div>
-        			</div>
-        		</div>
-        		<div class="row-fluid">
-        			<div class="span12">
-    					<div class="xbbox gradpink">
-    						<p>
-    							<span class="badge badge-info pull-right"><?php echo Text::_('XB_TOTAL').' '. $this->tagcnts['']; ?>
-    							total joomla tags defined across all components
-    							
-    							</span> 
-    							<b><?php echo Text::_('XBARTMAN_TAGS_ARTS'); ?></b>
-    						</p>
-    							X tags used in X articles
-    					</div>           			
-        			</div>
-        		</div>
-        		
-        		<div class="row-fluid">
-        			<div class="span12">
-    					<div class="xbbox gradcyan">
-    						<p>
-    							<span class="badge badge-info pull-right"><?php echo Text::_('XB_TOTAL').' '. $this->tagcnts['']; ?>
-    							total joomla tags defined across all components
-    							
-    							</span> 
-    							<b><?php echo Text::_('XBARTMAN_IMGS_ARTS'); ?></b>
-    						</p>
-    							X articles have itro/full images
-    							X images are embedded in articles
-    					</div>           			
-        			</div>
-        		</div>
-        		
-        		<div class="row-fluid">
-        			<div class="span12">
-    					<div class="xbbox gradyellow">
-    						<p>
-    							<span class="badge badge-info pull-right"><?php echo Text::_('XB_TOTAL').' '. $this->tagcnts['']; ?>
-    							total joomla tags defined across all components
-    							
-    							</span> 
-    							<b><?php echo Text::_('XBARTMAN_IMGS_ARTS'); ?></b>
-    						</p>
-    							X articles have itro/full images
-    							X images are embedded in articles
-    					</div>           			
-        			</div>
-        		</div>
-        		
-        		<div class="row-fluid">
-        			<div class="span12">
-    					<div class="xbbox gradyellow">
-    						<p>
-     							<span class="pull-right"><span class="badge badge-info"><?php echo Text::_('XBJOURNALS_TOTAL').' '. $this->notebookStates['total']; ?></span> 
-									<?php echo 'from'.' <span class="badge badge-pink">'.$this->notebookStates['calendars'].'</span> '.Text::_('XBJOURNALS_CALENDARS').' '
-                                        .'on'.' <span class="badge badge-ltmag">'.$this->notebookStates['servers'].'</span> '.Text::_('XBJOURNALS_SERVERS'); ?></span>
-    							<b><?php echo Text::_('XBJOURNALS_NOTEBOOK_ENTRIES'); ?></b>
-    						</p>
-    						<div class="row-striped">
-    							<div class="row-fluid">
-    								<div class="span6">
-    									<span class="badge badge-yellow xbmr10"><?php echo $this->notebookStates['parents']; ?></span>
-    									<?php echo Text::_('have sub-entries'); ?>
-    								</div>
-    								<div class="span6">
-    									<span class="badge badge-ltgreen xbmr10"><?php echo $this->notebookStates['children']; ?></span>
-    									<?php echo Text::_('are sub-entries'); ?>
-    								</div>
-    							</div>
-    							<div class="row-fluid">
-    								<div class="span6">
-    									<span class="badge badge-success xbmr10"><?php echo $this->notebookStates['published']; ?></span>
-    									<?php echo Text::_('XBJOURNALS_PUBLISHED'); ?>
-    								</div>
-    								<div class="span6">
-    									<span class="badge <?php echo $this->notebookStates['unpublished']>0 ?'badge-yellow' : ''; ?> xbmr10"><?php echo $this->notebookStates['unpublished']; ?></span>
-    									<?php echo Text::_('XBJOURNALS_UNPUBLISHED'); ?>
-    								</div>
-    							</div>
-    							<div class="row-fluid">
-    								<div class="span6">
-    									<span class="badge <?php echo $this->notebookStates['archived']>0 ?'badge-warning' : ''; ?> xbmr10"><?php echo $this->notebookStates['archived']; ?></span>
-    									<?php echo Text::_('XBJOURNALS_ARCHIVED'); ?>
-    								</div>
-    								<div class="span6">
-    									<span class="badge <?php echo $this->notebookStates['trashed']>0 ?'badge-important' : ''; ?> xbmr10"><?php echo $this->notebookStates['trashed']; ?></span>
-    									<?php echo Text::_('XBJOURNALS_TRASHED'); ?>
-    								</div>
-    							</div>
-    						</div>
-    					</div>
-        			</div>
-        		</div>
-        		<div class="row-fluid">
-        			<div class="span12">
-    					<div class="xbbox gradgrey">
-    						<p>
-     							<span class="pull-right"><span class="badge badge-info"><?php echo Text::_('XBJOURNALS_TOTAL').' '. $this->attachmentCounts['total']; ?></span> 
-									<?php echo 'from'.' <span class="badge badge-pink">'.$this->attachmentCounts['calendars'].'</span> '.Text::_('XBJOURNALS_CALENDARS').' '
-                                        .'on'.' <span class="badge badge-ltmag">'.$this->attachmentCounts['servers'].'</span> '.Text::_('XBJOURNALS_SERVERS'); ?></span>
-    							<b><?php echo Text::_('XBJOURNALS_ATTACHMENTS'); ?></b>
-    						</p>
-    						<div class="row-striped">
-    							<div class="row-fluid">
-    								<div class="span6">
-    									<span class="badge <?php echo $this->attachmentCounts['journals']>0 ?'badge-success' : ''; ?> xbmr10"><?php echo $this->attachmentCounts['journals']; ?></span>
-    									<?php echo Text::_('attached to').' '.Text::_('XBJOURNALS_JOURNAL_ENTRIES'); ?>
-    								</div>
-    								<div class="span6">
-    									<span class="badge <?php echo $this->attachmentCounts['notes']>0 ?'badge-yellow' : ''; ?> xbmr10"><?php echo $this->attachmentCounts['notes']; ?></span>
-    									<?php echo Text::_('attached to').' '.Text::_('XBJOURNALS_NOTEBOOK_ENTRIES'); ?>
-    								</div>
-    							</div>
-    							<div class="row-fluid">
-    								<div class="span5">
-    									<span class="badge <?php echo $this->attachmentCounts['embed']>0 ?'badge-warning' : ''; ?> xbmr10"><?php echo $this->attachmentCounts['embed']; ?></span>
-    									<?php echo Text::_('XBJOURNALS_EMBEDDED'); ?>
-    								</div>
-    								<div class="span7">
-    									<span class="badge <?php echo $this->attachmentCounts['remote']>0 ?'badge-important' : ''; ?> xbmr10"><?php echo $this->attachmentCounts['remote']; ?></span>
-    									<?php echo Text::_('XBJOURNALS_REMOTE').' '.Text::_('XBJOURNALS_WITH').' '; ?>
-    									<span class="badge <?php echo $this->attachmentCounts['rem2local']>0 ?'badge-important' : ''; ?> xbmr10 xbml10"><?php echo $this->attachmentCounts['rem2local']; ?></span>
-    									<?php echo Text::_('XBJOURNALS_COPIED_LOCAL'); ?>
-    								</div>
-    							</div>
-    						</div>
-    					</div>
-        			</div>
-        		</div>
-    			<div class="row-fluid">
-                	<div class="span6">
-    					<div class="xbbox gradcat">
-    						<p>
-    							<span class="badge badge-cat pull-right"><?php echo '0'; //echo Text::_('XBJOURNALS_TOTAL').' '. $this->calendarStates['total']; ?></span> 
-    							<a href="index.php?option=com_xbjournals&view=catslist"><?php echo Text::_('XBJOURNALS_CATEGORIES'); ?></a>
-    						</p>
-            				<div class="row-striped">
-            					<div class="row-fluid">
-                                  <?php echo Text::_('XBJOURNALS_JOURNAL_CATS').': ';
-            						echo '<span class="badge badge-ltgreen pull-right">'.$this->cats['journals'].'</span>'; ?>
-                                </div>  
-                                <div class="row-fluid">
-                                  <?php echo Text::_('XBJOURNALS_NOTE_CATS').': ';
-            						echo '<span class="badge badge-ltgreen pull-right">'.$this->cats['notes'].'</span>'; ?>
-                                </div>  
-                             </div>
-    					</div>            			
-                	</div>
-                	<div class="span6">
-            			<div class="xbbox gradtag">
-            				<p>
-            					<span class="badge badge-tag pull-right"><?php echo '0' ; ?></span> 
-            					<a href="index.php?option=com_xbjournals&view=tagslist"><?php echo Text::_('XBJOURNALS_TAGS'); ?></a>
-            				</p>
-            				<div class="row-striped">
-            					<div class="row-fluid">
-                                  <?php echo Text::_('XBJOURNALS_JOURNAL_TAGS').': ';
-            						echo '<span class="badge badge-ltblue  pull-right">'.$this->tags['journals'].'</span>'; ?>
-                                </div>  
-                                <div class="row-fluid">
-                                  <?php echo Text::_('XBJOURNALS_NOTE_TAGS').': ';
-            						echo '<span class="badge badge-ltblue pull-right">'.$this->tags['notes'].'</span>'; ?>
-                                </div>  
-    						</div>
-    	        		</div>
-                	</div>
-                </div>
+		<div class="xbwp100">
+        	<div class="xbwp60 pull-left xbpr20">
+				<div class="xbbox gradmag">
+					<div class="pull-right">
+						<span class="badge badge-info"><?php echo Text::_('XB_TOTAL').' '. $this->artcnts['total']; ?>
+						</span> 
+						articles on the site							
+					</div>
+					<h4>
+						<b><?php echo Text::_('XB_ARTICLES'); ?></b>
+					</h4>
+					<table class="xbwp100">
+						<tr>
+							<td>published</td>
+							<td><span class="badge badge-info"><?php echo $this->artcnts['published']; ?></td>
+    					</tr>
+    					<tr>
+							<td>unpublished</td>
+							<td><span class="badge badge-info"><?php echo $this->artcnts['unpublished']; ?> </td>
+						</tr>
+						<tr>
+							<td>archived</td>
+							<td><span class="badge badge-info"><?php echo $this->artcnts['archived']; ?></td>
+						</tr>
+						<tr>
+							<td>trashed</td>
+							<td><span class="badge badge-info"><?php echo $this->artcnts['trashed']; ?></td>
+						</tr>
+						<tr>
+							<td>article categories defined</td>
+							<td><span class="badge badge-info"><?php echo $this->artcnts['catcnt']; ?></td>
+						</tr>
+						<tr>
+							<td>articles uncategorised</td>
+							<td><span class="badge badge-info"><?php echo $this->artcnts['uncat']; ?></td>
+						</tr>
+						<tr>
+							<td>articles have no category (error)</td>
+							<td><span class="badge badge-info"><?php echo $this->artcnts['nocat']; ?></td>
+						</tr>
+						<tr>
+							<td>articles with 1 or more tags</td>
+							<td><span class="badge badge-info"><?php echo $this->artcnts['tagged']; ?></td>
+						</tr>
+						<tr>
+							<td>articles with images in-content</td>
+							<td><span class="badge badge-info"><?php echo $this->artcnts['embimaged']; ?></td>
+						</tr>
+						<tr>
+							<td>articles using the related image fields</td>
+							<td><span class="badge badge-info"><?php echo $this->imagecnts['related']; ?></span></td>
+						</tr>
+						<tr>
+							<td>articles with links in content</td>
+							<td><span class="badge badge-info"><?php echo $this->artcnts['emblinked']; ?></td>
+						</tr>
+						<tr>
+							<td>articles with related links</td>
+							<td><span class="badge badge-info"><?php echo $this->artcnts['rellinked']; ?></td>
+						</tr>
+						<tr>
+							<td>articles using plugin shortcodes</td>
+							<td><span class="badge badge-info"><?php echo $this->artcnts['scoded']; ?></td>
+						</tr>
+					</table>
+				</div>
+				<div class="xbbox gradpink">
+					<div class="pull-right">
+						<span class="badge badge-info"><?php echo Text::_('XB_TOTAL').' '. $this->tagcnts['totaltags']; ?></span>
+						total joomla tags defined across all components    													 
+					</div>
+					<p>
+						<b><?php echo Text::_('XBARTMAN_TAGS_ARTS'); ?></b>
+					</p>
+					<table class="xbwp100">
+						<tr>
+							<td>distinct tags used in articles</td>
+							<td><span class="badge badge-info pull-right"><?php echo $this->tagcnts['tagsused']; ?></span></td>
+						</tr>
+					</table>
+				</div>           			
+
+				<div class="xbbox gradcyan">
+					<div class="pull-right">
+						<span class="badge badge-info"><?php echo Text::_('XB_TOTAL').' '. $this->imagecnts['embed']; ?>
+						</span> 
+						images used in articles    	
+					</div>						
+					<p>
+						<b><?php echo Text::_('Images in articles'); ?></b>
+					</p>
+				</div>           			
+
+				<div class="xbbox gradyellow">
+					<div class="pull-right">
+						<span class="badge badge-info"><?php echo Text::_('XB_TOTAL').' '. $this->linkcnts['totLinks']; ?> 
+						</span>
+						links found in articles
+					</div>
+					<p>
+						<b><?php echo Text::_('Links'); ?></b>
+					</p>
+					<table class="xbwp100">
+						<tr>
+							<td>Local Links found in articles</td>
+							<td><span class="badge badge-info pull-right"><?php echo $this->linkcnts['localLinks']; ?></span></td>
+						</tr>
+						<tr>
+							<td>External Links found in articles</td>
+							<td><span class="badge badge-info pull-right"><?php echo $this->linkcnts['extLinks']; ?></span></td>
+						</tr>
+						<tr>
+							<td>Anchor targets in articles</td>
+							<td><span class="badge badge-info pull-right"><?php echo $this->linkcnts['pageTargs']; ?></span></td>
+						</tr>
+						<tr>
+							<td>Other Link types in articles</td>
+							<td><span class="badge badge-info pull-right"><?php echo $this->linkcnts['others']; ?></span></td>
+						</tr>
+					</table>
+				</div>
+
+				<div class="xbbox gradgrey">
+					<div class="pull-right">
+						<span class="badge badge-info"><?php echo Text::_('XB_TOTAL').' '. $this->scodecnts['totalscs']; ?>
+						</span>
+						shortcodes used in articles
+					</div>
+					<p>
+						<b><?php echo Text::_('Shortcodes'); ?></b>
+					</p>
+						<tr>
+							<td>Distinct types of shortcode used</td>
+							<td><span class="badge badge-info pull-right"><?php echo $this->scodecnts['uniquescs']; ?></span></td>
+						</tr>
+				</div>
           	</div>
-			<div id="xbinfo" class="span4">
-				<div class="row-fluid">
+			<div id="xbinfo" class="xbwp40 pull-left" style="max-width:400px;">
 		        	<?php echo HTMLHelper::_('bootstrap.startAccordion', 'slide-dashboard', array('active' => 'sysinfo')); ?>
-	        		<?php echo HTMLHelper::_('bootstrap.addSlide', 'slide-dashboard', Text::_('XBJOURNALS_SYSINFO'), 'sysinfo','xbaccordion'); ?>
-            			<p><b><?php echo Text::_( 'XBJOURNALS_COMPONENT' ); ?></b>
-    						<br /><?php echo Text::_('XBJOURNALS_VERSION').': <b>'.$this->xmldata['version'].'</b> '.
+	        		<?php echo HTMLHelper::_('bootstrap.addSlide', 'slide-dashboard', Text::_('XB_SYSINFO'), 'sysinfo','xbaccordion'); ?>
+            			<p><b><?php echo Text::_( 'XB_COMPONENT' ); ?></b>
+    						<br /><?php echo Text::_('XB_VERSION').': <b>'.$this->xmldata['version'].'</b> '.
     							$this->xmldata['creationDate'];?>
                       	</p>
                         <hr />
-                      	<p><b><?php echo Text::_( 'XBJOURNALS_CLIENT'); ?></b>
-    						<br/><?php echo Text::_( 'XBJOURNALS_PLATFORM' ).' '.$this->client['platform'].'<br/>'.Text::_( 'XBJOURNALS_BROWSER').' '.$this->client['browser']; ?>
+                      	<p><b><?php echo Text::_( 'XB_CLIENT'); ?></b>
+    						<br/><?php echo Text::_( 'XB_PLATFORM' ).' '.$this->client['platform'].'<br/>'.Text::_( 'XB_BROWSER').' '.$this->client['browser']; ?>
                      	</p>
     				<?php echo HtmlHelper::_('bootstrap.endSlide'); ?>
-	        		<?php echo HTMLHelper::_('bootstrap.addSlide', 'slide-dashboard', Text::_('XBJOURNALS_KEY_CONFIG'), 'keyconfig','xbaccordion'); ?>
+	        		<?php echo HTMLHelper::_('bootstrap.addSlide', 'slide-dashboard', Text::_('XB_KEY_CONFIG'), 'keyconfig','xbaccordion'); ?>
 	        			<p>Config (Options) Key Settings:
 	        			</p>
 	        			<ul>
-	        				<li><?php echo Text::_('XBJOURNALS_CONFIG_DEL_UNINST_LABEL'); ?>: <?php echo ($this->savedata)?  Text::_('JYES') :  Text::_('JNO'); ?>
-	        				</li>
-	        				<li><?php echo Text::_('Save all attachments'); ?>:<?php echo ($this->copy_remote)?  Text::_('JYES') :  Text::_('XBJOURNALS_EMBED_ONLY'); ?>
-	        				</li>
-	        				<li><?php echo Text::_('XBJOURNALS_ATTACH_FOLDER'); ?>:<br />
-	        					<code><?php echo ($this->attach_path); ?></code>
-	        				</li>
+	        			<li>list here</li>
 	        			</ul>
         			<?php echo HTMLHelper::_('bootstrap.endSlide'); ?>
-    				<?php echo HtmlHelper::_('bootstrap.addSlide', 'slide-dashboard', Text::_('XBJOURNALS_ABOUT'), 'about','xbaccordion'); ?>
-						<p><?php echo Text::_( 'XBJOURNALS_ABOUT_INFO' ); ?></p>
+    				<?php echo HtmlHelper::_('bootstrap.addSlide', 'slide-dashboard', Text::_('XB_ABOUT'), 'about','xbaccordion'); ?>
+						<p><?php echo Text::_( 'XB_ABOUT_INFO' ); ?></p>
 					<?php echo HtmlHelper::_('bootstrap.endSlide'); ?>
-					<?php echo HtmlHelper::_('bootstrap.addSlide', 'slide-dashboard', Text::_('XBJOURNALS_LICENCE'), 'license','xbaccordion'); ?>
-						<p><?php echo Text::_( 'XBJOURNALS_LICENSE_GPL' ); ?>
-							<br><?php echo Text::sprintf('XBJOURNALS_LICENSE_INFO','xbJournals');?>
+					<?php echo HtmlHelper::_('bootstrap.addSlide', 'slide-dashboard', Text::_('XB_LICENCE'), 'license','xbaccordion'); ?>
+						<p><?php echo Text::_( 'XB_LICENSE_GPL' ); ?>
+							<br><?php echo Text::sprintf('XB_LICENSE_INFO','xbJournals');?>
 							<br /><?php echo $this->xmldata['copyright']; ?>
 						</p>		        		
         			<?php echo HTMLHelper::_('bootstrap.endSlide'); ?>
-	        		<?php echo HTMLHelper::_('bootstrap.addSlide', 'slide-dashboard', Text::_('XBJOURNALS_REGINFO'), 'reginfo','xbaccordion'); ?>
-                        <?php  if (XbjournalsHelper::penPont()) {
-                            echo Text::_('XBJOURNALS_BEER_THANKS'); 
+	        		<?php echo HTMLHelper::_('bootstrap.addSlide', 'slide-dashboard', Text::_('XB_REGINFO'), 'reginfo','xbaccordion'); ?>
+                        <?php  if (XbarticlemanHelper::penPont()) {
+                            echo Text::_('XB_BEER_THANKS'); 
                         } else {
-                            echo Text::_('XBJOURNALS_BEER_LINK');
+                            echo Text::_('XB_BEER_LINK');
                         }?>
         			<?php echo HTMLHelper::_('bootstrap.endSlide'); ?>
 					<?php echo HTMLHelper::_('bootstrap.endAccordion'); ?>
-				</div>		
 			</div>
+			<div class="clearfix"></div>
 		</div>	
 	</div>
 

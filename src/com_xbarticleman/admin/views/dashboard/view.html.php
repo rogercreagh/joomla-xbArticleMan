@@ -29,7 +29,7 @@ class XbarticlemanViewDashboard extends JViewLegacy {
         $this->linkcnts = $this->get('LinkCnts');
         $this->scodecnts = $this->get('ScodeCnts');
         
-        $this->xmldata = Installer::parseXMLInstallFile(JPATH_COMPONENT_ADMINISTRATOR . '/xbjournals.xml');
+        $this->xmldata = Installer::parseXMLInstallFile(JPATH_COMPONENT_ADMINISTRATOR . '/xbarticleman.xml');
         $this->client = $this->get('Client');
              
         $this->state = $this->get('State');

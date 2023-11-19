@@ -2,7 +2,7 @@
 /*******
  * @package xbArticleMan
  * file administrator/components/com_xbarticleman/controller.php
- * @version 2.0.1.0 4th November 2023
+ * @version 2.1.0.0 19th November 2023
  * @since 0.1.0.0 22nd January 2019
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2013
@@ -23,7 +23,7 @@ if (!Factory::getUser()->authorise('core.manage', 'com_xbarticleman'))
     
 }
 
-$params = ComponentHelper::getParams('com_xbaoy');
+$params = ComponentHelper::getParams('com_xbarticleman');
 $document = Factory::getDocument();
 $cssPath = Uri::root(true)."/media/com_xbarticleman/css/";
 $document->addStyleSheet($cssPath.'xbarticleman.css');
