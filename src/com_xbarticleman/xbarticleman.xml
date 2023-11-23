@@ -2,7 +2,7 @@
 <extension method="upgrade" type="component" version="3.0">
 	<name>xbarticleman</name>
 	<author>Roger C-O</author>
-	<creationDate>19th November 2023</creationDate>
+	<creationDate>23rd November 2023</creationDate>
 	<authorEmail>roger@crosborne.co.uk</authorEmail>
 	<authorUrl>www.crosborne.uk</authorUrl>
 	<copyright>(C) Roger Creagh-Osborne, 2023</copyright>

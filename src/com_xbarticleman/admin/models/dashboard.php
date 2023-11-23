@@ -204,8 +204,9 @@ class XbarticlemanModelDashboard extends JModelList {
     private function stateCnts() {
         $db = Factory::getDbo();
         $query = $db->getQuery(true);
-        $query->select('DISTINCT a.state, a.id')
-            ->from($db->quoteName('#__content').' AS a');
+        $query->select($db->qn('state'))
+            ->from($db->quoteName('#__content'));
+        $db->setQuery($query);
         $col = $db->loadColumn();
         $vals = array_count_values($col);
         $result['total'] = count($col);

@@ -207,12 +207,12 @@ green and blue are used for categories and tags
 }
 
 /* box gradientbackgrounds */
-.gradpink { background-image: linear-gradient(#ffffff, #ffcfcf); }
+.gradpink { background-image: linear-gradient(#ffffff, #ffc0c0); }
 .gradyellow { background-image: linear-gradient(#ffffff, #ffffaf); }
 .gradgreen, .gradcat { background-image: linear-gradient(#ffffff,#ccffcc); }
 .gradcyan { background-image: linear-gradient(#ffffff,#8fffff); }
-.gradblue, .gradtag { background-image: linear-gradient(#ffffff,#dfdfff); }
-.gradmag { background-image: linear-gradient(#ffffff,#ffcfff); }
+.gradblue, .gradtag { background-image: linear-gradient(#ffffff,#d7dcff); }
+.gradmag { background-image: linear-gradient(#ffffff,#ffc0ff); }
 .gradgrey { background-image: linear-gradient(#ffffff,#cccccc); }
 
 /* vertical scrolling for boxes - use with max-height (.xbmhxxx) */
