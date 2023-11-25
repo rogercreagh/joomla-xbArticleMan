@@ -397,3 +397,17 @@ some common combinations are also defined (eg xbnit - normal weight,italic, 5px 
 /* make file and folder controls wide enough for longer path and name */
 .xbfilecontrol, .xbfoldercontrol {width:400px !important; }
 
+dl.xbdlinline dt {
+	display:inline-block;
+	font-style:italic;
+	min-width:50px;
+}
+dl.xbdlinline dd {
+	display:inline;
+	margin: 0 0 5px 15px;
+}
+
+dl.xbdlinline dd:after {
+	display:block;
+	content:'';
+}

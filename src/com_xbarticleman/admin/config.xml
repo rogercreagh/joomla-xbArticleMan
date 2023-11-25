@@ -11,10 +11,10 @@
  			class="btn-group btn-group-yesno"
  			default="0"
 			>
-			<option value="0" >Disable</option>
-			<option value="1">Site &amp; Admin</option>
-			<option value="2">Site Only</option>
-			<option value="3">Admin Only</option>
+			<option value="0" >XB_DISABLE</option>
+			<option value="1">XBARTMAN_SITE_ADMIN</option>
+			<option value="2">XBARTMAN_SITE_ONLY</option>
+			<option value="3">XBARTMAN_ADMIN_ONLY</option>
 		</field>	
 	
    		<field name="beernote" type="note"

@@ -44,7 +44,7 @@ class XbarticlemanModelDashboard extends JModelList {
      */
     public function getArticleCnts() {
         $artcnts = array('total'=>0, 'published'=>0, 'unpublished'=>0, 'archived'=>0, 'trashed'=>0, 
-            'catcnt'=>0, 'uncat'=>0, 'nocat'=>0, 'tagged'=>0, 'embimaged'=>0, 'emblinked'=>0, 'rellinked'=>0, 'scoded'=>0);
+            'catcnt'=>0, 'uncat'=>0, 'nocat'=>0, 'tagged'=>0, 'embimaged'=>0, 'emblinked'=>0, 'scoded'=>0);
         //get states
         $artcnts = array_merge($artcnts,$this->stateCnts());
         //get categories
@@ -102,13 +102,13 @@ class XbarticlemanModelDashboard extends JModelList {
         $res = $db->loadResult();
         if ($res>0) $artcnts['emblinked'] = $res;
         
-        $query->clear();
-        $query->select('COUNT(DISTINCT(a.id)) AS rellinked')
-            ->from('#__content AS a')
-            ->where('a.urls REGEXP '.$db->q('/\"url[a-c]\":[^,]+?\"'));
-        $db->setQuery($query);
-        $res = $db->loadResult();
-        if ($res>0) $artcnts['rellinked'] = $res;
+//         $query->clear();
+//         $query->select('COUNT(DISTINCT(a.id)) AS rellinked')
+//             ->from('#__content AS a')
+//             ->where('a.urls REGEXP '.$db->q('\"url[a-c]\":[^,]+?\"'));
+//         $db->setQuery($query);
+//         $res = $db->loadResult();
+//         if ($res>0) $artcnts['rellinked'] = $res;
         
         //get scode cnts - articles with scodes
         $query->clear();
@@ -158,7 +158,7 @@ class XbarticlemanModelDashboard extends JModelList {
         return $imgcnts;
     }
     
-    public function getLinkCnts() {
+    public function getEmbLinkCnts() {
         $linkcnts = array("pageLinks"=>0,
             "pageTargs"=>0,
             "localLinks"=>0,
@@ -180,6 +180,22 @@ class XbarticlemanModelDashboard extends JModelList {
         }        
         return $linkcnts;
     }
+    
+    public function getRelLinkCnts() {
+        $rellinkcnts = array('artrellinks'=>0, 'totrellinks'=>0);
+        $db=Factory::getDbo();
+        $query = $db->getQuery(true);
+        $query->select('urls')->from($db->qn('#__content'));
+        $query->where('urls REGEXP '.$db->q('\"url[a-c]\":[^,]+?\"'));
+        $db->setQuery($query);
+        $res = $db->loadObjectList();
+        if ($rellinkcnts) $rellinkcnts['artrellinks'] = count($res);
+        foreach ($res as $value) {
+            $cnt = preg_match_all('|\"url[a-c]\":[^,]+?\"|',$value->urls);
+            $rellinkcnts['totrellinks'] += $cnt;
+        }
+        return $rellinkcnts;
+    }
 
     /**
      * @name getShortcodes
@@ -187,10 +203,10 @@ class XbarticlemanModelDashboard extends JModelList {
      */
     public function getScodeCnts() {
         $scodes = array();
-        $sccnts = array('totalscs'=>0, 'uniquescs'=>0);
+        $sccnts = array('totscodes'=>0, 'uniquescs'=>0);
         foreach ($this->arttexts as $arttext) {
             $artscodes = XbarticlemanHelper::getDocShortcodes($arttext);
-            $sccnts['totalscs'] += count($artscodes);
+            $sccnts['totscodes'] += count($artscodes);
             $scodes = array_unique(array_merge($scodes,array_column($artscodes,1)));
         }
         $sccnts['uniquescs'] = count($scodes);

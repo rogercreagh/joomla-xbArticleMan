@@ -26,7 +26,8 @@ class XbarticlemanViewDashboard extends JViewLegacy {
         $this->artcnts = $this->get('ArticleCnts');        
         $this->tagcnts = $this->get('TagCnts');
         $this->imagecnts = $this->get('ImageCnts');
-        $this->linkcnts = $this->get('LinkCnts');
+        $this->emblinkcnts = $this->get('EmbLinkCnts');
+        $this->rellinkcnts = $this->get('RelLinkCnts');
         $this->scodecnts = $this->get('ScodeCnts');
         
         $this->xmldata = Installer::parseXMLInstallFile(JPATH_COMPONENT_ADMINISTRATOR . '/xbarticleman.xml');
@@ -39,6 +40,22 @@ class XbarticlemanViewDashboard extends JViewLegacy {
             throw new Exception(implode("\n", $errors), 500);
         }
                 
+        $this->savedata = $params->get('savedata',0);
+        switch ($params->get('extlinkhint', 0)) {
+            case 1:
+                $this->extlinkhint = Text::_('XBARTMAN_SITE_ADMIN');
+                break;
+            case 2:
+                $this->extlinkhint = Text::_('XBARTMAN_SITE_ONLY');
+                break;
+            case 3:
+                $this->extlinkhint = Text::_('XBARTMAN_ADMIN_ONLY');
+                break;
+            default:
+                $this->extlinkhint = Text::_('XB_DISABLE');
+                break;
+        }
+        
         $this->addToolbar();
         XbarticlemanHelper::addSubmenu('dashboard');
         $this->sidebar = JHtmlSidebar::render();

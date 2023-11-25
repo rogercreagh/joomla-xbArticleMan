@@ -48,7 +48,7 @@ $userId = $user->get('id');
             						<?php echo Text::_('Articles on the site'); ?><span class="xbpl20 xbnit">(<?php echo Text::_('including archived and trashed'); ?>)</span>
             					</h4>
 							</th>
-							<th colspan="2">
+							<th colspan="2" style="text-align:left;">
 								<span class="badge badge-info"><?php echo Text::_('XB_TOTAL').' '. $this->artcnts['total']; ?></span> 
 							</th>
 						</tr>
@@ -82,7 +82,7 @@ $userId = $user->get('id');
             						<?php echo Text::_('Categories'); ?><span class="xbpl20 xbnit">(<?php echo Text::_('all content categories, including unused'); ?>)</span>
             					</h4>
 							</th>
-							<th colspan="2">
+							<th colspan="2" style="text-align:left;">
 								<span class="badge badge-cat"><?php echo Text::_('XB_TOTAL').' '. $this->artcnts['catcnt']; ?></span> 
 							</th>
 						</tr>
@@ -107,10 +107,10 @@ $userId = $user->get('id');
 						<tr>
 							<th colspan="2" style="text-align:left;">
             					<h4>
-            						<?php echo Text::_('Tags'); ?><span class="xbpl20 xbnit">(<?php echo Text::_('all tags, including ones only used in other components'); ?>)</span>
+            						<?php echo Text::_('Tags'); ?><span class="xbpl20 xbnit">(<?php echo Text::_('all tags, including used by other components'); ?>)</span>
             					</h4>
 							</th>
-							<th colspan="2">
+							<th colspan="2" style="text-align:left;">
 								<span class="badge badge-tag"><?php echo Text::_('XB_TOTAL').' '. $this->tagcnts['totaltags']; ?></span> 
 							</th>
 						</tr>
@@ -141,7 +141,7 @@ $userId = $user->get('id');
             						<?php echo Text::_('Images'); ?><span class="xbpl20 xbnit"></span>
             					</h4>
 							</th>
-							<th colspan="2">
+							<th colspan="2" style="text-align:left;">
 							</th>
 						</tr>
 						</thead>
@@ -174,46 +174,62 @@ $userId = $user->get('id');
                 						<?php echo Text::_('Articles with Links'); ?><span class="xbpl20 xbnit"></span>
                 					</h4>
     							</th>
-    							<th>
+    							<th colspan="2" style="text-align:left;">
     								<span class="xbit xbpr10"><?php echo Text::_('in content'); ?></span>
     								<span class="badge <?php echo $this->artcnts['emblinked']>0 ?'badge-drkcyan' : ''; ?> xbpr20">
     									<?php echo Text::_('XB_TOTAL').' '. $this->artcnts['emblinked']; ?>
     								</span> 
-    								<span class="xbit xbpr10"><?php echo Text::_('related links'); ?></span>
-    								<span class="badge <?php echo $this->artcnts['rellinked']>0 ?'badge-drkcyan' : ''; ?>">
-    									<?php echo Text::_('XB_TOTAL').' '. $this->artcnts['rellinked']; ?>
+    								<span class="xbit xbpr10 xbpl20"><?php echo Text::_('related links'); ?></span>
+    								<span class="badge <?php echo $this->rellinkcnts['artrellinks']>0 ?'badge-drkcyan' : ''; ?>">
+    									<?php echo Text::_('XB_TOTAL').' '. $this->rellinkcnts['artrellinks']; ?>
     								</span> 
     							</th>
     						</tr>
 						</thead>
 						<tbody>
 						<tr>
-							<td><?php echo Text::_('Total embedded links'); ?></td>
-							<td><span class="badge <?php echo $this->linkcnts['totLinked']>0 ?'badge-info' : ''; ?>">
-								<?php echo $this->linkcnts['totLinked']; ?>
+							<td><b><?php echo Text::_('Total embedded links'); ?></b></td>
+							<td><span class="badge <?php echo $this->emblinkcnts['totLinks']>0 ?'badge-info' : ''; ?>">
+								<?php echo $this->emblinkcnts['totLinks']; ?>
 							</span></td>
 							<td></td><td></td>
 						</tr>
 						<tr>
 							<td><?php echo Text::_('Local Links'); ?></td>
-							<td><span class="badge <?php echo $this->linkcnts['localLinks']>0 ?'badge-ltgreen' : ''; ?>"><?php echo $this->linkcnts['localLinks']; ?></span></td>
+							<td><span class="badge <?php echo $this->emblinkcnts['localLinks']>0 ?'badge-ltgreen' : ''; ?>">
+								<?php echo $this->emblinkcnts['localLinks']; ?>
+							</span></td>
 							<td><?php echo Text::_('External Links'); ?></td>
-							<td><span class="badge <?php echo $this->linkcnts['extLinks']>0 ?'badge-aoy' : ''; ?>"><?php echo $this->linkcnts['extLinks']; ?></span></td>
+							<td><span class="badge <?php echo $this->emblinkcnts['extLinks']>0 ?'badge-aoy' : ''; ?>">
+								<?php echo $this->emblinkcnts['extLinks']; ?>
+							</span></td>
 						</tr>
 						<tr>
 							<td><?php echo Text::_('Anchor targets in articles'); ?></td>
-							<td><span class="badge <?php echo $this->linkcnts['pageTargs']>0 ?'badge-black' : ''; ?>"><?php echo $this->linkcnts['pageTargs']; ?></span></td>
+							<td><span class="badge <?php echo $this->emblinkcnts['pageTargs']>0 ?'badge-black' : ''; ?>">
+								<?php echo $this->emblinkcnts['pageTargs']; ?>
+							</span></td>
 							<td><?php echo Text::_('In-page links'); ?></td>
-							<td><span class="badge <?php echo $this->linkcnts['pageLinks']>0 ?'badge-black' : ''; ?>"><?php echo $this->linkcnts['pageLinks']; ?></span></td>
+							<td><span class="badge <?php echo $this->emblinkcnts['pageLinks']>0 ?'badge-black' : ''; ?>">
+								<?php echo $this->emblinkcnts['pageLinks']; ?>
+							</span></td>
 						</tr>
 						<tr>
 							<td><?php echo Text::_('Other Link types in articles'); ?></td>
-							<td><span class="badge <?php echo $this->linkcnts['others']>0 ?'badge-grey' : ''; ?>"><?php echo $this->linkcnts['others']; ?></span></td>
+							<td><span class="badge <?php echo $this->emblinkcnts['others']>0 ?'badge-grey' : ''; ?>">
+								<?php echo $this->emblinkcnts['others']; ?>
+							</span></td>
+							<td><?php echo Text::_('Malformed Links in articles'); ?></td>
+							<td><span class="badge <?php echo $this->emblinkcnts['malformed']>0 ?'badge-red' : ''; ?>">
+								<?php echo $this->emblinkcnts['malformed']; ?>
+							</span></td>
 						</tr>
 						<tr>
-							<td><?php echo Text::_('Articles with related links'); ?></td>
-							<td><span class="badge <?php echo $this->artcnts['rellinked']>0 ?'badge-ltmag' : ''; ?>"><?php echo $this->artcnts['rellinked']; ?></span></td>
-														<td></td><td></td>
+							<td><b><?php echo Text::_('Total related links'); ?></b></td>
+							<td><span class="badge <?php echo $this->rellinkcnts['totrellinks']>0 ?'badge-ltmag' : ''; ?>">
+								<?php echo $this->rellinkcnts['totrellinks']; ?>
+							</span></td>
+							<td></td><td></td>
 							
 						</tr>
 						</tbody>
@@ -236,13 +252,21 @@ $userId = $user->get('id');
             						<?php echo Text::_('Articles with Shortcodes'); ?><span class="xbpl20 xbnit"></span>
             					</h4>
 							</th>
-							<th colspan="2">
-								<span class="badge <?php echo $this->artcnts['scoded']>0 ?'badge-pink' : ''; ?>"><?php echo Text::_('XB_TOTAL').' '. $this->artcnts['scoded']; ?></span> 
+							<th colspan="2" style="text-align:left;">
+								<span class="badge <?php echo $this->artcnts['scoded']>0 ?'badge-pink' : ''; ?>">
+									<?php echo Text::_('XB_TOTAL').' '. $this->artcnts['scoded']; ?>
+								</span> 
 							</th>
 						</tr>
 						<tr>
-							<td colspan="2"><?php echo Text::_('Distinct shortcodes used in articles'); ?></td>
-							<td colspan="2"><span class="badge <?php echo $this->scodecnts['uniquescs']>0 ?'badge-orange' : ''; ?>"><?php echo $this->scodecnts['uniquescs']; ?></span></td>
+							<td><?php echo Text::_('Distinct shortcodes used in articles'); ?></td>
+							<td><span class="badge <?php echo $this->scodecnts['uniquescs']>0 ?'badge-orange' : ''; ?>">
+								<?php echo $this->scodecnts['uniquescs']; ?>
+							</span></td>
+							<td><?php echo Text::_('Total shortcodes in articles'); ?></td>
+							<td><span class="badge <?php echo $this->scodecnts['totscodes']>0 ?'badge-pink' : ''; ?>">
+								<?php echo $this->scodecnts['totscodes']; ?>
+							</span></td>
 						</tr>
 						</thead>
 					</table>
@@ -262,14 +286,15 @@ $userId = $user->get('id');
                      	</p>
     				<?php echo HtmlHelper::_('bootstrap.endSlide'); ?>
 	        		<?php echo HTMLHelper::_('bootstrap.addSlide', 'slide-dashboard', Text::_('XB_KEY_CONFIG_OPTIONS'), 'keyconfig','xbaccordion'); ?>
-	        			<p>Config (Options) Key Settings:
+	        			<p><?php echo Text::_('Config (Options) Settings'); ?>:
 	        			</p>
-	        			<ul>
-	        			<li>list here</li>
-	        			</ul>
+	        			<dl class="xbdlinline">
+	        				<dt><?php echo Text::_('XB_EXTLINKS_LABEL'); ?>: </dt> 
+	        				<dd><?php echo $this->extlinkhint; ?></dd>
+	        			</dl>
         			<?php echo HTMLHelper::_('bootstrap.endSlide'); ?>
     				<?php echo HtmlHelper::_('bootstrap.addSlide', 'slide-dashboard', Text::_('XB_ABOUT'), 'about','xbaccordion'); ?>
-						<p><?php echo Text::_( 'XB_ABOUT_INFO' ); ?></p>
+						<p><?php echo Text::_( 'XBARTMAN_ABOUT_INFO' ); ?></p>
 					<?php echo HtmlHelper::_('bootstrap.endSlide'); ?>
 					<?php echo HtmlHelper::_('bootstrap.addSlide', 'slide-dashboard', Text::_('XB_LICENCE'), 'license','xbaccordion'); ?>
 						<p><?php echo Text::_( 'XB_LICENSE_GPL' ); ?>
