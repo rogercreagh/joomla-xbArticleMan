@@ -2,7 +2,7 @@
 /*******
  * @package xbArticleMan Component
  * @filesource admin/models/dashboard.php
- * @version 2.1.0.0 18th November 2023
+ * @version 2.1.0.0 24th November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2023
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
@@ -91,7 +91,7 @@ class XbarticlemanModelDashboard extends JModelList {
             ->where('CONCAT(a.introtext," ",a.fulltext)'.' REGEXP '.$db->q('<img '));
         $db->setQuery($query);
         $res = $db->loadResult();
-        if ($res>0) $artcnts['embimged'] = $res;
+        if ($res>0) $artcnts['embimaged'] = $res;
         
         //get linkcnts - articles with links by type (art/embed)
         $query->clear();
@@ -159,17 +159,24 @@ class XbarticlemanModelDashboard extends JModelList {
     }
     
     public function getLinkCnts() {
-        $linkcnts = array('totLinks'=> 0, 'pageTargs'=>0, 'localLinks'=>0, 'extLinks'=>0, 'others'=>0);
-        foreach ($this->arttexts as $arttext) {
-            $artlinks = XbarticlemanHelper::getDocAnchors($arttext);
-            foreach ($artlinks as $link) {
-                $linkcnts['pageTargs'] += count($artlinks['pageTargs']);
-                $linkcnts['localLinks'] += count($artlinks['localLinks']);
-                $linkcnts['extLinks'] += count($artlinks['extLinks']);
-                $linkcnts['others'] += count($artlinks['others']);
-            }
-            $tot = array_sum($linkcnts);
-            $linkcnts['totLinks'] = $tot;
+        $linkcnts = array("pageLinks"=>0,
+            "pageTargs"=>0,
+            "localLinks"=>0,
+            "extLinks"=>0,
+            "others"=>0,
+            "malformed"=>0,
+            "totLinks"=>0
+        );
+        foreach ($this->arttexts as $arttext) {           
+            $artlinks = array();
+            $artlinks = $this->getDocLinkCnts($arttext);
+            $linkcnts['pageLinks'] += $artlinks['pageLinks'];
+            $linkcnts['pageTargs'] += $artlinks['pageTargs'];
+            $linkcnts['localLinks'] += $artlinks['localLinks'];
+            $linkcnts['extLinks'] += $artlinks['extLinks'];
+            $linkcnts['others'] += $artlinks['others'];
+            $linkcnts['malformed'] += $artlinks['malformed'];
+            $linkcnts['totLinks'] += array_sum($artlinks); 
         }        
         return $linkcnts;
     }
@@ -192,10 +199,9 @@ class XbarticlemanModelDashboard extends JModelList {
     
     private function getArticlesText() {
         $db = Factory::getDbo();
-        $query = $db->getQuery(true);
-        
+        $query = $db->getQuery(true);        
         $query->select('CONCAT(a.introtext," ",a.fulltext) AS arttext')
-        ->from('#__content AS a');
+            ->from('#__content AS a');
         $db->setQuery($query);
         $res = $db->loadColumn();
         return $res;
@@ -215,6 +221,54 @@ class XbarticlemanModelDashboard extends JModelList {
         $result['archived'] = key_exists('2',$vals) ? $vals['2'] : 0;
         $result['trashed'] = key_exists('-2',$vals) ? $vals['-2'] : 0;
         return $result;
+    }
+    
+    private function getDocLinkCnts($html) {
+        //container for different types of links
+        //pageLinks are links to anchor tags within the doc
+        //pageTargs are the anchor target tags in the doc
+        //localLinks are links to pages on this site (may be sef or raw, complete or relative)
+        //extLinks are links to other websites
+        //others are 'mailto: and other services
+        $linkcnts = array("pageLinks"=>0,
+            "pageTargs"=>0,
+            "localLinks"=>0,
+            "extLinks"=>0,
+            "others"=>0, 
+            'malformed'=>0
+        );
+        
+        $dom = new DOMDocument;
+        $dom->loadHTML($html,LIBXML_NOERROR);
+        $as = $dom->getElementsByTagName('a');
+        foreach ($as as $atag) {
+            $href = $atag->getAttribute('href');
+            if (!$href) //no href specified so must be target
+            {
+                $linkcnts["pageTargs"] ++;
+            } else {
+                if (substr($href,0,1)=='#') { //the href starts with # so target is on same page
+                    $linkcnts["pageLinks"] ++;
+                } else {
+                    $arrHref = parse_url($href);
+                    if ($arrHref === false) {
+                        $linkcnts['malformed'] ++;
+                    } else {
+                        if ((isset($arrHref["scheme"])) && (!stristr($arrHref["scheme"],'http'))) {
+                            // scheme is not http or https so it is some other type of link
+                            $linkcnts["others"] ++;
+                        } else {
+                            if (XbarticlemanHelper::isLocalLink($href)) {
+                                $linkcnts["localLinks"] ++;
+                            } else {
+                                $linkcnts["extLinks"] ++;
+                            }
+                        }
+                    }
+                }
+            }
+        }        
+        return $linkcnts;
     }
     
     

@@ -36,16 +36,16 @@ $userId = $user->get('id');
 				<div class="xbbox gradmag">
 					<table class="xbwp100">
             			<colgroup>
-            				<col style="width:40%;"><!-- ordering -->
-            				<col style="width:10%;"><!-- checkbox -->
-            				<col style="width:40%;"><!-- status -->
-            				<col ><!-- title, -->
+            				<col style="width:40%;"><!--  -->
+            				<col style="width:10%;"><!--  -->
+            				<col style="width:40%;"><!--  -->
+            				<col ><!--  -->
             			</colgroup>
             			<thead>
 						<tr>
-							<th colspan="2">
+							<th colspan="2" style="text-align:left;">
             					<h4>
-            						<?php echo Text::_('Articles on the site'); ?><span class="xbpl20 xbnit">(including archived and trashed)</span>
+            						<?php echo Text::_('Articles on the site'); ?><span class="xbpl20 xbnit">(<?php echo Text::_('including archived and trashed'); ?>)</span>
             					</h4>
 							</th>
 							<th colspan="2">
@@ -54,28 +54,32 @@ $userId = $user->get('id');
 						</tr>
 						</thead>
 						<tr>
-							<td>Published </td><td><span class="badge <?php echo $this->artcnts['published']>0 ?'badge-info' : ''; ?>"><?php echo $this->artcnts['published']; ?></td>
-							<td>unpublished </td><td><span class="badge <?php echo $this->artcnts['unpublished']>0 ?'badge-yellow' : ''; ?>"><?php echo $this->artcnts['unpublished']; ?></td>
+							<td><?php echo Text::_('Published'); ?> </td>
+							<td><span class="badge <?php echo $this->artcnts['published']>0 ?'badge-info' : ''; ?>"><?php echo $this->artcnts['published']; ?></span></td>
+							<td><?php echo Text::_('Unpublished'); ?> </td><td>
+							<span class="badge <?php echo $this->artcnts['unpublished']>0 ?'badge-yellow' : ''; ?>"><?php echo $this->artcnts['unpublished']; ?></span></td>
 						</tr>
 						<tr>
-							<td>archived </td><td><span class="badge <?php echo $this->artcnts['archived']>0 ?'badge-black' : ''; ?>"><?php echo $this->artcnts['archived']; ?></td>
-							<td>trashed </td><td><span class="badge <?php echo $this->artcnts['trashed']>0 ?'badge-red' : ''; ?>"><?php echo $this->artcnts['trashed']; ?></td>
+							<td><?php echo Text::_('Archived'); ?> </td>
+							<td><span class="badge <?php echo $this->artcnts['archived']>0 ?'badge-black' : ''; ?>"><?php echo $this->artcnts['archived']; ?></span></td>
+							<td><?php echo Text::_('Trashed'); ?> </td>
+							<td><span class="badge <?php echo $this->artcnts['trashed']>0 ?'badge-red' : ''; ?>"><?php echo $this->artcnts['trashed']; ?></span></td>
 						</tr>
 					</table>
 				</div>
 				<div class="xbbox gradgreen">
 					<table class="xbwp100">
             			<colgroup>
-            				<col style="width:40%;"><!-- ordering -->
-            				<col style="width:10%;"><!-- checkbox -->
-            				<col style="width:40%;"><!-- status -->
+            				<col style="width:40%;"><!--  -->
+            				<col style="width:10%;"><!--  -->
+            				<col style="width:40%;"><!--  -->
             				<col ><!-- title, -->
             			</colgroup>
             			<thead>
 						<tr>
 							<th colspan="2" style="text-align:left;">
             					<h4>
-            						<?php echo Text::_('Categories'); ?><span class="xbpl20 xbnit">(all content categories, including unused)</span>
+            						<?php echo Text::_('Categories'); ?><span class="xbpl20 xbnit">(<?php echo Text::_('all content categories, including unused'); ?>)</span>
             					</h4>
 							</th>
 							<th colspan="2">
@@ -84,10 +88,10 @@ $userId = $user->get('id');
 						</tr>
 						</thead>
 						<tr>
-							<td>uncategorised articles</td>
-							<td><span class="badge <?php echo $this->artcnts['uncat']>0 ?'badge-yellow' : ''; ?>"><?php echo $this->artcnts['uncat']; ?></td>
-							<td>articles with no category <span class="">(error)</span></td>
-							<td><span class="badge <?php echo $this->artcnts['nocat']>0 ?'badge-red' : ''; ?><?php echo $this->artcnts['nocat']; ?></td>
+							<td><?php echo Text::_('Uncategorised articles'); ?></td>
+							<td><span class="badge <?php echo $this->artcnts['uncat']>0 ?'badge-yellow' : ''; ?>"><?php echo $this->artcnts['uncat']; ?></span></td>
+							<td><?php echo Text::_('Articles with no category'); ?> (<span class="xbred"><?php echo Text::_('error'); ?></span>)</td>
+							<td><span class="badge <?php echo $this->artcnts['nocat']>0 ?'badge-red' : ''; ?>"><?php echo $this->artcnts['nocat']; ?></span></td>
 						</tr>
 					</table>
 				</div>
@@ -103,7 +107,7 @@ $userId = $user->get('id');
 						<tr>
 							<th colspan="2" style="text-align:left;">
             					<h4>
-            						<?php echo Text::_('Tags'); ?><span class="xbpl20 xbnit">(all tags, including ones only used in other components)</span>
+            						<?php echo Text::_('Tags'); ?><span class="xbpl20 xbnit">(<?php echo Text::_('all tags, including ones only used in other components'); ?>)</span>
             					</h4>
 							</th>
 							<th colspan="2">
@@ -112,12 +116,12 @@ $userId = $user->get('id');
 						</tr>
 						</thead>
 						<tr>
-							<td>distinct tags used in articles</td>
-							<td><span class="badge <?php echo $this->tagcnts['tagsused']>0 ?'badge-cyan' : ''; ?>e"><?php echo $this->tagcnts['tagsused']; ?></span></td>
+							<td><?php echo Text::_('Tags used in articles'); ?></td>
+							<td><span class="badge <?php echo $this->tagcnts['tagsused']>0 ?'badge-cyan' : ''; ?>"><?php echo $this->tagcnts['tagsused']; ?></span></td>
 						</tr>						
 						<tr>
-							<td>articles with 1 or more tags</td>
-							<td><span class="badge <?php echo $this->artcnts['tagged']>0 ?'badge-info' : ''; ?>"><?php echo $this->artcnts['tagged']; ?></td>
+							<td><?php echo Text::_('Articles with tags'); ?></td>
+							<td><span class="badge <?php echo $this->artcnts['tagged']>0 ?'badge-info' : ''; ?>"><?php echo $this->artcnts['tagged']; ?></span></td>
 						</tr>
 					</table>
 				</div>
@@ -125,9 +129,9 @@ $userId = $user->get('id');
 				<div class="xbbox gradblue">
 					<table class="xbwp100">
             			<colgroup>
-            				<col style="width:40%;"><!-- ordering -->
-            				<col style="width:10%;"><!-- checkbox -->
-            				<col style="width:40%;"><!-- status -->
+            				<col style="width:40%;"><!--  -->
+            				<col style="width:10%;"><!--  -->
+            				<col style="width:40%;"><!--  -->
             				<col ><!-- title, -->
             			</colgroup>
             			<thead>
@@ -142,13 +146,13 @@ $userId = $user->get('id');
 						</tr>
 						</thead>
 						<tr>
-							<td>articles with images in-content</td>
-							<td><span class="badge <?php echo $this->artcnts['embimaged']>0 ?'badge-info' : ''; ?>"><?php echo $this->artcnts['embimaged']; ?></td>
-							<td>images used in articles</td>
-							<td><span class="badge <?php echo $this->imgagecnts['embed']>0 ?'badge-ltblue' : ''; ?>"><?php echo $this->imagecnts['embed']; ?></td>
+							<td><?php echo Text::_('Articles with images in-content'); ?></td>
+							<td><span class="badge <?php echo $this->artcnts['embimaged']>0 ?'badge-info' : ''; ?>"><?php echo $this->artcnts['embimaged']; ?></span></td>
+							<td><?php echo Text::_('Images used in articles'); ?></td>
+							<td><span class="badge <?php echo $this->imgagecnts['embed']>0 ?'badge-ltblue' : ''; ?>"><?php echo $this->imagecnts['embed']; ?></span></td>
 						</tr>
 						<tr>
-							<td>articles using the related image fields</td>
+							<td><?php echo Text::_('Articles using the related image fields'); ?></td>
 							<td><span class="badge <?php echo $this->imagecnts['related']>0 ?'badge-ltmag' : ''; ?>"><?php echo $this->imagecnts['related']; ?></span></td>
 							<td></td><td></td>
 						</tr>
@@ -158,41 +162,61 @@ $userId = $user->get('id');
 				<div class="xbbox gradyellow">
 					<table class="xbwp100">
             			<colgroup>
-            				<col style="width:40%;"><!-- ordering -->
-            				<col style="width:10%;"><!-- checkbox -->
-            				<col style="width:40%;"><!-- status -->
+            				<col style="width:40%;"><!--  -->
+            				<col style="width:10%;"><!--  -->
+            				<col style="width:40%;"><!--  -->
             				<col ><!-- title, -->
             			</colgroup>
             			<thead>
+    						<tr>
+    							<th colspan="2" style="text-align:left;">
+                					<h4>
+                						<?php echo Text::_('Articles with Links'); ?><span class="xbpl20 xbnit"></span>
+                					</h4>
+    							</th>
+    							<th>
+    								<span class="xbit xbpr10"><?php echo Text::_('in content'); ?></span>
+    								<span class="badge <?php echo $this->artcnts['emblinked']>0 ?'badge-drkcyan' : ''; ?> xbpr20">
+    									<?php echo Text::_('XB_TOTAL').' '. $this->artcnts['emblinked']; ?>
+    								</span> 
+    								<span class="xbit xbpr10"><?php echo Text::_('related links'); ?></span>
+    								<span class="badge <?php echo $this->artcnts['rellinked']>0 ?'badge-drkcyan' : ''; ?>">
+    									<?php echo Text::_('XB_TOTAL').' '. $this->artcnts['rellinked']; ?>
+    								</span> 
+    							</th>
+    						</tr>
+						</thead>
+						<tbody>
 						<tr>
-							<th colspan="2" style="text-align:left;">
-            					<h4>
-            						<?php echo Text::_('Links'); ?><span class="xbpl20 xbnit"></span>
-            					</h4>
-							</th>
-							<th colspan="2">
-								<span class="badge <?php echo $this->linkcnts['published']>0 ?'badge-drkcyan' : ''; ?>"><?php echo Text::_('XB_TOTAL').' '. $this->linkcnts['totLinks']; ?></span> 
-							</th>
+							<td><?php echo Text::_('Total embedded links'); ?></td>
+							<td><span class="badge <?php echo $this->linkcnts['totLinked']>0 ?'badge-info' : ''; ?>">
+								<?php echo $this->linkcnts['totLinked']; ?>
+							</span></td>
+							<td></td><td></td>
 						</tr>
 						<tr>
-							<td>articles with links in content</td>
-							<td><span class="badge <?php echo $this->artcnts['emblinked']>0 ?'badge-info' : ''; ?>"><?php echo $this->artcnts['emblinked']; ?></td>
-							<td>articles with related links</td>
-							<td><span class="badge <?php echo $this->artcnts['rellinked']>0 ?'badge-ltmag' : ''; ?>"><?php echo $this->artcnts['rellinked']; ?></td>
+							<td><?php echo Text::_('Local Links'); ?></td>
+							<td><span class="badge <?php echo $this->linkcnts['localLinks']>0 ?'badge-ltgreen' : ''; ?>"><?php echo $this->linkcnts['localLinks']; ?></span></td>
+							<td><?php echo Text::_('External Links'); ?></td>
+							<td><span class="badge <?php echo $this->linkcnts['extLinks']>0 ?'badge-aoy' : ''; ?>"><?php echo $this->linkcnts['extLinks']; ?></span></td>
 						</tr>
 						<tr>
-							<td>Local Links found in articles</td>
-							<td><span class="badge <?php echo $this->linkcnts['locallinks']>0 ?'badge-ltgreen' : ''; ?>"><?php echo $this->linkcnts['localLinks']; ?></span></td>
-							<td>External Links found in articles</td>
-							<td><span class="badge <?php echo $this->linkcnts['extlinks']>0 ?'badge-aoy' : ''; ?>"><?php echo $this->linkcnts['extLinks']; ?></span></td>
-						</tr>
-						<tr>
-							<td>Anchor targets in articles</td>
+							<td><?php echo Text::_('Anchor targets in articles'); ?></td>
 							<td><span class="badge <?php echo $this->linkcnts['pageTargs']>0 ?'badge-black' : ''; ?>"><?php echo $this->linkcnts['pageTargs']; ?></span></td>
-							<td>Other Link types in articles</td>
+							<td><?php echo Text::_('In-page links'); ?></td>
+							<td><span class="badge <?php echo $this->linkcnts['pageLinks']>0 ?'badge-black' : ''; ?>"><?php echo $this->linkcnts['pageLinks']; ?></span></td>
+						</tr>
+						<tr>
+							<td><?php echo Text::_('Other Link types in articles'); ?></td>
 							<td><span class="badge <?php echo $this->linkcnts['others']>0 ?'badge-grey' : ''; ?>"><?php echo $this->linkcnts['others']; ?></span></td>
 						</tr>
-						</thead>
+						<tr>
+							<td><?php echo Text::_('Articles with related links'); ?></td>
+							<td><span class="badge <?php echo $this->artcnts['rellinked']>0 ?'badge-ltmag' : ''; ?>"><?php echo $this->artcnts['rellinked']; ?></span></td>
+														<td></td><td></td>
+							
+						</tr>
+						</tbody>
 					</table>
 				</div>
 
@@ -200,9 +224,9 @@ $userId = $user->get('id');
 				<div class="xbbox gradpink">
 					<table class="xbwp100">
             			<colgroup>
-            				<col style="width:40%;"><!-- ordering -->
-            				<col style="width:10%;"><!-- checkbox -->
-            				<col style="width:40%;"><!-- status -->
+            				<col style="width:40%;"><!--  -->
+            				<col style="width:10%;"><!--  -->
+            				<col style="width:40%;"><!--  -->
             				<col ><!-- title, -->
             			</colgroup>
             			<thead>
@@ -217,8 +241,8 @@ $userId = $user->get('id');
 							</th>
 						</tr>
 						<tr>
-							<td colspan="2">Distinct shortcodes used in articles</td>
-							<td colspan="2"><span class="badge <?php echo $this->artcnts['uniquescs']>0 ?'badge-orange' : ''; ?>"><?php echo $this->scodecnts['uniquescs']; ?></span></td>
+							<td colspan="2"><?php echo Text::_('Distinct shortcodes used in articles'); ?></td>
+							<td colspan="2"><span class="badge <?php echo $this->scodecnts['uniquescs']>0 ?'badge-orange' : ''; ?>"><?php echo $this->scodecnts['uniquescs']; ?></span></td>
 						</tr>
 						</thead>
 					</table>

@@ -2,7 +2,7 @@
 /*******
  * @package xbArticleManager
  * file administrator/components/com_xbarticleman/controller.php
- * @version 2.1.0.0 19th November 2023
+ * @version 2.1.0.0 23rd November 2023
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2019
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
@@ -13,7 +13,7 @@ use Joomla\CMS\Router\Route;
  
 class XbarticlemanController extends JControllerLegacy {
 
-    protected $default_view = 'arttags';
+    protected $default_view = 'dashboard';
 	
 	public function __construct($config = array())
 	{	    
