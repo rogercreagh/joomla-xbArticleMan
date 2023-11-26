@@ -161,7 +161,7 @@ green and blue are used for categories and tags
 	background-color: #ffffff !important;
 }
 .badge-ltgrey, .label-ltgrey {
-	background-color: #cccccc !important;
+	background-color: #ccc !important;
 }
 .badge-grey, .label-grey {
 	background-color: #777777 !important;
@@ -211,9 +211,9 @@ green and blue are used for categories and tags
 .gradyellow { background-image: linear-gradient(#ffffff, #ffffaf); }
 .gradgreen, .gradcat { background-image: linear-gradient(#ffffff,#ccffcc); }
 .gradcyan { background-image: linear-gradient(#ffffff,#8fffff); }
-.gradblue, .gradtag { background-image: linear-gradient(#ffffff,#d7dcff); }
+.gradblue, .gradtag { background-image: linear-gradient(#ffffff,#7a7aff); }
 .gradmag { background-image: linear-gradient(#ffffff,#ffc0ff); }
-.gradgrey { background-image: linear-gradient(#ffffff,#cccccc); }
+.gradgrey { background-image: linear-gradient(#ffffff,#dddddd); }
 
 /* vertical scrolling for boxes - use with max-height (.xbmhxxx) */
 .xbyscroll {
