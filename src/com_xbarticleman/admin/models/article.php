@@ -10,12 +10,18 @@
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\Filter\InputFilter;
+use Joomla\CMS\Filter\OutputFilter;
+use Joomla\CMS\Form\Form;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\Helper\TagsHelper;
+use Joomla\CMS\Table\Table;
 use Joomla\Registry\Registry;
 use Joomla\Utilities\ArrayHelper;
 use Joomla\CMS\MVC\Model\AdminModel;
-
-//JLoader::register('XbarticlemanHelper', JPATH_ADMINISTRATOR . '/components/com_xbarticleman/helpers/xbarticleman.php');
+use Joomla\CMS\UCM\UCMType;
+use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\CMS\String\PunycodeHelper;
 
 class XbarticlemanModelArticle extends AdminModel
 {
@@ -53,7 +59,7 @@ class XbarticlemanModelArticle extends AdminModel
     	            $message .= ' '.$pk;
 	            }
 	        } else {
-	            $this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
+	            $this->setError(Text::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
 	            return false;
 	        }
 	        Factory::getApplication()->enqueueMessage($message);
@@ -130,10 +136,10 @@ class XbarticlemanModelArticle extends AdminModel
 		if (empty($this->batchSet))
 		{
 			// Set some needed variables.
-			$this->user = JFactory::getUser();
+			$this->user = Factory::getUser();
 			$this->table = $this->getTable();
 			$this->tableClassName = get_class($this->table);
-			$this->contentType = new JUcmType;
+			$this->contentType = new UcmType;
 			$this->type = $this->contentType->getTypeByTable($this->tableClassName);
 		}
 
@@ -144,7 +150,7 @@ class XbarticlemanModelArticle extends AdminModel
 			return false;
 		}
 
-		JPluginHelper::importPlugin('system');
+		PluginHelper::importPlugin('system');
 		$dispatcher = JEventDispatcher::getInstance();
 
 		// Register FieldsHelper
@@ -155,7 +161,7 @@ class XbarticlemanModelArticle extends AdminModel
 		{
 			if (!$this->user->authorise('core.edit', $contexts[$pk]))
 			{
-				$this->setError(JText::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
+				$this->setError(Text::_('JLIB_APPLICATION_ERROR_BATCH_CANNOT_EDIT'));
 
 				return false;
 			}
@@ -173,7 +179,7 @@ class XbarticlemanModelArticle extends AdminModel
 				else
 				{
 					// Not fatal error
-					$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
+					$this->setError(Text::sprintf('JLIB_APPLICATION_ERROR_BATCH_MOVE_ROW_NOT_FOUND', $pk));
 					continue;
 				}
 			}
@@ -243,7 +249,7 @@ class XbarticlemanModelArticle extends AdminModel
 				return false;
 			}
 
-			return JFactory::getUser()->authorise('core.delete', 'com_xbarticleman.article.' . (int) $record->id);
+			return Factory::getUser()->authorise('core.delete', 'com_xbarticleman.article.' . (int) $record->id);
 		}
 
 		return false;
@@ -260,7 +266,7 @@ class XbarticlemanModelArticle extends AdminModel
 	 */
 	protected function canEditState($record)
 	{
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 
 		// Check for existing article.
 		if (!empty($record->id))
@@ -292,7 +298,7 @@ class XbarticlemanModelArticle extends AdminModel
 		// Set the publish date to now
 		if ($table->state == 1 && (int) $table->publish_up == 0)
 		{
-			$table->publish_up = JFactory::getDate()->toSql();
+			$table->publish_up = Factory::getDate()->toSql();
 		}
 
 		if ($table->state == 1 && intval($table->publish_down) == 0)
@@ -321,7 +327,7 @@ class XbarticlemanModelArticle extends AdminModel
 	 */
 	public function getTable($type = 'Content', $prefix = 'JTable', $config = array())
 	{
-		return JTable::getInstance($type, $prefix, $config);
+		return Table::getInstance($type, $prefix, $config);
 	}
 
 	/**
@@ -355,7 +361,7 @@ class XbarticlemanModelArticle extends AdminModel
 
 			if (!empty($item->id))
 			{
-				$item->tags = new JHelperTags;
+				$item->tags = new TagsHelper;
 				$item->tags->getTagIds($item->id, 'com_content.article');
 			}
 		}
@@ -383,7 +389,7 @@ class XbarticlemanModelArticle extends AdminModel
 			return false;
 		}
 
-		$jinput = JFactory::getApplication()->input;
+		$jinput = Factory::getApplication()->input;
 
 		/*
 		 * The front end calls this model and uses a_id to avoid id clashes so we need to check for that first.
@@ -408,7 +414,7 @@ class XbarticlemanModelArticle extends AdminModel
 			$form->setFieldAttribute('catid', 'action', 'core.create');
 		}
 
-		$user = JFactory::getUser();
+		$user = Factory::getUser();
 
 		// Check for existing article.
 		// Modify the form based on Edit State access controls.
@@ -444,7 +450,7 @@ class XbarticlemanModelArticle extends AdminModel
 	protected function loadFormData()
 	{
 		// Check the session for previously entered form data.
-		$app  = JFactory::getApplication();
+		$app  = Factory::getApplication();
 		$data = $app->getUserState('com_xbarticleman.edit.article.data', array());
 
 		if (empty($data))
@@ -465,7 +471,7 @@ class XbarticlemanModelArticle extends AdminModel
 				$data->set('catid', $app->input->getInt('catid', (!empty($filters['category_id']) ? $filters['category_id'] : null)));
 				$data->set('language', $app->input->getString('language', (!empty($filters['language']) ? $filters['language'] : null)));
 				$data->set('access',
-					$app->input->getInt('access', (!empty($filters['access']) ? $filters['access'] : JFactory::getConfig()->get('access')))
+					$app->input->getInt('access', (!empty($filters['access']) ? $filters['access'] : Factory::getConfig()->get('access')))
 				);
 			}
 		}
@@ -497,7 +503,7 @@ class XbarticlemanModelArticle extends AdminModel
 	public function validate($form, $data, $group = null)
 	{
 		// Don't allow to change the users if not allowed to access com_users.
-		if (JFactory::getApplication()->isClient('administrator') && !JFactory::getUser()->authorise('core.manage', 'com_users'))
+		if (Factory::getApplication()->isClient('administrator') && !Factory::getUser()->authorise('core.manage', 'com_users'))
 		{
 			if (isset($data['created_by']))
 			{
@@ -524,8 +530,8 @@ class XbarticlemanModelArticle extends AdminModel
 	 */
 	public function save($data)
 	{
-		$input  = JFactory::getApplication()->input;
-		$filter = JFilterInput::getInstance();
+		$input  = Factory::getApplication()->input;
+		$filter = InputFilter::getInstance();
 
 		if (isset($data['metadata']) && isset($data['metadata']['author']))
 		{
@@ -583,7 +589,7 @@ class XbarticlemanModelArticle extends AdminModel
 					}
 					else
 					{
-						$data['urls'][$i] = JStringPunycode::urlToPunycode($url);
+					    $data['urls'][$i] = PunycodeHelper::urlToPunycode($url);
 					}
 				}
 			}
@@ -601,20 +607,20 @@ class XbarticlemanModelArticle extends AdminModel
 		{
 			if ($data['alias'] == null)
 			{
-				if (JFactory::getConfig()->get('unicodeslugs') == 1)
+				if (Factory::getConfig()->get('unicodeslugs') == 1)
 				{
-					$data['alias'] = JFilterOutput::stringURLUnicodeSlug($data['title']);
+					$data['alias'] = OutputFilter::stringURLUnicodeSlug($data['title']);
 				}
 				else
 				{
-					$data['alias'] = JFilterOutput::stringURLSafe($data['title']);
+					$data['alias'] = OutputFilter::stringURLSafe($data['title']);
 				}
 
-				$table = JTable::getInstance('Content', 'JTable');
+				$table = Table::getInstance('Content', 'JTable');
 
 				if ($table->load(array('alias' => $data['alias'], 'catid' => $data['catid'])))
 				{
-					$msg = JText::_('COM_CONTENT_SAVE_WARNING');
+					$msg = Text::_('XBARTMAN_SAVE_WARNING');
 				}
 
 				list($title, $alias) = $this->generateNewTitle($data['catid'], $data['alias'], $data['title']);
@@ -622,7 +628,7 @@ class XbarticlemanModelArticle extends AdminModel
 
 				if (isset($msg))
 				{
-					JFactory::getApplication()->enqueueMessage($msg, 'warning');
+					Factory::getApplication()->enqueueMessage($msg, 'warning');
 				}
 			}
 		}
@@ -666,7 +672,7 @@ class XbarticlemanModelArticle extends AdminModel
 	 *
 	 * @since   3.0
 	 */
-	protected function preprocessForm(JForm $form, $data, $group = 'content')
+	protected function preprocessForm(Form $form, $data, $group = 'content')
 	{
 		if ($this->canCreateCategory())
 		{
@@ -707,7 +713,7 @@ class XbarticlemanModelArticle extends AdminModel
 	 */
 	private function canCreateCategory()
 	{
-		return JFactory::getUser()->authorise('core.create', 'com_xbarticleman');
+		return Factory::getUser()->authorise('core.create', 'com_xbarticleman');
 	}
 
 	/**

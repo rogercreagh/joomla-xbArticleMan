@@ -17,10 +17,6 @@ use Joomla\CMS\Layout\LayoutHelper;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Helper\TagsHelper;
 use Joomla\Registry\Registry;
-//use Joomla\Utilities\ArrayHelper;
-
-//JLoader::register('XbarticlemanHelper', JPATH_ADMINISTRATOR . '/components/com_xbarticleman/helpers/xbarticleman.php');
-//JLoader::register('ContentHelperRoute', JPATH_SITE . '/components/com_content/helpers/route.php');
 
 HTMLHelper::_('bootstrap.tooltip');
 HTMLHelper::_('behavior.multiselect');
@@ -71,20 +67,20 @@ if ($saveOrder)
 <?php else : ?>
 	<div id="j-main-container">
 <?php endif; ?>
-		<h3><?php echo Text::_('Article Images')?></h3>
-		<h4><?php echo Text::_('Total articles').' '.$this->totalarticles.'. '.Text::_('Listing').' '.$this->statearticles.' '.Text::_('articles').' '.$this->statefilt; ?></h4>
+		<h3><?php echo Text::_('XBARTMAN_ARTICLE_IMAGES')?></h3>
+		<h4><?php echo Text::_('XBARTMAN_TOTAL_ARTICLES').' '.$this->totalarticles.'. '.Text::_('XB_LISTING').' '.$this->statearticles.' '.lcfirst(Text::_('XB_ARTICLES')).' '.$this->statefilt; ?></h4>
 		<p> 
     	<?php if (array_key_exists('artlist', $this->activeFilters)) {
-    	    echo Text::_('Filtered to show').' '.$this->pagination->total.' ';
+    	    echo Text::_('XBARTMAN_FILTERED_TO_SHOW').' '.$this->pagination->total.' ';
     	    $prompts = array('articles','articles with &lt;img&gt; tags.','articles with Intro or Fulltext images.','articles with &lt;img&gt; tags or Intro or Fulltext images.'
     	        ,'articles with no &lt;img&gt; tags.','articles with no Intro or Fulltext images.','articles with no images (Intro, Fulltext, or &lt;img&gt; tags).');
     	    if ($this->activeFilters['artlist'] > 0) {
     	        echo Text::_($prompts[$this->activeFilters['artlist']]);
     	    } else {
-    	        echo Text::_('articles');
+    	        echo lcfirst(Text::_('XB_ARTICLES'));
     	    }
     	} else {
-    	    echo Text::_('showing all').' '.$this->statearticles.' '.Text::_('articles');
+    	    echo Text::_('XBARTMAN_SHOWING_ALL').' '.$this->statearticles.' '.lcfirst(Text::_('XB_ARTICLES'));
     	}
         ?>
         </p>
@@ -140,13 +136,13 @@ if ($saveOrder)
 						<th>
 							<?php echo HTMLHelper::_('searchtools.sort', 'JGLOBAL_TITLE', 'a.title', $listDirn, $listOrder); ?>
 							<span class="xbnorm xbo9">(edit) (pv) |</span>  alias <span class="xbnorm xb09"> | </span>
-							<?php echo HTMLHelper::_('searchtools.sort', 'Category', 'category_title', $listDirn, $listOrder); ?>							
+							<?php echo HTMLHelper::_('searchtools.sort', 'XB_CATEGORY', 'category_title', $listDirn, $listOrder); ?>							
 						</th>
 						<th>
-							<?php echo Text::_('In-article Images'); ?>
+							<?php echo Text::_('XBARTMAN_INART_IMAGES'); ?>
 						</th>
 						<th>
-							<?php echo Text::_('Article Intro & Full images'); ?>
+							<?php echo Text::_('XBARTMAN_ARTICLE_INTRO_FULL_IMAGES'); ?>
 						</th>
 						<th>
 							<?php echo HTMLHelper::_('searchtools.sort', 'XBARTMAN_HEADING_DATE_' . strtoupper($orderingColumn), 'a.' . $orderingColumn, $listDirn, $listOrder); ?>
@@ -171,13 +167,13 @@ if ($saveOrder)
 						<th>
 							<?php echo HTMLHelper::_('searchtools.sort', 'JGLOBAL_TITLE', 'a.title', $listDirn, $listOrder); ?>
 							<span class="xbnorm xbo9">(edit) (pv) |</span>  alias <span class="xbnorm xb09"> | </span>
-							<?php echo HTMLHelper::_('searchtools.sort', 'Category', 'category_title', $listDirn, $listOrder); ?>							
+							<?php echo HTMLHelper::_('searchtools.sort', 'XB_CATEGORY', 'category_title', $listDirn, $listOrder); ?>							
 						</th>
 						<th>
-							<?php echo Text::_('In-article Images'); ?>
+							<?php echo Text::_('XBARTMAN_INART_IMAGES'); ?>
 						</th>
 						<th>
-							<?php echo Text::_('Intro & Fulltext images'); ?>
+							<?php echo Text::_('XBARTMAN_INTRO_FULL_IMAGES'); ?>
 						</th>
 						<th>
 							<?php echo HTMLHelper::_('searchtools.sort', 'XBARTMAN_HEADING_DATE_' . strtoupper($orderingColumn), 'a.' . $orderingColumn, $listDirn, $listOrder); ?>
@@ -252,11 +248,11 @@ if ($saveOrder)
 								<?php if ($canEdit || $canEditOwn) : ?>
 									<a class="hasTooltip" href="
 									<?php echo Route::_('index.php?option=com_xbarticleman&task=article.edit&id=' . $item->id).'&retview=artimgs';?>
-									" title="<?php echo Text::_('quick edit (not content)'); ?>">
+									" title="<?php echo Text::_('XBARTMAN_QUICK_EDIT'); ?>">
 										<?php echo $this->escape($item->title); ?></a> 
 									<a class="hasTooltip" href="
 									<?php echo Route::_('index.php?option=com_content&task=article.edit&id=' . $item->id);?>
-									" title="<?php echo Text::_('Full edit'); ?>" >										
+									" title="<?php echo Text::_('XBARTMAN_FULL_EDIT'); ?>" >										
 										<span class="icon-edit xbpl10"></span></a>
 								<?php else : ?>
 									<span title="<?php echo Text::sprintf('JFIELD_ALIAS_LABEL', $this->escape($item->alias)); ?>"><?php echo $this->escape($item->title); ?></span>
@@ -434,7 +430,7 @@ if ($saveOrder)
 					'bootstrap.renderModal',
 					'collapseModal',
 					array(
-						'title'  => Text::_('COM_CONTENT_BATCH_OPTIONS'),
+						'title'  => Text::_('XBARTMAN_BATCH_OPTIONS'),
 						'footer' => $this->loadTemplate('batch_footer'),
 					    'modalWidth' => '50',
 					),
@@ -446,7 +442,7 @@ if ($saveOrder)
 				'bootstrap.renderModal',
 				'pvModal',
 				array(
-					'title'  => Text::_('Article Preview'),
+					'title'  => Text::_('XBARTMAN_ARTICLE_PREVIEW'),
 					'footer' => '',
 				    'height' => '900vh',
 				    'bodyHeight' => '90',

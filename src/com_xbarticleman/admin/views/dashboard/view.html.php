@@ -10,6 +10,7 @@
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\MVC\View\HtmlView;
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Installer\Installer;
 use Joomla\CMS\Language\Text;
@@ -17,7 +18,7 @@ use Joomla\CMS\Layout\FileLayout;
 use Joomla\CMS\Toolbar\Toolbar;
 use Joomla\CMS\Toolbar\ToolbarHelper;
 
-class XbarticlemanViewDashboard extends JViewLegacy {
+class XbarticlemanViewDashboard extends HtmlView {
     
     public function display($tpl = null) {    
  

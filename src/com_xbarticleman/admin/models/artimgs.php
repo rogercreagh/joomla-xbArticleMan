@@ -10,10 +10,12 @@
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\Utilities\ArrayHelper;
 use Joomla\CMS\Uri\Uri;
+use Joomla\CMS\Table\Table;
 
-class XbarticlemanModelArtimgs extends JModelList
+class XbarticlemanModelArtimgs extends ListModel
 {
     public function __construct($config = array())
     {
@@ -224,7 +226,7 @@ class XbarticlemanModelArtimgs extends JModelList
 		if (count($categoryId))
 		{
 		    $categoryId = ArrayHelper::toInteger($categoryId);
-		    $categoryTable = JTable::getInstance('Category', 'JTable');
+		    $categoryTable = Table::getInstance('Category', 'JTable');
 		    $subCatItemsWhere = array();
 		    
 		    foreach ($categoryId as $filter_catid)

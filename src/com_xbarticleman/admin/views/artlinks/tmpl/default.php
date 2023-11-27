@@ -83,20 +83,20 @@ Factory::getDocument()->addScriptDeclaration('function pleaseWait(targ) {
               </tr>
           </table>
     	</div>
-		<h3><?php echo Text::_('Article Links')?></h3>
-		<h4><?php echo Text::_('Total articles').' '.$this->totalarticles.'. '.Text::_('Listing').' '.$this->statearticles.' '.Text::_('articles').' '.$this->statefilt; ?></h4>
+		<h3><?php echo Text::_('XBARTMAN_ARTICLE_LINKS')?></h3>
+		<h4><?php echo Text::_('XBARTMAN_TOTAL_ARTICLES').' '.$this->totalarticles.'. '.Text::_('XB_LISTING').' '.$this->statearticles.' '.lcfirst(Text::_('XB_ARTICLES')).' '.$this->statefilt; ?></h4>
 		<p> 
     	<?php if (array_key_exists('artlist', $this->activeFilters)) {
-    	    echo Text::_('Filtered to show').' '.$this->pagination->total.' ';
+    	    echo Text::_('XBARTMAN_FILTERED_TO_SHOW').' '.$this->pagination->total.' ';
     	    $prompts = array('articles','articles with embedded links.','articles with related links (ABC).','articles with Embedded or Related links.'
     	        ,'articles with no Embedded links.','articles with no Related links.','articles with no links (embedded or related).');
     	    if ($this->activeFilters['artlist'] > 0) {
     	        echo Text::_($prompts[$this->activeFilters['artlist']]);
     	    } else {
-    	        echo Text::_('articles');
+    	        echo lcfirst(Text::_('XB_ARTICLES'));
     	    }
     	} else {
-    	    echo Text::_('showing all').' '.$this->statearticles.' '.Text::_('articles');
+    	    echo Text::_('XBARTMAN_SHOWING_ALL').' '.$this->statearticles.' '.lcfirst(Text::_('XB_ARTICLES'));
     	}
         ?>
         </p>
@@ -142,7 +142,7 @@ Factory::getDocument()->addScriptDeclaration('function pleaseWait(targ) {
     		<p>              
                 <?php echo 'Sorted by '.$listOrder.' '.$listDirn ; ?>
     		</p>
-            <p><center>Auto close details dropdowns <input  type="checkbox" id="autoclose" name="autoclose" value="yes" checked="true" style="margin:0 5px;" /></center></p>
+            <p><center><?php echo Text::_('XBARTMAN_AUTOCLOSE_DROPS'); ?> <input  type="checkbox" id="autoclose" name="autoclose" value="yes" checked="true" style="margin:0 5px;" /></center></p>
 			
 			<table class="table table-striped table-hover" id="articleList">
 			<colgroup>
@@ -440,7 +440,7 @@ Factory::getDocument()->addScriptDeclaration('function pleaseWait(targ) {
 					'bootstrap.renderModal',
 					'collapseModal',
 					array(
-						'title'  => Text::_('COM_CONTENT_BATCH_OPTIONS'),
+						'title'  => Text::_('XBARTMAN_BATCH_OPTIONS'),
 						'footer' => $this->loadTemplate('batch_footer'),
 					    'modalWidth' => '50',
 					),
@@ -452,7 +452,7 @@ Factory::getDocument()->addScriptDeclaration('function pleaseWait(targ) {
 				'bootstrap.renderModal',
 				'pvModal',
 				array(
-					'title'  => Text::_('Article Preview'),
+					'title'  => Text::_('XBARTMAN_ARTICLE_PREVIEW'),
 					'footer' => '',
 				    'height' => '900vh',
 				    'bodyHeight' => '90',

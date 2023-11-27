@@ -9,7 +9,13 @@
  ******/
 defined('_JEXEC') or die;
 
-class XbarticlemanViewArticle extends JViewLegacy
+use Joomla\CMS\Factory;
+use Joomla\CMS\MVC\View\HtmlView;
+use Joomla\CMS\Toolbar\Toolbar;
+use Joomla\CMS\Toolbar\ToolbarHelper;
+use Joomla\CMS\Language\Text;
+
+class XbarticlemanViewArticle extends HtmlView
 {
     protected $form;
     
@@ -41,8 +47,8 @@ class XbarticlemanViewArticle extends JViewLegacy
     
     protected function addToolbar()
     {
-        JFactory::getApplication()->input->set('hidemainmenu', true);
-        $user       = JFactory::getUser();
+        Factory::getApplication()->input->set('hidemainmenu', true);
+        $user       = Factory::getUser();
         $userId     = $user->id;
         $isNew      = ($this->item->id == 0);
         $checkedOut = !($this->item->checked_out == 0 || $this->item->checked_out == $userId);
@@ -50,8 +56,8 @@ class XbarticlemanViewArticle extends JViewLegacy
         // Built the actions for new and existing records.
         $canDo = $this->canDo;
         
-        JToolbarHelper::title(
-            JText::_('XBARTMAN_PAGE_' . ($checkedOut ? 'VIEW_ARTICLE' : 'EDIT_ARTICLE')),
+        ToolbarHelper::title(
+            Text::_('XBARTMAN_PAGE_' . ($checkedOut ? 'VIEW_ARTICLE' : 'EDIT_ARTICLE')),
             'pencil-2 article-add'
             );
         
@@ -60,14 +66,14 @@ class XbarticlemanViewArticle extends JViewLegacy
         // Can't save the record if it's checked out and editable
         if (!$checkedOut && $itemEditable)
         {
-            JToolbarHelper::apply('article.apply');
-            JToolbarHelper::save('article.save');          
+            ToolbarHelper::apply('article.apply');
+            ToolbarHelper::save('article.save');          
         }
                 
-        JToolbarHelper::cancel('article.cancel', 'JTOOLBAR_CLOSE');
+        ToolbarHelper::cancel('article.cancel', 'JTOOLBAR_CLOSE');
                 
-        JToolbarHelper::divider();
-        JToolbarHelper::help('JHELP_CONTENT_ARTICLE_MANAGER_EDIT');
+        ToolbarHelper::divider();
+        ToolbarHelper::help('JHELP_CONTENT_ARTICLE_MANAGER_EDIT');
     }
     
 }

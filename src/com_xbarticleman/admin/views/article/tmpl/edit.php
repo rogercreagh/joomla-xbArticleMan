@@ -31,10 +31,10 @@ $this->ignore_fieldsets = array('jmetadata', 'item_associations');
 $params = clone $this->state->get('params');
 $params->merge(new Registry($this->item->attribs));
 
-$app = JFactory::getApplication();
+$app = Factory::getApplication();
 $input = $app->input;
 
-JFactory::getDocument()->addScriptDeclaration('
+Factory::getDocument()->addScriptDeclaration('
 	Joomla.submitbutton = function(task)
 	{
 		if (task == "article.cancel" || document.formvalidator.isValid(document.getElementById("item-form")))
@@ -50,7 +50,7 @@ JFactory::getDocument()->addScriptDeclaration('
 
 <p><i>Use <a href="
     <?php echo Route::_('index.php?option=com_content&task=article.edit&id='.(int) $this->item->id); ?>"
-    class="btn">Content : Article Edit</a> to switch to full edit view (unsaved changes here will be lost). &nbsp;
+    class="btn"><?php echo Text::_('XBARTMAN_CONTENT_ART_EDIT'); ?></a> <?php echo Text::_('XBARTMAN_CONTENT_ART_EDIT_NOTE'); ?>. &nbsp;
 	To create new file use <a href="
 	<?php echo Route::_('index.php?option=com_content&view=article&layout=edit'); ?>" class="btn">
 	Content : Add New Article</a>
@@ -74,7 +74,7 @@ JFactory::getDocument()->addScriptDeclaration('
 	<div class="row-fluid">
 		<div class="span9">
 			<fieldset class="adminform">
-				<p><b>Article Feature Images</b></p>
+				<p><b><?php echo Text::_('XBARTMAN_ARTICLE_FEATURE_IMAGES'); ?></b></p>
 				
 				<div class="row-fluid">
     				<div class="span6">
@@ -86,7 +86,7 @@ JFactory::getDocument()->addScriptDeclaration('
     					<?php endforeach; ?>
     				</div>
 				</div>
-				<p><b>Related Items Links</b></p>
+				<p><b><?php echo Text::_('XBARTMAN_RELATED_ITEMS_LINKS'); ?></b></p>
                 <div class="row-fluid">
                 <?php $cnt = 0; ?>
 					 <?php foreach ($this->form->getGroup('urls') as $field) : ?>

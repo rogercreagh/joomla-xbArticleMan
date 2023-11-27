@@ -10,8 +10,9 @@
  defined('_JEXEC') or die();
 
 use Joomla\CMS\Router\Route;
+use Joomla\CMS\MVC\Controller\BaseController;
  
-class XbarticlemanController extends JControllerLegacy {
+class XbarticlemanController extends BaseController {
 
     protected $default_view = 'dashboard';
 	
@@ -29,7 +30,7 @@ class XbarticlemanController extends JControllerLegacy {
 		if ($view == 'article' && $layout == 'edit' && !$this->checkEditId('com_xbarticleman.edit.article', $id))
 		{
 			// Somehow the person just went to the form - we don't allow that.
-			$this->setError(JText::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $id));
+			$this->setError(Text::sprintf('JLIB_APPLICATION_ERROR_UNHELD_ID', $id));
 			$this->setMessage($this->getError(), 'error');
 			$this->setRedirect(Route::_('index.php?option=com_xbarticleman&view=dashboard', false));
 

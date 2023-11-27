@@ -13,11 +13,12 @@ defined('_JEXEC') or die();
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\MVC\Controller\BaseController;
 use Joomla\CMS\Uri\Uri;
 
 if (!Factory::getUser()->authorise('core.manage', 'com_xbarticleman')) 
 {
-//    throw new JAccessExceptionNotallowed(JText::_('JERROR_ALERTNOAUTHOR'), 403);
+//    throw new JAccessExceptionNotallowed(Text::_('JERROR_ALERTNOAUTHOR'), 403);
     Factory::getApplication()->enqueueMessage(Text::_('JERROR_ALERTNOAUTHOR'),'warning');
     return false;
     
@@ -33,7 +34,7 @@ if (($params->get('extlinkhint',1) == 1) || ($params->get('extlinkhint') == 3)) 
 
 JLoader::register('XbarticlemanHelper', JPATH_COMPONENT. '/helpers/xbarticleman.php');
 
-$controller = JControllerLegacy::getInstance('xbarticleman');
+$controller = BaseController::getInstance('xbarticleman');
 
 $controller->execute(Factory::getApplication()->input->get('task'));
 

@@ -10,11 +10,12 @@
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\Utilities\ArrayHelper;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Table\Table;
 
-class XbarticlemanModelArtlinks extends JModelList
+class XbarticlemanModelArtlinks extends ListModel
 {
     
     protected $extlinkcnt; 

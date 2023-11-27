@@ -10,13 +10,14 @@
  defined('_JEXEC') or die();
 
  use Joomla\CMS\Factory;
+ use Joomla\CMS\MVC\View\HtmlView;
  use Joomla\CMS\Component\ComponentHelper;
  use Joomla\CMS\Layout\FileLayout;
  use Joomla\CMS\Toolbar\Toolbar;
  use Joomla\CMS\Toolbar\ToolbarHelper;
  use Joomla\CMS\Language\Text;
  
- class XbarticlemanViewArtimgs extends JViewLegacy
+ class XbarticlemanViewArtimgs extends HtmlView
 {
     protected $items;
     protected $pagination;
@@ -78,7 +79,7 @@
 		// Get the toolbar object instance
 		$bar = Toolbar::getInstance('toolbar');
 
-		ToolbarHelper::title(JText::_('XBARTMAN_ADMIN_ARTIMGS_TITLE'), 'picture');
+		ToolbarHelper::title(Text::_('XBARTMAN_ADMIN_ARTIMGS_TITLE'), 'picture');
 
 		if ($canDo->get('core.create') || count($user->getAuthorisedCategories('com_xbarticleman', 'core.create')) > 0)
 		{
@@ -102,7 +103,7 @@
 			&& $user->authorise('cxbarticleman', 'com_xbarticleman')
 			&& $user->authorise('core.edit.state', 'com_xbarticleman'))
 		{
-			$title = JText::_('JTOOLBAR_BATCH');
+			$title = Text::_('JTOOLBAR_BATCH');
 
 			// Instantiate a new JLayoutFile instance and render the batch button
 			$layout = new FileLayout('joomla.toolbar.batch');
@@ -131,15 +132,15 @@
 	protected function getSortFields()
 	{
 		return array(
-			'a.ordering'     => JText::_('JGRID_HEADING_ORDERING'),
-			'a.state'        => JText::_('JSTATUS'),
-			'a.title'        => JText::_('JGLOBAL_TITLE'),
-			'category_title' => JText::_('JCATEGORY'),
-			'access_level'   => JText::_('JGRID_HEADING_ACCESS'),
-			'a.created_by'   => JText::_('JAUTHOR'),
-			'a.created'      => JText::_('JDATE'),
-			'a.id'           => JText::_('JGRID_HEADING_ID'),
-			'a.featured'     => JText::_('JFEATURED')
+			'a.ordering'     => Text::_('JGRID_HEADING_ORDERING'),
+			'a.state'        => Text::_('JSTATUS'),
+			'a.title'        => Text::_('JGLOBAL_TITLE'),
+			'category_title' => Text::_('JCATEGORY'),
+			'access_level'   => Text::_('JGRID_HEADING_ACCESS'),
+			'a.created_by'   => Text::_('JAUTHOR'),
+			'a.created'      => Text::_('JDATE'),
+			'a.id'           => Text::_('JGRID_HEADING_ID'),
+			'a.featured'     => Text::_('JFEATURED')
 		);
 	}
 }

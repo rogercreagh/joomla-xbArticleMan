@@ -24,8 +24,8 @@ use Joomla\Registry\Registry;
 
 HTMLHelper::_('bootstrap.tooltip');
 HTMLHelper::_('behavior.multiselect');
-HTMLHelper::_('formbehavior.chosen', '.multipleTags', null, array('placeholder_text_multiple' => JText::_('JOPTION_SELECT_TAG')));
-HTMLHelper::_('formbehavior.chosen', '.multipleCategories', null, array('placeholder_text_multiple' => JText::_('JOPTION_SELECT_CATEGORY')));
+HTMLHelper::_('formbehavior.chosen', '.multipleTags', null, array('placeholder_text_multiple' => Text::_('JOPTION_SELECT_TAG')));
+HTMLHelper::_('formbehavior.chosen', '.multipleCategories', null, array('placeholder_text_multiple' => Text::_('JOPTION_SELECT_CATEGORY')));
 HTMLHelper::_('formbehavior.chosen', 'select');
 //HTMLHelper::_('behavior.modal');
 
@@ -72,34 +72,35 @@ if ($saveOrder)
 <?php else : ?>
 	<div id="j-main-container">
 <?php endif; ?>
-		<h3><?php echo Text::_('Articles with Shortcodes')?></h3>
-		<h4> Found <?php echo count($this->sccnts); ?> distinct shortcodes across <?php echo $this->shortcodearticles; ?> articles containing shortcodes from <?php echo $this->statearticles.' '.$this->statefilt; ?> articles</h4>
+		<h3><?php echo Text::_('ABARTMAN_ARTICLE_SHORTCODES')?></h3>
+		<h4> <?php echo Text::_('XB_LISTING'); ?> <?php echo count($this->sccnts).' '.Text::_('XBARTMAN_DISTINCT_SHORTCODES').' '.$this->shortcodearticles; ?> 
+			<?php echo Text::_('XBARTMAN_ARTICLES_USING_SHORTCODES').' '.$this->statearticles.' '.$this->statefilt.' '.lcfirst(Text::_('XB_ARTICLES')); ?></h4>
     	<ul class="inline">
-    		<li><i>Counts for each shortcode:</i></li>
+    		<li><i><?php echo Text::_('XBARTMAN_COUNTS_SCODES'); ?>:</i></li>
     		<?php foreach ($this->sccnts as $key=>$cnt) : ?>
     		    <li><a href="index.php?option=com_xbarticleman&view=artscodes&sc=<?php echo $key; ?>&filter[scfilt]=<?php echo $key; ?>" 
 					 class="label label-yellow"><?php echo $key; ?> (<?php echo $cnt; ?>)</a></li>
     	<?php endforeach; ?>
     	</ul>
-       	<span class="xbnit xb09">Click shortcode above to filter this list by it.</span>
-    	<p><?php echo Text::_('List shows').' ';
+       	<span class="xbnit xb09"><?php echo Text::_('XBARTMAN_CLICK_SCODE_ABOVE'); ?>.</span>
+    	<p><?php echo Text::_('XB_LISTING').' ';
     	if (array_key_exists('artlist', $this->activeFilters)) {
     	    switch ($this->activeFilters['artlist']) {
     	    case 2:
-    	        echo $this->pagination->total.' '.Text::_('articles without shortcodes');
+    	        echo $this->pagination->total.' '.Text::_('XBARTMAN_ARTICLES_WITHOUT_SCODES');
     	       break;
     	    case 1:
-    	       echo $this->pagination->total.' '.Text::_('articles containing shortcodes');
+    	       echo $this->pagination->total.' '.lcfirst(Text::_('XBARTMAN_ARTICLES_WITH_SCODES'));
     	       break;
     	    default:
-    	       echo Text::_('all articles');
+    	       echo Text::_('XBARTMAN_ALL_ARTICLES');
     	       break;
     	   }  	    
     	} else {
-    	    echo $this->pagination->total.' '.Text::_('tagged articles');
+    	    echo $this->pagination->total.' '.Text::_('XBARTMAN_ARTICLES_WITH_SCODES');
     	} ?>
-    	 from <?php echo XbarticlemanHelper::getItemCnt('#__content'); ?> total available articles
-    	<br /><span class="xbit xb09">additional filters by status, category, and tag may be applied below</span>
+    	<?php echo Text::_('XB_FROM').' '.XbarticlemanHelper::getItemCnt('#__content').' '.lcfirst(Text::_('XBARTMAN_TOTAL_ARTICLES')); ?>
+    	<br /><span class="xbit xb09"><?php Text::_('XBARTMAN_ADD_FILTERS_BELOW'); ?></span>
 
 		<?php // Search tools bar
 		  echo LayoutHelper::render('joomla.searchtools.default', array('view' => $this));
@@ -117,7 +118,7 @@ if ($saveOrder)
 
 		<?php if (empty($this->items)) : ?>
 			<div class="alert alert-no-items">
-				<?php echo JText::_('JGLOBAL_NO_MATCHING_RESULTS'); ?>
+				<?php echo Text::_('JGLOBAL_NO_MATCHING_RESULTS'); ?>
 			</div>
 		<?php else : ?>
 			<?php $columns   = 8; 
@@ -126,7 +127,7 @@ if ($saveOrder)
     		<p>              
                 <?php echo 'Sorted by '.$listOrder.' '.$listDirn ; ?>
     		</p>
-            <p><center>Auto close details dropdowns <input  type="checkbox" id="autoclose" name="autoclose" value="yes" checked="true" style="margin:0 5px;" /></center></p>
+            <p><center><?php echo Text::_('XBARTMAN_AUTOCLOSE_DROPS'); ?> <input  type="checkbox" id="autoclose" name="autoclose" value="yes" checked="true" style="margin:0 5px;" /></center></p>
 			
 				
 			<table class="table table-striped table-hover" id="xbArticlemanShortcodesList">
@@ -157,9 +158,9 @@ if ($saveOrder)
 							<?php echo HTMLHelper::_('searchtools.sort', 'Category', 'category_title', $listDirn, $listOrder); ?>							
 						</th>
 						<th>
-							<?php echo Text::_('Summary'); ?>
+							<?php echo Text::_('XB_SUMMARY'); ?>
 						<th>
-							<?php echo Text::_('Shortcodes'); ?>
+							<?php echo Text::_('XB_SCODES'); ?>
 						</th>
 						<th>
 							<?php echo HTMLHelper::_('searchtools.sort', 'XBARTMAN_HEADING_DATE_'.strtoupper($orderingColumn), 'a.' . $orderingColumn, $listDirn, $listOrder); ?>
@@ -187,9 +188,9 @@ if ($saveOrder)
 							<?php echo HTMLHelper::_('searchtools.sort', 'Category', 'category_title', $listDirn, $listOrder); ?>							
 						</th>
 						<th>
-							<?php echo Text::_('Summary'); ?>
+							<?php echo Text::_('XB_SUMMARY'); ?>
 						<th>
-							<?php echo Text::_('Shortcodes'); ?>
+							<?php echo Text::_('XB_SCODES'); ?>
 						</th>
 						<th>
 							<?php echo HTMLHelper::_('searchtools.sort', 'XBARTMAN_HEADING_DATE_'.strtoupper($orderingColumn), 'a.' . $orderingColumn, $listDirn, $listOrder); ?>
@@ -263,11 +264,11 @@ if ($saveOrder)
 								<?php if ($canEdit || $canEditOwn) : ?>
 									<a class="hasTooltip" href="
 									<?php echo Route::_('index.php?option=com_xbarticleman&task=article.edit&id=' . $item->id).'&retview=artimgs';?>
-									" title="<?php echo Text::_('quick edit (not content)'); ?>">
+									" title="<?php echo Text::_('XBARTMAN_QUICK_EDIT'); ?>">
 										<?php echo $this->escape($item->title); ?></a> 
 									<a class="hasTooltip" href="
 									<?php echo Route::_('index.php?option=com_content&task=article.edit&id=' . $item->id);?>
-									" title="<?php echo Text::_('Full edit'); ?>">										
+									" title="<?php echo Text::_('XBARTMAN_FULL_EDIT'); ?>">										
 										<span class="icon-edit xbpl10"></span></a>
 								<?php else : ?>
 									<span title="<?php echo Text::sprintf('JFIELD_ALIAS_LABEL', $this->escape($item->alias)); ?>"><?php echo $this->escape($item->title); ?></span>
@@ -283,7 +284,7 @@ if ($saveOrder)
 									<?php
 									$ParentCatUrl = Route::_('index.php?option=com_categories&task=category.edit&id=' . $item->parent_category_id . '&extension=com_content');
 									$CurrentCatUrl = Route::_('index.php?option=com_categories&task=category.edit&id=' . $item->catid . '&extension=com_content');
-									$EditCatTxt = JText::_('JACTION_EDIT') . ' ' . JText::_('JCATEGORY');
+									$EditCatTxt = Text::_('JACTION_EDIT') . ' ' . Text::_('JCATEGORY');
 
 										if ($item->category_level != '1') :
 											     $bits = explode('/', $item->category_path);
@@ -329,7 +330,7 @@ if ($saveOrder)
 						<td class="nowrap small hidden-phone">
 							<?php
 							$date = $item->{$orderingColumn};
-							echo $date > 0 ? HTMLHelper::_('date', $date, JText::_('D d M Y')) : '-';
+							echo $date > 0 ? HTMLHelper::_('date', $date, Text::_('D d M Y')) : '-';
 							?>
 						</td>
 						<td class="hidden-phone">
@@ -347,7 +348,7 @@ if ($saveOrder)
 					'bootstrap.renderModal',
 					'collapseModal',
 					array(
-						'title'  => Text::_('COM_CONTENT_BATCH_OPTIONS'),
+						'title'  => Text::_('XBARTMAN_BATCH_OPTIONS'),
 						'footer' => $this->loadTemplate('batch_footer'),
 					    'modalWidth' => '50',
 					),
@@ -359,7 +360,7 @@ if ($saveOrder)
 				'bootstrap.renderModal',
 				'pvModal',
 				array(
-					'title'  => Text::_('Article Preview'),
+					'title'  => Text::_('XBARTMAN_ARTICLE_PREVIEW'),
 					'footer' => '',
 				    'height' => '900vh',
 				    'bodyHeight' => '90',

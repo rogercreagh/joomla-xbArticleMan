@@ -72,33 +72,34 @@ if ($saveOrder)
 <?php else : ?>
 	<div id="j-main-container">
 <?php endif; ?>
-		<h3><?php echo Text::_('Articles with Tags')?></h3>
-		<h4> Found <?php echo count($this->tagcnts); ?> distinct tags across <?php echo $this->taggedarticles; ?> tagged articles from <?php echo $this->statearticles.' '.$this->statefilt; ?> articles</h4>
+		<h3><?php echo Text::_('XBARTMAN_ARTICLES_WITH_TAGS'); ?></h3>
+		<h4><?php echo Text::_('XB_SHOWING').' '.count($this->tagcnts).' '.Text::_('XBARTMAN_DISTINCT_TAGS').' '.$this->taggedarticles; ?>
+			<?php echo Text::_('XBARTMAN_TAGGED_ARTS_FROM').' '.$this->statearticles.' '.$this->statefilt.' '.lcfirst(Text::_('XB_ARTICLES')); ?></h4>
     	<ul class="inline">
-    		<li><i>Counts for each tag:</i></li>
+    		<li><i><?php echo Text::_('XBARTMAN_COUNTS_TAGS'); ?>:</i></li>
     		<?php foreach ($this->tagcnts as $key=>$tag) : ?>
     		    <li><a href="index.php?option=com_xbarticleman&view=arttags&tagid=<?php echo $tag['tagid']; ?>&filter[tagfilt]=<?php echo $tag['tagid']; ?>" 
     		    	class="label label-tag"><?php echo $tag['title'].' ('.$tag['cnt'].')'; ?></a></li>
     		<?php endforeach; ?>
     	</ul>
-    	<span class="xbnit xb09">Click tag above to filter this list by the tag. Click tag name in list below to edit the tag</span>
-    	<p><?php echo Text::_('List shows').' ';
+    	<span class="xbnit xb09"><?php echo Text::_('XBARTMAN_CLICK_TAG_ABOVE'); ?></span>
+    	<p><?php echo Text::_('XB_LISTING').' ';
     	if (array_key_exists('artlist', $this->activeFilters)) {
     	    switch ($this->activeFilters['artlist']) {
     	    case 2:
-    	        echo $this->pagination->total.' '.Text::_('articles without tags');
+    	        echo $this->pagination->total.' '.Text::_('XBARTMAN_ARTICLES_WITHOUT_TAGS');
     	       break;
     	    case 1:
-    	       echo $this->pagination->total.' '.Text::_('tagged articles');
+    	       echo $this->pagination->total.' '.Text::_('XBARTMAN_TAGGED_ARTS');
     	       break;
     	    default:
-    	       echo Text::_('all articles');
+    	       echo Text::_('XBARTMAN_ALL_ARTICLES');
     	       break;
     	   }  	    
     	} else {
-    	    echo $this->pagination->total.' '.Text::_('tagged articles');
+    	    echo $this->pagination->total.' '.Text::_('XBARTMAN_TAGGED_ARTS');
     	} ?>
-    	<br /><span class="xbit xb09">additional filters by status, category, and tag may be applied below</span>
+    	<br /><span class="xbit xb09"><?php echo Text::_('XBARTMAN_ADD_FILTERS_BELOW'); ?></span>
 
 		<?php // Search tools bar
 		  echo LayoutHelper::render('joomla.searchtools.default', array('view' => $this));
@@ -124,7 +125,7 @@ if ($saveOrder)
     		<p>              
                 <?php echo 'Sorted by '.$listOrder.' '.$listDirn ; ?>
     		</p>
-            <p><center>Auto close details dropdowns <input  type="checkbox" id="autoclose" name="autoclose" value="yes" checked="true" style="margin:0 5px;" /></center></p>
+            <p><center><?php echo Text::_('XBARTMAN_AUTOCLOSE_DROPS'); ?> <input  type="checkbox" id="autoclose" name="autoclose" value="yes" checked="true" style="margin:0 5px;" /></center></p>
 			
 			<table class="table table-striped" id="articleList">
     			<colgroup>
@@ -153,7 +154,7 @@ if ($saveOrder)
 							<?php echo HTMLHelper::_('searchtools.sort', 'Category', 'category_title', $listDirn, $listOrder); ?>							
 						</th>
 						<th>
-							<?php echo Text::_('Tags'); ?>
+							<?php echo Text::_('XB_TAGS'); ?>
 						</th>
 						<th >
 							<?php echo HTMLHelper::_('searchtools.sort', 'XBARTMAN_HEADING_DATE_' . strtoupper($orderingColumn), 'a.' . $orderingColumn, $listDirn, $listOrder); ?>
@@ -181,7 +182,7 @@ if ($saveOrder)
 							<?php echo HTMLHelper::_('searchtools.sort', 'Category', 'category_title', $listDirn, $listOrder); ?>							
 						</th>
 						<th>
-							<?php echo Text::_('Tags'); ?>
+							<?php echo Text::_('XB_TAGS'); ?>
 						</th>
 						<th >
 							<?php echo HTMLHelper::_('searchtools.sort', 'XBARTMAN_HEADING_DATE_' . strtoupper($orderingColumn), 'a.' . $orderingColumn, $listDirn, $listOrder); ?>
@@ -254,11 +255,11 @@ if ($saveOrder)
 								<?php if ($canEdit || $canEditOwn) : ?>
 									<a class="hasTooltip" href="
 									<?php echo Route::_('index.php?option=com_xbarticleman&task=article.edit&id=' . $item->id).'&retview=artimgs';?>
-									" title="<?php echo Text::_('quick edit (not content)'); ?>">
+									" title="<?php echo Text::_('XBARTMAN_QUICK_EDIT'); ?>">
 										<?php echo $this->escape($item->title); ?></a> 
 									<a class="hasTooltip" href="
 									<?php echo Route::_('index.php?option=com_content&task=article.edit&id=' . $item->id);?>
-									" title="<?php echo Text::_('Full edit'); ?>">										
+									" title="<?php echo Text::_('XBARTMAN_FULL_EDIT'); ?>">										
 										<span class="icon-edit xbpl10"></span></a>
 								<?php else : ?>
 									<span title="<?php echo Text::sprintf('JFIELD_ALIAS_LABEL', $this->escape($item->alias)); ?>"><?php echo $this->escape($item->title); ?></span>
@@ -343,7 +344,7 @@ if ($saveOrder)
 					'bootstrap.renderModal',
 					'collapseModal',
 					array(
-						'title'  => Text::_('COM_CONTENT_BATCH_OPTIONS'),
+						'title'  => Text::_('XBARTMAN_BATCH_OPTIONS'),
 						'footer' => $this->loadTemplate('batch_footer'),
 					    'modalWidth' => '50',
 					),
@@ -355,7 +356,7 @@ if ($saveOrder)
 				'bootstrap.renderModal',
 				'pvModal',
 				array(
-					'title'  => Text::_('Article Preview'),
+					'title'  => Text::_('XBARTMAN_ARTICLE_PREVIEW'),
 					'footer' => '',
 				    'height' => '900vh',
 				    'bodyHeight' => '90',

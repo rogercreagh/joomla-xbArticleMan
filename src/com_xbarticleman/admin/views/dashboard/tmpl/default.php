@@ -116,11 +116,11 @@ $userId = $user->get('id');
 						</tr>
 						</thead>
 						<tr>
-							<td><?php echo Text::_('Tags used in articles'); ?></td>
+							<td><?php echo Text::_('XBARTMAN_TAGS_USED_ARTS'); ?></td>
 							<td><span class="badge <?php echo $this->tagcnts['tagsused']>0 ?'badge-cyan' : ''; ?>"><?php echo $this->tagcnts['tagsused']; ?></span></td>
 						</tr>						
 						<tr>
-							<td><?php echo Text::_('Articles with tags'); ?></td>
+							<td><?php echo Text::_('XBARTMAN_ARTICLES_WITH_TAGS'); ?></td>
 							<td><span class="badge <?php echo $this->artcnts['tagged']>0 ?'badge-info' : ''; ?>"><?php echo $this->artcnts['tagged']; ?></span></td>
 						</tr>
 					</table>
@@ -138,7 +138,7 @@ $userId = $user->get('id');
 						<tr>
 							<th colspan="2" style="text-align:left;">
             					<h4>
-            						<?php echo Text::_('Images'); ?><span class="xbpl20 xbnit"></span>
+            						<?php echo Text::_('XB_IMAGES'); ?><span class="xbpl20 xbnit"></span>
             					</h4>
 							</th>
 							<th colspan="2" style="text-align:left;">
@@ -146,13 +146,13 @@ $userId = $user->get('id');
 						</tr>
 						</thead>
 						<tr>
-							<td><?php echo Text::_('Articles with images in-content'); ?></td>
+							<td><?php echo Text::_('XBATRMAN_ARTICLES_CONTENT_IMAGES'); ?></td>
 							<td><span class="badge <?php echo $this->artcnts['embimaged']>0 ?'badge-info' : ''; ?>"><?php echo $this->artcnts['embimaged']; ?></span></td>
-							<td><?php echo Text::_('Images used in articles'); ?></td>
+							<td><?php echo Text::_('XBARTMAN_IMAGES_ARTICLES'); ?></td>
 							<td><span class="badge <?php echo $this->imgecnts['embed']>0 ?'badge-ltblue' : ''; ?>"><?php echo $this->imagecnts['embed']; ?></span></td>
 						</tr>
 						<tr>
-							<td><?php echo Text::_('Articles using the related image fields'); ?></td>
+							<td><?php echo Text::_('XBARTMAN_ARTICLES_WITH_IMAGE_FIELDS'); ?></td>
 							<td><span class="badge <?php echo $this->imagecnts['related']>0 ?'badge-ltmag' : ''; ?>"><?php echo $this->imagecnts['related']; ?></span></td>
 							<td></td><td></td>
 						</tr>
@@ -171,15 +171,15 @@ $userId = $user->get('id');
     						<tr>
     							<th colspan="2" style="text-align:left;">
                 					<h4>
-                						<?php echo Text::_('Articles with Links'); ?><span class="xbpl20 xbnit"></span>
+                						<?php echo Text::_('XBARTMAN_ARTICLES_WITH_LINKS'); ?><span class="xbpl20 xbnit"></span>
                 					</h4>
     							</th>
     							<th colspan="2" style="text-align:left;">
-    								<span class="xbit xbpr10"><?php echo Text::_('in content'); ?></span>
+    								<span class="xbit xbpr10"><?php echo Text::_('XBARTMAN_IN_CONTENT'); ?></span>
     								<span class="badge <?php echo $this->artcnts['emblinked']>0 ?'badge-drkcyan' : ''; ?> xbpr20">
     									<?php echo Text::_('XB_TOTAL').' '. $this->artcnts['emblinked']; ?>
     								</span> 
-    								<span class="xbit xbpr10 xbpl20"><?php echo Text::_('related links'); ?></span>
+    								<span class="xbit xbpr10 xbpl20"><?php echo Text::_('XBARTMAN_RELATED_LINKS'); ?></span>
     								<span class="badge <?php echo $this->rellinkcnts['artrellinks']>0 ?'badge-drkcyan' : ''; ?>">
     									<?php echo Text::_('XB_TOTAL').' '. $this->rellinkcnts['artrellinks']; ?>
     								</span> 
@@ -188,44 +188,44 @@ $userId = $user->get('id');
 						</thead>
 						<tbody>
 						<tr>
-							<td><b><?php echo Text::_('Total embedded links'); ?></b></td>
+							<td><b><?php echo Text::_('XBARTMAN_TOTAL_EMBEDDED_LINKS'); ?></b></td>
 							<td><span class="badge <?php echo $this->emblinkcnts['totLinks']>0 ?'badge-info' : ''; ?>">
 								<?php echo $this->emblinkcnts['totLinks']; ?>
 							</span></td>
 							<td></td><td></td>
 						</tr>
 						<tr>
-							<td><?php echo Text::_('Local Links'); ?></td>
+							<td><?php echo Text::_('XBARTMAN_LOCAL_LINKS'); ?></td>
 							<td><span class="badge <?php echo $this->emblinkcnts['localLinks']>0 ?'badge-ltgreen' : ''; ?>">
 								<?php echo $this->emblinkcnts['localLinks']; ?>
 							</span></td>
-							<td><?php echo Text::_('External Links'); ?></td>
+							<td><?php echo Text::_('XBARTMAN_EXTERNAL_LINKS'); ?></td>
 							<td><span class="badge <?php echo $this->emblinkcnts['extLinks']>0 ?'badge-yellow' : ''; ?>">
 								<?php echo $this->emblinkcnts['extLinks']; ?>
 							</span></td>
 						</tr>
 						<tr>
-							<td><?php echo Text::_('Anchor targets in articles'); ?></td>
+							<td><?php echo Text::_('XBARTMAN_ANCHOR_TARGETS'); ?></td>
 							<td><span class="badge <?php echo $this->emblinkcnts['pageTargs']>0 ?'badge-black' : ''; ?>">
 								<?php echo $this->emblinkcnts['pageTargs']; ?>
 							</span></td>
-							<td><?php echo Text::_('In-page links'); ?></td>
+							<td><?php echo Text::_('XBARTMAN_IN_PAGE_LINKS'); ?></td>
 							<td><span class="badge <?php echo $this->emblinkcnts['pageLinks']>0 ?'badge-black' : ''; ?>">
 								<?php echo $this->emblinkcnts['pageLinks']; ?>
 							</span></td>
 						</tr>
 						<tr>
-							<td><?php echo Text::_('Other Link types in articles'); ?></td>
+							<td><?php echo Text::_('XBARTMAN_OTHER_LINKS'); ?></td>
 							<td><span class="badge <?php echo $this->emblinkcnts['others']>0 ?'badge-grey' : ''; ?>">
 								<?php echo $this->emblinkcnts['others']; ?>
 							</span></td>
-							<td><?php echo Text::_('Malformed Links in articles'); ?></td>
+							<td><?php echo Text::_('XBARTMAN_MALFORMED_LINKS'); ?></td>
 							<td><span class="badge <?php echo $this->emblinkcnts['malformed']>0 ?'badge-red' : ''; ?>">
 								<?php echo $this->emblinkcnts['malformed']; ?>
 							</span></td>
 						</tr>
 						<tr>
-							<td><b><?php echo Text::_('Total related links'); ?></b></td>
+							<td><b><?php echo Text::_('XBARTMAN_TOTAL_RELATED_LINKS'); ?></b></td>
 							<td><span class="badge <?php echo $this->rellinkcnts['totrellinks']>0 ?'badge-ltmag' : ''; ?>">
 								<?php echo $this->rellinkcnts['totrellinks']; ?>
 							</span></td>
@@ -249,7 +249,7 @@ $userId = $user->get('id');
 						<tr>
 							<th colspan="2" style="text-align:left;">
             					<h4>
-            						<?php echo Text::_('Articles with Shortcodes'); ?><span class="xbpl20 xbnit"></span>
+            						<?php echo Text::_('XBARTMAN_ARTICLES_WITH_SCODES'); ?><span class="xbpl20 xbnit"></span>
             					</h4>
 							</th>
 							<th colspan="2" style="text-align:left;">
@@ -259,11 +259,11 @@ $userId = $user->get('id');
 							</th>
 						</tr>
 						<tr>
-							<td><?php echo Text::_('Distinct shortcodes used in articles'); ?></td>
+							<td><?php echo Text::_('XBARTMAN_DISTINCT_SCODES_IN_ARTICLES'); ?></td>
 							<td><span class="badge <?php echo $this->scodecnts['uniquescs']>0 ?'badge-orange' : ''; ?>">
 								<?php echo $this->scodecnts['uniquescs']; ?>
 							</span></td>
-							<td><?php echo Text::_('Total shortcodes in articles'); ?></td>
+							<td><?php echo Text::_('XBARTMAN_TOTAL_SCODES_ARTICLES'); ?></td>
 							<td><span class="badge <?php echo $this->scodecnts['totscodes']>0 ?'badge-mag' : ''; ?>">
 								<?php echo $this->scodecnts['totscodes']; ?>
 							</span></td>
@@ -286,7 +286,7 @@ $userId = $user->get('id');
                      	</p>
     				<?php echo HtmlHelper::_('bootstrap.endSlide'); ?>
 	        		<?php echo HTMLHelper::_('bootstrap.addSlide', 'slide-dashboard', Text::_('XB_KEY_CONFIG_OPTIONS'), 'keyconfig','xbaccordion'); ?>
-	        			<p><?php echo Text::_('Config (Options) Settings'); ?>:
+	        			<p><?php echo Text::_('XBARTMAN_CONFIG_SETTINGS'); ?>:
 	        			</p>
 	        			<dl class="xbdlinline">
 	        				<dt><?php echo Text::_('XB_EXTLINKS_LABEL'); ?>: </dt> 

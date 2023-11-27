@@ -17,10 +17,10 @@ use Joomla\CMS\HTML\HTMLHelper;
 <hr />
 <label id="batch-untag-lbl" for="batch-untag" class="modalTooltip" 
 	title="<?php echo HTMLHelper::_('tooltipText', 'Unset tag', 'Unset tag if set'); ?>">
-	<?php echo Text::_('Remove Tag'); ?>	
+	<?php echo Text::_('XBARTMAN_REMOVE_TAG'); ?>	
 </label>
 <select name="batch[untag]" class= "inputbox" id="batch-untag">
-	<option value=""><?php echo JText::_('JLIB_HTML_BATCH_TAG_NOCHANGE'); ?></option>
+	<option value=""><?php echo Text::_('JLIB_HTML_BATCH_TAG_NOCHANGE'); ?></option>
 	<?php echo HTMLHelper::_('select.options', HTMLHelper::_('tag.tags', array('filter.published' => array(1))), 'value', 'text'); ?>
 </select>
 </fieldset>

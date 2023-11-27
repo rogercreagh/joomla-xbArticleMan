@@ -10,7 +10,9 @@
 // No direct access to this file
 defined('_JEXEC') or die;
 
-class XbarticlemanControllerDashboard extends JControllerAdmin {
+use Joomla\CMS\MVC\Controller\AdminController;
+
+class XbarticlemanControllerDashboard extends AdminController {
     
     public function getModel($name = 'Dashboard', $prefix = 'XbarticlemanModel', $config = array('ignore_request' => true)) {
         $model = parent::getModel($name, $prefix, $config );

@@ -10,10 +10,11 @@
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\Utilities\ArrayHelper;
 use Joomla\CMS\Table\Table;
 
-class XbarticlemanModelArttags extends JModelList
+class XbarticlemanModelArttags extends ListModel
 {
 	public function __construct($config = array())
 	{

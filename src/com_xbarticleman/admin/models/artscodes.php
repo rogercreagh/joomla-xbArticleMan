@@ -10,10 +10,11 @@
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Factory;
+use Joomla\CMS\MVC\Model\ListModel;
 use Joomla\Utilities\ArrayHelper;
 use Joomla\CMS\Table\Table;
 
-class XbarticlemanModelArtscodes extends JModelList
+class XbarticlemanModelArtscodes extends ListModel
 
 //poss regex for mysql
 //SELECT `id`, `introtext` FROM `n6vbq_content` WHERE `introtext` REGEXP '{(\\w+).*}.*{/(\\1)}';
