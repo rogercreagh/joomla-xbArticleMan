@@ -10,8 +10,9 @@
 - [x] v2.0.4 improve lists and layouts for artimages **done** 10th Nov
 - [x] v2.0.5 improve lists and layouts for artlinks **done** 2.0.5.1 13th Nov
 - [x] v2.0.6 improve lists and layouts for artscodes **done** 2.0.6.5 16th Nov
-- [ ] v2.1.0 add Dashboard view
+- [x] v2.1.0 add Dashboard view
 - [ ] v2.2.0 add tag view with edit desc and tagged articles
+- [ ] 
 
 **Subsequent releases (order not yet specified)**
 

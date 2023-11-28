@@ -64,8 +64,8 @@
 	</administration>
 	
 	<updateservers>
-		<server type="extension" priority="1" name=" Updates">
-			http://www.crosborne.co.uk/jupdates/update_xbarticleman.xml
+		<server type="extension" priority="1" name="xbArticleMan Updates">
+			http://www.crosborne.uk/jupdates/update_xbarticleman.xml
 		</server>
 	</updateservers>
 
