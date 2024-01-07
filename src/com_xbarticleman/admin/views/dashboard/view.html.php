@@ -2,7 +2,7 @@
 /*******
  * @package xbArticleMan Component
  * @filesource admin/views/dashboard/view.html.php
- * @version 2.1.0.0 18th November 2023
+ * @version 2.1.0.1 7th January  2024
  * @author Roger C-O
  * @copyright Copyright (c) Roger Creagh-Osborne, 2023
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html 
@@ -72,9 +72,9 @@ class XbarticlemanViewDashboard extends HtmlView {
         
         ToolbarHelper::title(Text::_( 'XBARTMAN_ADMIN_DASHBOARD_TITLE' ), 'info-2' );
         
-        if ($canDo->get('core.create') > 0) {
-            ToolbarHelper::addNew('server.add','New Server');
-        }
+//        if ($canDo->get('core.create') > 0) {
+//            ToolbarHelper::addNew('server.add','New Server');
+//        }
         
         if ($canDo->get('core.admin')) {
             ToolbarHelper::preferences('com_xbarticleman');

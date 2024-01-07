@@ -303,6 +303,7 @@ some common combinations are also defined (eg xbnit - normal weight,italic, 5px 
 /* widths */
 .xbw18 {width: 18px; }
 .xbw100 {width:100px; }
+
 .xbwp100 {width:100%; }
 .xbwp60 {width:60%; }
 .xbwp50 {width:50%; }

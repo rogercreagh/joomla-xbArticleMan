@@ -12,7 +12,7 @@
 - [x] v2.0.6 improve lists and layouts for artscodes **done** 2.0.6.5 16th Nov
 - [x] v2.1.0 add Dashboard view
 - [ ] v2.2.0 add tag view with edit desc and tagged articles
-- [ ] 
+- [ ] v2.3.0 add categories view
 
 **Subsequent releases (order not yet specified)**
 
