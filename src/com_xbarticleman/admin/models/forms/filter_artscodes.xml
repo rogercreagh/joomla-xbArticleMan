@@ -60,6 +60,7 @@
 			name="scfilt" type="text"
 			label="Shortcode to filter"
 			description="enter the shortcode name only without braces {}"
+			hint="shortcode name only without braces {}"
 			filter="string"
 			>
 		</field>
